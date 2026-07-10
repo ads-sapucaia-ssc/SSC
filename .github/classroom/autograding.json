@@ -1,5 +1,5 @@
 {
-  "//": "Autograding do GitHub Classroom (VidaPlus). Checagens ESTATICAS e sem banco: cada teste passa (echo PASS) quando o padrao vulneravel do legado desaparece do codigo. E um PROXY rapido de remediacao para nota parcial automatica. A verificacao COMPORTAMENTAL (IDOR/RBAC/auth passam de fato) fica no pipeline (job 'Gate - Testes de seguranca', que sobe MySQL) e na revisao manual dos PRs com o gabarito. Nao confie so no autograding: um grupo pode remover o padrao sem corrigir a logica.",
+  "//": "FALLBACK ESTATICO. O grader ATIVO do Classroom e .github/workflows/classroom.yml, que combina estas checagens estaticas COM a nota comportamental (testes @security contra MySQL). Este arquivo fica como documentacao/fallback. Nao confie so no estatico: um grupo pode remover o padrao sem corrigir a logica - por isso o classroom.yml roda tambem os testes de comportamento.",
   "tests": [
     {
       "name": "V-02 sem hash MD5",

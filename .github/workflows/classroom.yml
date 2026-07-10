@@ -1,0 +1,120 @@
+name: Autograding (Classroom)
+
+# Autograding do GitHub Classroom para o VidaPlus.
+# Combina nota ESTATICA (padrao vulneravel removido) com nota COMPORTAMENTAL
+# (testes @security passam de fato, contra um MySQL de servico).
+# Total = 100 pontos (60 estatico + 40 comportamental).
+# Este workflow e o grader ATIVO no Classroom; o .github/classroom/autograding.json
+# fica como documentacao/fallback estatico.
+
+on:
+  push:
+    branches: [ "**" ]
+  workflow_dispatch:
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root123
+          MYSQL_DATABASE: vidaplus
+        ports:
+          - "3306:3306"
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -uroot -proot123"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "11"
+          cache: maven
+      - name: Carregar schema + seed
+        run: |
+          sudo apt-get update && sudo apt-get install -y mysql-client
+          mysql -h127.0.0.1 -uroot -proot123 < legacy-app/db/schema.sql
+          mysql -h127.0.0.1 -uroot -proot123 vidaplus < legacy-app/db/seed.sql
+
+      # ---------------- Estatico (proxy de remediacao) ----------------
+      - name: "V-02 sem hash MD5"
+        id: v02
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "V-02 sem hash MD5"
+          command: "! grep -rqF '\"MD5\"' legacy-app/backend/src/main"
+          max-score: 10
+
+      - name: "V-01 sem concatenacao SQL"
+        id: v01
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "V-01 sem concatenacao SQL em executeQuery"
+          command: "! grep -rqE 'executeQuery\\(.*\\+' legacy-app/backend/src/main"
+          max-score: 10
+
+      - name: "V-05 sem segredo hardcoded"
+        id: v05
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "V-05 JWT via variavel de ambiente"
+          command: "! grep -qE 'jwt.secret=[^$]' legacy-app/backend/src/main/resources/application.properties"
+          max-score: 10
+
+      - name: "V-10 sem bypassSecurityTrustHtml"
+        id: v10
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "V-10 sem bypassSecurityTrustHtml"
+          command: "! grep -rq 'bypassSecurityTrustHtml' legacy-app/frontend/src"
+          max-score: 10
+
+      - name: "V-12 CORS sem allowedOrigins(*)"
+        id: v12
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "V-12 CORS restrito"
+          command: "! grep -rqF 'allowedOrigins(\"*\")' legacy-app/backend/src/main"
+          max-score: 10
+
+      - name: "V-07 JWT com expiracao"
+        id: v07
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "V-07 JWT com setExpiration"
+          command: "grep -rq 'setExpiration' legacy-app/backend/src/main"
+          max-score: 10
+
+      # ---------------- Comportamental (prova a correcao) ----------------
+      - name: "Testes de seguranca (IDOR/RBAC/auth)"
+        id: sectests
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Testes @security passam (IDOR/RBAC/SQLi)"
+          setup-command: ""
+          command: "cd legacy-app/backend && mvn -B -q test -Dgroups=security"
+          timeout: 15
+          max-score: 40
+
+      # ---------------- Relatorio consolidado ----------------
+      - name: "Autograding Reporter"
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          V02_RESULTS: "${{ steps.v02.outputs.result }}"
+          V01_RESULTS: "${{ steps.v01.outputs.result }}"
+          V05_RESULTS: "${{ steps.v05.outputs.result }}"
+          V10_RESULTS: "${{ steps.v10.outputs.result }}"
+          V12_RESULTS: "${{ steps.v12.outputs.result }}"
+          V07_RESULTS: "${{ steps.v07.outputs.result }}"
+          SECTESTS_RESULTS: "${{ steps.sectests.outputs.result }}"
+        with:
+          runners: v02,v01,v05,v10,v12,v07,sectests
