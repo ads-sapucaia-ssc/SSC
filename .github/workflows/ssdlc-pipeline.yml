@@ -28,9 +28,9 @@ jobs:
           distribution: temurin
           java-version: "11"
           cache: maven
-      - name: Compilar e testar
+      - name: Compilar e testar (exclui testes @security, que rodam no gate proprio com MySQL)
         working-directory: legacy-app/backend
-        run: mvn -B -q verify
+        run: mvn -B -q verify -DexcludedGroups=security
 
   build-frontend:
     name: Build frontend (Angular)
