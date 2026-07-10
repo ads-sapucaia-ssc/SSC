@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Supressoes do OWASP Dependency-Check para o VidaPlus.
+  Comece VAZIO de proposito: no legado, todas as CVEs das dependencias antigas
+  (Spring Boot 2.5.4, jjwt 0.9.1, Angular 12) DEVEM aparecer no relatorio (V-18).
+  Use este arquivo apenas para suprimir falsos positivos justificados, com nota.
+-->
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+  <!-- Exemplo (desabilitado):
+  <suppress>
+    <notes>Falso positivo X - justificativa</notes>
+    <cve>CVE-0000-0000</cve>
+  </suppress>
+  -->
+</suppressions>

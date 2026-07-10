@@ -1,0 +1,13 @@
+# OWASP ZAP Baseline - regras (id<TAB>acao<TAB>comentario)
+# acao: IGNORE | WARN | FAIL
+# No legado, mantemos como WARN para nao travar tudo; os grupos podem elevar a FAIL
+# conforme corrigem. IDs de referencia do ZAP.
+10038	FAIL	Content Security Policy ausente (V-12)
+10020	WARN	X-Frame-Options ausente
+10021	WARN	X-Content-Type-Options ausente
+10035	WARN	HSTS ausente (V-13)
+10036	WARN	Server leaks version
+90022	WARN	Application Error disclosure (V-11 stack trace)
+40018	FAIL	SQL Injection (V-01/V-13)
+40012	FAIL	Cross Site Scripting refletido/persistente (V-10)
+# IDOR (V-03) e RBAC (V-04) sao logicos: cobertos pelos testes de seguranca (nao pelo baseline).

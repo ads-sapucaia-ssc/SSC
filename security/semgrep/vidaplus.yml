@@ -1,0 +1,45 @@
+# Regras Semgrep customizadas para o VidaPlus.
+# Focam nas classes de falha plantadas, para o gate de SAST acusar de forma didatica.
+rules:
+  - id: vidaplus-sql-concat
+    languages: [java]
+    severity: ERROR
+    message: >-
+      Possivel SQL Injection (V-01/V-13): query montada por concatenacao de String.
+      Use PreparedStatement/JdbcTemplate parametrizado.
+    patterns:
+      - pattern-either:
+          - pattern: $STMT.executeQuery("..." + $X + "...")
+          - pattern: |
+              String $Q = "..." + $X + "...";
+              ...
+              $STMT.executeQuery($Q);
+
+  - id: vidaplus-weak-hash-md5
+    languages: [java]
+    severity: ERROR
+    message: "Hash fraco (V-02): MD5/SHA-1 para senha. Use Argon2id/bcrypt com salt."
+    patterns:
+      - pattern: MessageDigest.getInstance("MD5")
+
+  - id: vidaplus-jwt-no-expiration
+    languages: [java]
+    severity: WARNING
+    message: "JWT sem expiracao (V-07): faltou setExpiration(). Token eterno."
+    patterns:
+      - pattern: Jwts.builder() ... .compact()
+      - pattern-not: Jwts.builder() ... .setExpiration(...) ... .compact()
+
+  - id: vidaplus-hardcoded-secret
+    languages: [java]
+    severity: ERROR
+    message: "Segredo hardcoded (V-05): mova para variavel de ambiente/cofre."
+    patterns:
+      - pattern-regex: (SECRET|PASSWORD|SENHA)\s*=\s*"[^"]{6,}"
+
+  - id: vidaplus-angular-bypass-security
+    languages: [typescript]
+    severity: ERROR
+    message: "XSS (V-10): bypassSecurityTrustHtml em conteudo nao confiavel."
+    patterns:
+      - pattern: $S.bypassSecurityTrustHtml(...)

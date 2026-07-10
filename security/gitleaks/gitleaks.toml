@@ -1,0 +1,21 @@
+# Config Gitleaks para o VidaPlus.
+# Estende as regras padrao e adiciona deteccao dos segredos plantados (V-05).
+title = "VidaPlus gitleaks"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "vidaplus-jwt-secret"
+description = "Segredo de JWT hardcoded (V-05)"
+regex = '''vidaplus\.jwt\.secret\s*=\s*.+'''
+tags = ["secret", "jwt", "V-05"]
+
+[[rules]]
+id = "vidaplus-db-password"
+description = "Senha do banco em texto claro (V-05)"
+regex = '''(datasource\.password|MYSQL_PASSWORD)\s*[:=]\s*\S+'''
+tags = ["secret", "db", "V-05"]
+
+# Quando os grupos migrarem os segredos para variaveis de ambiente/cofre,
+# estas regras deixam de encontrar ocorrencias e o gate fica verde.

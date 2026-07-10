@@ -1,0 +1,23 @@
+# Build / dependencias
+target/
+dist/
+node_modules/
+*.class
+*.jar
+!**/gradle-wrapper.jar
+
+# IDE / SO
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Relatorios de scanners (gerados pelo CI)
+*.sarif
+sbom.cdx.json
+dependency-check-report.*
+zap-report.*
+
+# Local
+*.log
+.env
