@@ -107,15 +107,3 @@ Usuários de teste, endpoints e as falhas exploráveis estão em
 | 8 · Retro & auditoria | 18 | Métricas, risco residual, melhoria contínua | Matriz de rastreabilidade + defesa |
 
 Detalhe completo em [docs/01-plano-disciplina-ssdlc.md](docs/01-plano-disciplina-ssdlc.md).
-
----
-
-## 6. Para o professor
-
-- O **gabarito das vulnerabilidades** (mapeamento falha → fase → correção) fica no
-  repositório **privado do instrutor** (`alexorozco-ifsul/SSC-instrutor`), fora deste
-  template para não expor as respostas aos grupos.
-- A **rubrica** por fase está em [docs/08-rubrica-avaliacao.md](docs/08-rubrica-avaliacao.md).
-- O pipeline nasce **vermelho de propósito** (os gates falham no código legado). O
-  progresso do grupo é medido pela quantidade de gates que passam a ficar verdes ao
-  longo do semestre — a segurança vira **métrica objetiva e versionada**.
