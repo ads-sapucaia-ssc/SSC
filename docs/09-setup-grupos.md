@@ -93,6 +93,15 @@ Quando terminar de corrigir uma classe de falha, **torne o gate bloqueante** rem
 
 ---
 
+## 5.1 Testes de aceite já fornecidos
+
+O professor já incluiu **testes de aceite mínimos** em
+`legacy-app/backend/src/test/.../security/SegurancaAceiteTest.java` (`@Tag("security")`),
+cobrindo IDOR, RBAC e SQLi no login. Eles **nascem vermelhos** no legado — são o **alvo**
+do "pronto". O gate `Gate - Testes de seguranca` do pipeline os executa (com um MySQL de
+serviço). **Você deve expandir** a cobertura com testes próprios na Fase 5; estes são só o
+mínimo.
+
 ## 6. Autograding (como sua nota parcial é calculada)
 
 O `.github/classroom/autograding.json` roda a cada push e pontua **quando o padrão

@@ -154,13 +154,30 @@ jobs:
     name: "Gate - Testes de seguranca"
     runs-on: ubuntu-latest
     continue-on-error: true
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root123
+          MYSQL_DATABASE: vidaplus
+        ports:
+          - "3306:3306"
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -uroot -proot123"
+          --health-interval=10s --health-timeout=5s --health-retries=10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: "11", cache: maven }
-      - name: Testes marcados como 'security'
+      - name: Carregar schema + seed no MySQL de teste
+        run: |
+          sudo apt-get update && sudo apt-get install -y mysql-client
+          mysql -h127.0.0.1 -uroot -proot123 < legacy-app/db/schema.sql
+          mysql -h127.0.0.1 -uroot -proot123 vidaplus < legacy-app/db/seed.sql
+      - name: Testes de aceite de seguranca (@Tag security)
         working-directory: legacy-app/backend
-        run: mvn -B -q test -Dgroups=security || echo "testes de seguranca ainda nao implementados/passando"
+        # No legado FALHA de proposito (gate vermelho); fica verde quando corrigido.
+        run: mvn -B -q test -Dgroups=security
 
   # ---------- Placar dos gates (resumo) ----------
   gate-summary:
