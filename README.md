@@ -23,7 +23,16 @@ aplicá-la**, o que fixa o conhecimento e evita o antipadrão "segurança no fim
 
 > **Frase-síntese da disciplina:**
 > *Requisito bem-feito = ativo + ameaça + atributo + critério verificável + rastreabilidade.*
-> Agora aplicada não a um sistema hipotético, mas a **código que precisa ser corrigido**.
+
+> ⚠️ **Foco e natureza do projeto.** O foco da disciplina é **SSDLC + LGPD + privacidade**,
+> **não** desenvolvimento. O VidaPlus (código, banco e pipeline) é um **cenário de
+> simulação** — um "projeto real em escala acadêmica" — para os alunos **vivenciarem a
+> aplicação da teoria**. O que se avalia é o **processo seguro** (classificação de dados,
+> requisitos+LGPD, threat model STRIDE **e** LINDDUN, Privacy by Design, RIPD/DPIA,
+> rastreabilidade, verificação, resposta a incidente). A correção de código entra apenas
+> como **prova de conceito** — poucos controles, feitos ponta-a-ponta, para gerar evidência
+> de que o grupo sabe fechar o fio ativo→ameaça→requisito→controle→teste→evidência.
+> **Não é preciso corrigir tudo**; o restante é **analisado e planejado**.
 
 ---
 
@@ -94,16 +103,19 @@ Usuários de teste, endpoints e as falhas exploráveis estão em
 
 ## 5. O fio condutor (SSDLC → teoria → entrega)
 
-| Fase do SSDLC | Semanas | Teoria puxada pela demanda | Entrega do grupo |
+*(Disciplina de 16 semanas, 3h/aula — teoria e prática dentro da mesma aula.)*
+
+| Fase do SSDLC | Semanas | Teoria puxada pela demanda | Entrega do grupo (artefato) |
 |---------------|:-------:|----------------------------|------------------|
-| 0 · Kickoff & inventário do legado | 1–2 | SSDLC, cenário de ameaças, risco de legado | Inventário de ativos + classificação de dados |
-| 1 · Requisitos & conformidade | 3–4 | Eng. de requisitos de segurança, **LGPD**, ASVS | Requisitos de segurança + base legal |
-| 2 · Privacidade & threat modeling | 5–7 | **Privacy by Design, LINDDUN**, STRIDE, DFD | DFD + LINDDUN + STRIDE + árvore de ataque |
-| 3 · Projeto seguro | 8–9 | Arquitetura segura, cripto, authn/authz, DoD | Especificação + Definition of Done |
-| 4 · Implementação segura | 10–13 | OWASP Top 10, secure coding, remediação | Correção do código legado (PRs) |
-| 5 · Verificação | 14–15 | SAST/DAST/SCA, testes de segurança | Testes + evidências no CI |
-| 6 · Release & DevSecOps | 16 | Pipeline, supply chain, gestão de segredos | Pipeline verde com gates |
-| 7 · Operação & resposta | 17 | Logging, monitoração, resposta a incidentes, ANPD | Trilha de auditoria + plano de resposta |
-| 8 · Retro & auditoria | 18 | Métricas, risco residual, melhoria contínua | Matriz de rastreabilidade + defesa |
+| 0 · Kickoff & inventário do legado | 1 | SSDLC, cenário de ameaças, risco de legado | Inventário de ativos + classificação de dados |
+| 1 · Requisitos & conformidade | 2 | Eng. de requisitos de segurança, **LGPD**, ASVS | Requisitos de segurança + base legal |
+| 2 · Privacidade & threat modeling | 3–4 | **Privacy by Design, LINDDUN**, STRIDE, DFD | DFD + LINDDUN + STRIDE + árvore de ataque + RIPD |
+| 3 · Projeto seguro | 5 | Arquitetura segura, cripto, authn/authz, DoD | Especificação + Definition of Done |
+| 4 · Remediação (prova de conceito) | 6–9 | OWASP Top 10, secure coding do controle escolhido | **1–2 controles corrigidos ponta-a-ponta** + plano de remediação do restante |
+| 5 · Verificação | 10–11 | SAST/DAST/SCA, testes de segurança | Testes + evidências no CI |
+| 6 · Release & DevSecOps | 12 | Pipeline, supply chain, gestão de segredos | Pipeline como **gerador de evidência** |
+| 7 · Operação & resposta | 13 | Logging, monitoração, resposta a incidentes, ANPD | Trilha de auditoria + plano de resposta (art. 48) |
+| 8 · Retro & auditoria | 14 | Métricas, risco residual, melhoria contínua | Matriz de rastreabilidade + métricas |
+| — · Defesas + buffer | 15–16 | — | Defesa final (fecha o fio ao vivo) |
 
 Detalhe completo em [docs/01-plano-disciplina-ssdlc.md](docs/01-plano-disciplina-ssdlc.md).

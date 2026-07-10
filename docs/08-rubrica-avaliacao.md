@@ -1,49 +1,57 @@
 # 08 · Rubrica de avaliação (alinhada às fases)
 
-A avaliação é **contínua e por fase** — não há prova única. Cada fase tem entregável e
-peso. A soma é 100, com bônus por automação/rigor.
+A avaliação é **contínua e por fase** — não há prova única. O foco da disciplina é
+**SSDLC + LGPD + privacidade**, então o peso está nos **artefatos do processo**; a
+remediação de código entra como **prova de conceito** e o pipeline como **evidência**, não
+como a nota em si.
 
 | # | Fase / critério | Pontos | O que se espera |
 |---|-----------------|:------:|-----------------|
 | 0 | Inventário & classificação de dados | 8 | Ativos e endpoints mapeados; dados classificados; fluxos críticos identificados |
-| 1 | Requisitos & LGPD | 12 | RFS+RGS testáveis; base legal por dado; nível ASVS justificado |
+| 1 | Requisitos & **LGPD** | 14 | RFS+RGS testáveis; **base legal por dado**; nível ASVS justificado |
 | 2 | Threat modeling (STRIDE) | 10 | DFD com trust boundaries; STRIDE-per-element; árvore de ataque |
-| 2p | **Privacidade (LINDDUN + PbD)** | 12 | LINDDUN-per-element; controles/PET; esboço de RIPD; minimização aplicada |
+| 2p | **Privacidade — LINDDUN + PbD + RIPD/DPIA** | 18 | LINDDUN-per-element; controles/PET; minimização; **RIPD** derivado |
 | 3 | Projeto seguro & priorização | 10 | Catálogo consolidado; risco→P0/P1/P2; **Definition of Done** segura |
-| 4 | Implementação (correções) | 18 | PRs corrigindo as falhas do pacote; novos módulos LGPD (consentimento/erasure/export) |
-| 5 | Verificação (SAST/DAST/SCA + testes) | 14 | Testes que exercitam os requisitos; scanners no CI; evidências reais |
-| 6 | DevSecOps (pipeline) | 8 | Gates verdes/bloqueantes; SBOM; sem segredos no repo |
-| 7 | Operação & resposta | 4 | Trilha de auditoria íntegra; runbook + fluxo de notificação ANPD |
-| 8 | Rastreabilidade & defesa | 4 + defesa | Matriz completa; métricas; defesa fecha o fio ao vivo |
+| 4 | **Remediação — prova de conceito** | 8 | 1–2 controles corrigidos ponta-a-ponta **+ plano de remediação** do restante |
+| 5 | Verificação & evidências | 12 | Teste que exercita o controle; scanners como evidência; evidência real |
+| 6 | DevSecOps / pipeline (evidência) | 6 | Pipeline gera evidência; SBOM; sem segredos no repo |
+| 7 | **Operação, incidente & LGPD art. 48** | 6 | Trilha de auditoria íntegra; runbook + fluxo de notificação ANPD |
+| 8 | Rastreabilidade & defesa | 8 + defesa | Matriz completa; métricas; **defesa fecha o fio ao vivo** |
 | — | **Total** | **100** | |
 
-**Bônus (até +10):** gates bloqueantes mantidos verdes; DAST autenticado exercitando
-IDOR; attack-defense tree quantificada; assinatura de artefatos/SBOM; anonimização real
-na eliminação.
+> **Onde está o peso:** Fases 1, 2, 2p e 8 (requisitos+LGPD, threat modeling, **privacidade**
+> e rastreabilidade) somam **50 pts** — metade da nota está no **processo e na privacidade**.
+> A implementação (F4) vale **8**: importa **provar o ciclo**, não a quantidade de código.
 
-**Penalidades (até −15):** requisito vago/não testável; "segurança no fim"; correção sem
-teste/evidência; status "OK" na matriz sem prova; **PII em log** (regride V-17); segredo
-reintroduzido no código; comportamento sob falha ignorado.
+**Bônus (até +10):** attack-defense tree quantificada; DAST autenticado exercitando IDOR;
+mais de um módulo LGPD implementado; anonimização real na eliminação; gate tornado
+bloqueante e mantido verde.
+
+**Penalidades (até −15):** requisito vago/não testável; "privacidade/segurança no fim";
+correção sem teste/evidência; status "OK" na matriz sem prova; **PII em log**; segredo
+reintroduzido no código; ameaça de privacidade (LINDDUN) sem controle; comportamento sob
+falha ignorado.
 
 ---
 
-## Métrica-mestra do semestre
+## O papel do pipeline e do autograding
 
-> **Gates verdes / total de gates** ao longo do tempo — o placar objetivo do progresso da
-> turma, versionado no pipeline. Um grupo que leva 3 gates de vermelho a verde-bloqueante
-> entregou segurança **mensurável**, não apenas documentada.
+São **instrumentos de evidência e feedback**, **não a nota**:
+- o **placar de gates** dá ao grupo um sinal objetivo do efeito da PoC (🔴→🟢);
+- o **autograding** dá nota parcial automática de apoio.
 
-## Definition of Done por funcionalidade (repete a de 05)
+A nota real vem do **dossiê de segurança e privacidade** (artefatos das fases) e da
+**defesa**. Um pipeline verde sem os artefatos por trás **não** vale a nota; artefatos
+sólidos com uma PoC bem-feita **valem**.
 
-1. Requisito (RFS+RGS) com ameaça/base legal.
-2. Ameaça mapeada em STRIDE e/ou LINDDUN.
-3. Correção em PR revisado e mergeado.
-4. Teste que exercita + cobertura por scanner quando aplicável.
-5. Evidência real anexada (log CI/print/relatório).
-6. Linha "Verificado" na matriz de rastreabilidade.
-7. Gate da classe de falha 🔴 → 🟢.
+## Definition of Done — dois níveis (ver docs/05)
 
-## Checklist de secure code review (para os PRs)
+- **Analisada** (todas as funcionalidades do pacote): requisito + base legal + ameaça
+  (STRIDE/LINDDUN) + controle proposto + linha na matriz + plano de remediação.
+- **Implementada** (1–2 por grupo, prova de conceito): + correção em PR + teste + evidência
+  + status "Verificado" + gate 🔴→🟢.
+
+## Checklist de secure code review (para os PRs da PoC)
 
 - [ ] Entrada validada e consultas parametrizadas (sem concatenação SQL).
 - [ ] Autorização server-side (ownership + RBAC deny-by-default).

@@ -82,19 +82,23 @@ sanitização/output encoding, erro seguro, links seguros.
 
 ---
 
-## Definition of Done de um pacote (o que fecha uma funcionalidade)
+## Dois níveis de "pronto" (o foco é análise; a implementação é prova de conceito)
 
-Uma funcionalidade só está "pronta" quando:
+Como a disciplina avalia o **processo**, cada funcionalidade do pacote é **analisada**, mas
+só **1–2 controles** (ao menos 1 P0) são **implementados** como prova de conceito.
 
-1. Há **requisito** (RFS + RGS) no catálogo, com base legal/ameaça.
-2. Há **ameaça mapeada** em STRIDE **e/ou** LINDDUN.
-3. A **correção/implementação** está num PR revisado e mergeado.
-4. Há **teste** que a exercita (unitário/integração/BDD) e, quando aplicável, cobertura
-   por **SAST/DAST/SCA** no CI.
-5. Há **evidência** real (log do CI, print, relatório) anexada.
-6. A linha correspondente na **matriz de rastreabilidade** está com status "Verificado".
-7. O **gate** do pipeline referente àquela classe de falha passa de 🔴 para 🟢.
+### A) Funcionalidade ANALISADA — obrigatório para **todas** do pacote
+1. **Requisito** (RFS + RGS) com **base legal** (LGPD) e **ameaça** (STRIDE e/ou LINDDUN).
+2. **Controle proposto** com comportamento sob falha (fail-secure).
+3. **Entrada na matriz de rastreabilidade** e, se de privacidade, no **RIPD**.
+4. **Plano de remediação**: o quê, como, esforço estimado, prioridade.
 
-> **Entrega incremental:** a cada sprint, cada grupo abre PRs e demonstra gates que
-> ficaram verdes. Ao final, o VidaPlus integrado deve subir do estado "legado vulnerável"
-> para "adequado", com o pipeline documentando a evolução.
+### B) Funcionalidade IMPLEMENTADA (prova de conceito) — **1–2 por grupo**
+Além de A, fecha o fio completo:
+5. **Correção** num PR revisado e mergeado.
+6. **Teste** que a exercita + evidência (log do CI/print/relatório).
+7. Status **"Verificado"** na matriz; o **gate** da classe de falha vai de 🔴 → 🟢.
+
+> **Por que assim:** o objetivo não é corrigir muito código, e sim **provar que o grupo
+> sabe fechar o ciclo** de engenharia de segurança/privacidade — do ativo à evidência — e
+> **planejar** a adequação do restante como faria num projeto real.

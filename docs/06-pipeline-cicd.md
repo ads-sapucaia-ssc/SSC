@@ -1,9 +1,16 @@
 # 06 · Pipeline CI/CD — gates de segurança do SSDLC
 
 O arquivo [`.github/workflows/ssdlc-pipeline.yml`](../.github/workflows/ssdlc-pipeline.yml)
-implementa o pipeline. A ideia pedagógica: **segurança vira métrica objetiva e
-versionada**. O pipeline nasce com quase todos os gates **vermelhos** (o legado é
-inseguro) e o progresso da turma é medido pela transição **🔴 → 🟢**.
+implementa o pipeline. A ideia pedagógica: **tornar a segurança visível e versionada**. O
+pipeline nasce com quase todos os gates **vermelhos** (o legado é inseguro) e a **prova de
+conceito** do grupo faz o(s) gate(s) da classe corrigida transitar **🔴 → 🟢**.
+
+> ⚠️ **O pipeline é gerador de EVIDÊNCIA e FEEDBACK — não é a nota.** Como o foco é o
+> processo (SSDLC + LGPD + privacidade), a avaliação vem dos **artefatos** e da **defesa**
+> (ver [08-rubrica-avaliacao.md](08-rubrica-avaliacao.md)). Um gate verde **sustenta** a
+> evidência de um controle; ele não substitui o requisito, o threat model, o RIPD e a
+> rastreabilidade por trás. Nem todos os gates precisam ficar verdes — só os das PoCs
+> escolhidas; os demais sustentam o **plano de remediação**.
 
 ---
 

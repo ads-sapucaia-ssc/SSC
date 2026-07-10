@@ -7,6 +7,13 @@ Cada funcionalidade tem um **estado no legado** e uma **ação esperada**:
 
 A **criticidade** guia a priorização (P0 bloqueia release) e a distribuição entre os grupos.
 
+> ⚠️ **Este catálogo é a superfície de ANÁLISE, não uma lista de tarefas de código.** Como
+> o foco é o processo (SSDLC + LGPD + privacidade), cada grupo **corrige apenas 1–2
+> controles ponta-a-ponta (prova de conceito)** e, para as demais funcionalidades do seu
+> pacote, entrega **análise + plano de remediação** (ameaça, controle proposto, esforço,
+> prioridade) — **sem precisar implementar**. Todas as funcionalidades devem ser
+> **analisadas** (requisito, STRIDE/LINDDUN, base legal); poucas são **implementadas**.
+
 Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ criar.
 
 ---

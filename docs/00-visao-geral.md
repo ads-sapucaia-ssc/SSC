@@ -1,5 +1,19 @@
 # 00 · Visão geral do projeto
 
+## Natureza do projeto (leia primeiro)
+
+O foco da disciplina é **SSDLC + LGPD + privacidade** — **não** desenvolvimento de software.
+O VidaPlus é um **cenário de simulação** ("projeto real em escala acadêmica") que existe
+para os alunos **vivenciarem, na prática, a aplicação da teoria**. Consequências:
+
+- O **produto avaliado é o processo seguro** e seus artefatos (classificação de dados,
+  requisitos+LGPD, threat model STRIDE e LINDDUN, Privacy by Design, RIPD/DPIA,
+  rastreabilidade, verificação, resposta a incidente), **não** a quantidade de código.
+- A **remediação é prova de conceito**: cada grupo corrige **1–2 controles ponta-a-ponta**
+  para demonstrar que sabe fechar o fio ativo→ameaça→requisito→controle→teste→evidência;
+  o restante das falhas é **analisado e planejado** (plano de remediação), não codado.
+- O **pipeline e o autograding** são **geradores de evidência e feedback**, não a nota.
+
 ## Contexto narrativo (para dar aos estudantes)
 
 > A **Clínica VidaPlus** opera desde 2015 com um sistema web próprio, o **VidaPlus**,

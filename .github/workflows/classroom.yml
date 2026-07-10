@@ -1,11 +1,15 @@
 name: Autograding (Classroom)
 
 # Autograding do GitHub Classroom para o VidaPlus.
-# Combina nota ESTATICA (padrao vulneravel removido) com nota COMPORTAMENTAL
+# Combina checagem ESTATICA (padrao vulneravel removido) com COMPORTAMENTAL
 # (testes @security passam de fato, contra um MySQL de servico).
-# Total = 100 pontos (60 estatico + 40 comportamental).
-# Este workflow e o grader ATIVO no Classroom; o .github/classroom/autograding.json
-# fica como documentacao/fallback estatico.
+#
+# IMPORTANTE: e FEEDBACK / nota parcial de APOIO, nao a nota final. O foco da
+# disciplina e o processo (SSDLC + LGPD + privacidade); a nota real vem dos
+# artefatos e da defesa (ver docs/08-rubrica-avaliacao.md). Serve para o grupo
+# ter sinal objetivo de que sua prova de conceito fechou o fio.
+# Este workflow e o grader ATIVO no Classroom; .github/classroom/autograding.json
+# fica como fallback estatico documentado.
 
 on:
   push:
