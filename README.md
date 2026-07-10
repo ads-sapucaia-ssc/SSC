@@ -62,8 +62,8 @@ projeto-vidaplus/
 │   ├── 04-catalogo-funcionalidades.md   funcionalidades por criticidade
 │   ├── 05-pacotes-trabalho-estudantes.md pacotes de trabalho por grupo
 │   ├── 06-pipeline-cicd.md          gates de segurança ↔ fases do SSDLC
-│   ├── 07-catalogo-vulnerabilidades.md  GABARITO do professor (não distribuir)
 │   └── 08-rubrica-avaliacao.md      avaliação alinhada às fases
+│   (o gabarito das vulnerabilidades fica no repo privado do instrutor)
 ├── legacy-app/                      ← o software a ser corrigido
 │   ├── docker-compose.yml
 │   ├── db/         schema.sql + seed.sql (MySQL)
@@ -111,8 +111,9 @@ Detalhe completo em [docs/01-plano-disciplina-ssdlc.md](docs/01-plano-disciplina
 
 ## 6. Para o professor
 
-- O **gabarito das vulnerabilidades** e o mapeamento falha → fase → correção estão em
-  [docs/07-catalogo-vulnerabilidades.md](docs/07-catalogo-vulnerabilidades.md).
+- O **gabarito das vulnerabilidades** (mapeamento falha → fase → correção) fica no
+  repositório **privado do instrutor** (`alexorozco-ifsul/SSC-instrutor`), fora deste
+  template para não expor as respostas aos grupos.
 - A **rubrica** por fase está em [docs/08-rubrica-avaliacao.md](docs/08-rubrica-avaliacao.md).
 - O pipeline nasce **vermelho de propósito** (os gates falham no código legado). O
   progresso do grupo é medido pela quantidade de gates que passam a ficar verdes ao

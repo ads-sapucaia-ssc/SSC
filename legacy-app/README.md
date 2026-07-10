@@ -54,6 +54,5 @@ curl -s -X POST localhost:8080/api/auth/reset -H 'Content-Type: application/json
 ## Estado esperado ao final do semestre
 
 Cada uma dessas explorações deve **deixar de funcionar** e o gate correspondente no
-pipeline deve ficar **verde**. O mapa falha → correção → gate está em
-[../docs/07-catalogo-vulnerabilidades.md](../docs/07-catalogo-vulnerabilidades.md)
-(uso do professor).
+pipeline deve ficar **verde**. O mapa falha → correção → gate fica no repositório
+privado do instrutor (`alexorozco-ifsul/SSC-instrutor`).
