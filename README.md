@@ -72,7 +72,8 @@ projeto-vidaplus/
 │   ├── 05-pacotes-trabalho-estudantes.md pacotes de trabalho por grupo
 │   ├── 06-pipeline-cicd.md          gates de segurança ↔ fases do SSDLC
 │   ├── 08-rubrica-avaliacao.md      avaliação alinhada às fases
-│   └── 09-setup-grupos.md           passo a passo para os grupos começarem
+│   ├── 09-setup-grupos.md           passo a passo para os grupos começarem
+│   └── 10-dossie-template.md        TEMPLATE do entregável (copiar p/ DOSSIE.md)
 │   (o gabarito das vulnerabilidades fica no repo privado do instrutor)
 ├── legacy-app/                      ← o software a ser corrigido
 │   ├── docker-compose.yml
