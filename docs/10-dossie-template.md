@@ -88,12 +88,19 @@ Para cada funcionalidade do pacote: RFS (mecanismo) + RGS (garantia) + **base le
 
 ## 5. Fase 3 — Especificação, priorização & Definition of Done
 
-**Priorização por risco (CVSS/DREAD → P0/P1/P2):**
+**Priorização por risco (CVSS/DREAD + EPSS/KEV → P0/P1/P2):**
 
-| ID | Ameaça | Prob. | Impacto | Método | Pontuação | Risco | Prioridade |
-|----|--------|:-----:|:-------:|:------:|:---------:|:-----:|:----------:|
-| _REQ-AC-01_ | _IDOR_ | _Alta_ | _Alto_ | _CVSS 4.0_ | _8.7_ | _Alto_ | _P0_ |
-|  |  |  |  |  |  |  |  |
+Além do CVSS/DREAD, considere o **contexto real de exploração**: **EPSS** (probabilidade
+de ser explorada em 30 dias, 0–1) e **KEV** (está no catálogo CISA de vulnerabilidades já
+exploradas?). Regra: **item no KEV sobe um nível** de prioridade.
+
+| ID | Ameaça | Prob. | Impacto | Método | Pontuação | EPSS | KEV? | Risco | Prioridade |
+|----|--------|:-----:|:-------:|:------:|:---------:|:----:|:----:|:-----:|:----------:|
+| _REQ-AC-01_ | _IDOR_ | _Alta_ | _Alto_ | _CVSS 4.0_ | _8.7_ | _n/a*_ | _—_ | _Alto_ | _P0_ |
+|  |  |  |  |  |  |  |  |  |  |
+
+_\* EPSS/KEV aplicam-se a **CVEs de dependências** (via SCA). Para falhas do próprio
+código (IDOR, SQLi), use CVSS/DREAD; para as CVEs das libs, use CVSS + EPSS + KEV._
 
 **Definition of Done segura do projeto:** _(lista de critérios que fecham uma funcionalidade)_
 

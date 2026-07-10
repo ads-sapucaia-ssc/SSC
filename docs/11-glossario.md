@@ -76,6 +76,28 @@ Consulta rápida dos termos usados na disciplina. Para o detalhe, veja o documen
   incidente, art. 48).
 - **DPO / Encarregado** (art. 41) — responsável pela conformidade LGPD.
 
+## Princípios de design seguro (nomeados)
+
+Muitos já aparecem na prática do projeto (deny-by-default, least privilege, fail-secure).
+Vale reconhecê-los pelo nome — são a base atemporal de todo o SSDLC.
+
+- **Saltzer & Schroeder (1975) — 8 princípios:**
+  1. *Economy of mechanism* — design simples e pequeno (menos código, menos bugs).
+  2. *Fail-safe defaults* — padrão é **negar**; permissão é decisão explícita.
+  3. *Complete mediation* — toda requisição é verificada (sem cache de autorização).
+  4. *Open design* — segurança não depende do segredo do mecanismo (Kerckhoffs), só da chave.
+  5. *Separation of privilege* — ações críticas exigem mais de uma condição/chave.
+  6. *Least privilege* — cada identidade só com o mínimo necessário.
+  7. *Least common mechanism* — minimizar recursos compartilhados entre usuários.
+  8. *Psychological acceptability* — interface segura tem de ser usável (senão é contornada).
+- **Secure by Design** — segurança como propriedade emergente da arquitetura (threat
+  modeling em cada feature; eliminar classes inteiras de vulnerabilidade).
+- **Secure by Default** — o usuário recebe a configuração mais segura sem precisar mudar
+  nada (MFA ligado, TLS forçado, sem senha padrão, sem segredo hardcoded).
+- **Defense in depth** — camadas independentes; uma falha não compromete tudo.
+- **Segregation of Duties (SoD)** — nenhuma pessoa controla um processo crítico de ponta a
+  ponta (ex.: quem escreve o PR não é quem aprova nem quem faz o deploy).
+
 ## Controles & princípios
 
 - **Deny-by-default** — negar acesso por padrão; liberar só o explicitamente permitido.
@@ -111,3 +133,18 @@ Consulta rápida dos termos usados na disciplina. Para o detalhe, veja o documen
 - **Gate** — verificação no CI que pode **bloquear** o merge; no projeto, começa
   informativo e vira bloqueante conforme o grupo corrige. → [06](06-pipeline-cicd.md)
 - **CVSS / DREAD** — métodos de pontuação de risco para priorização (P0/P1/P2).
+
+## Gestão de vulnerabilidades
+
+- **CVE** (*Common Vulnerabilities and Exposures*) — ID universal de uma vulnerabilidade
+  publicada (ex.: CVE-2021-44228, Log4Shell).
+- **CWE** (*Common Weakness Enumeration*) — categoria/tipo de fraqueza (ex.: CWE-89 SQLi).
+- **EPSS** (*Exploit Prediction Scoring System*) — probabilidade (0–1) de a CVE ser
+  explorada em 30 dias; atualizado diariamente. Complementa o CVSS com contexto real.
+- **KEV** (*Known Exploited Vulnerabilities*) — catálogo da CISA de vulnerabilidades **já
+  exploradas no mundo real**; estar no KEV **eleva a prioridade**.
+- **VEX** (*Vulnerability Exploitability eXchange*) — documento que afirma se uma CVE
+  presente no produto é (ou não) explorável naquele contexto.
+- **Priorização moderna** — não basta CVSS: combine **CVSS × EPSS × KEV** (ver a matriz
+  em [10-dossie-template.md](10-dossie-template.md), Fase 3).
+- **SLA de remediação** — prazo para corrigir por severidade (ex.: críticas em < 14 dias).

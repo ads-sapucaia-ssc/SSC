@@ -63,7 +63,9 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 - **Teoria:** arquitetura segura, cripto aplicada (Argon2id, TLS), authn/authz
   (RBAC/deny-by-default), *secure defaults*, **Definition of Done** segura.
 - **Prática:** especificar controles (ID, mecanismo, falha, BDD, ASVS); priorizar por
-  risco (CVSS/DREAD → P0/P1/P2).
+  risco (**CVSS/DREAD + EPSS/KEV** → P0/P1/P2). *EPSS* dá a probabilidade de exploração e
+  *KEV* (catálogo CISA) marca o que já é explorado no mundo real — um item no KEV **sobe
+  um nível** de prioridade, mesmo com CVSS médio.
 - **Artefatos:** catálogo consolidado (RFS+RGS) + priorização + **DoD**.
 
 ## Fase 4 — Remediação (PROVA DE CONCEITO) · Semanas 6–9
@@ -113,3 +115,21 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 > de SSDLC/LGPD/privacidade** (ver [08-rubrica-avaliacao.md](08-rubrica-avaliacao.md)); a
 > remediação entra como **prova de conceito**, e o pipeline como **evidência**, não como a
 > nota em si.
+
+---
+
+## Anexo — mapa das fases do projeto ↔ NIST SSDF (SP 800-218)
+
+Para dar o **vocabulário de framework** (sem virar estudo de catálogo), cada fase do
+projeto corresponde a práticas do **NIST SSDF**, agrupadas em PO/PS/PW/RV:
+
+| Grupo SSDF | Prática SSDF (exemplos) | Fase(s) do projeto |
+|-----------|-------------------------|:-----:|
+| **PO** — Prepare the Organization | PO.1 documentar requisitos de segurança; PO.5 separar ambientes | 0, 1 |
+| **PS** — Protect the Software | PS.1 proteger o código (MFA, branch protection); PS.2 publicar **SBOM**/proveniência | 6 |
+| **PW** — Produce Well-Secured Software | PW.1 **threat modeling** documentado; PW.4 reusar componentes seguros; PW.7 code review + **SAST**; PW.8 **DAST**/testes | 2, 4, 5 |
+| **RV** — Respond to Vulnerabilities | RV.1 coletar reports; RV.2 triagem por severidade e SLA; RV.3 análise de causa | 5, 7, 8 |
+
+> Assim o aluno relaciona o SSDLC "próprio" da disciplina ao padrão oficial usado na
+> atestação federal dos EUA — e entende que **SSDF diz "o que fazer", SAMM "quão maduro",
+> SDL "como codar"** (frameworks complementares).

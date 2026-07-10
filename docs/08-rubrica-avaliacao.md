@@ -11,7 +11,7 @@ como a nota em si.
 | 1 | Requisitos & **LGPD** | 14 | RFS+RGS testáveis; **base legal por dado**; nível ASVS justificado |
 | 2 | Threat modeling (STRIDE) | 10 | DFD com trust boundaries; STRIDE-per-element; árvore de ataque |
 | 2p | **Privacidade — LINDDUN + PbD + RIPD/DPIA** | 18 | LINDDUN-per-element; controles/PET; minimização; **RIPD** derivado |
-| 3 | Projeto seguro & priorização | 10 | Catálogo consolidado; risco→P0/P1/P2; **Definition of Done** segura |
+| 3 | Projeto seguro & priorização | 10 | Catálogo consolidado; risco→P0/P1/P2 (**CVSS/DREAD + EPSS/KEV**); **Definition of Done** segura |
 | 4 | **Remediação — prova de conceito** | 8 | 1–2 controles corrigidos ponta-a-ponta **+ plano de remediação** do restante |
 | 5 | Verificação & evidências | 12 | Teste que exercita o controle; scanners como evidência; evidência real |
 | 6 | DevSecOps / pipeline (evidência) | 6 | Pipeline gera evidência; SBOM; sem segredos no repo |
@@ -25,7 +25,8 @@ como a nota em si.
 
 **Bônus (até +10):** attack-defense tree quantificada; DAST autenticado exercitando IDOR;
 mais de um módulo LGPD implementado; anonimização real na eliminação; gate tornado
-bloqueante e mantido verde.
+bloqueante e mantido verde; **assinatura de artefatos (cosign) + SLSA L2**; priorização
+usando **EPSS/KEV** além do CVSS.
 
 **Penalidades (até −15):** requisito vago/não testável; "privacidade/segurança no fim";
 correção sem teste/evidência; status "OK" na matriz sem prova; **PII em log**; segredo

@@ -81,5 +81,30 @@ Cada execução do pipeline gera evidências reutilizáveis na defesa (Fase 8):
 - **Container scanning** (Trivy image) do backend/frontend.
 - **IaC scanning** (Checkov) se houver Terraform/K8s.
 - **DAST autenticado** no ZAP (com token) para exercitar IDOR de forma automatizada.
-- **Assinatura de artefatos** (cosign) e verificação de proveniência (SLSA).
 - **Branch protection** exigindo os gates verdes para merge na `main`.
+
+## 6. Atividade opcional (bônus) — supply chain: assinatura e proveniência
+
+Fecha a Parte 9 do conteúdo (Deploy + Supply Chain). O grupo demonstra que sabe **provar a
+origem** de um artefato, não só produzi-lo.
+
+**SLSA** (*Supply-chain Levels for Software Artifacts*, OpenSSF) — 4 níveis:
+`L0` sem proveniência · `L1` proveniência básica · `L2` proveniência **assinada** ·
+`L3` build endurecido/auditado. Meta acadêmica realista: **chegar a L2**.
+
+**Sigstore / cosign** — assinatura por **identidade OIDC** (sem gerenciar chaves de longa
+duração). Passos:
+
+```yaml
+# job opcional no pipeline (após build da imagem do backend)
+- uses: sigstore/cosign-installer@v3
+- name: Assinar imagem (keyless, via OIDC do Actions)
+  env: { COSIGN_EXPERIMENTAL: "1" }
+  run: cosign sign --yes ghcr.io/<grupo>/vidaplus-backend:${{ github.sha }}
+- name: Verificar assinatura
+  run: cosign verify ghcr.io/<grupo>/vidaplus-backend:${{ github.sha }} \
+        --certificate-identity-regexp '.*' --certificate-oidc-issuer-regexp '.*'
+```
+
+**Entregável:** imagem assinada + verificação passando + o **SBOM** (já gerado no pipeline)
+anexado/atestado. Isso equivale, na prática, a **SLSA L2** para o artefato do grupo.
