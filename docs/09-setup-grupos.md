@@ -106,7 +106,7 @@ mínimo.
 
 O `.github/classroom/autograding.json` roda a cada push e pontua **quando o padrão
 vulnerável desaparece** (sem MD5, sem SQL concatenado, JWT com expiração, sem
-`bypassSecurityTrustHtml`, sem CORS `*`, segredo em variável de ambiente) e quando os
+`dangerouslySetInnerHTML`, sem CORS `*`, segredo em variável de ambiente) e quando os
 **testes de segurança passam**. Atenção: "enganar" o teste sem corrigir de verdade é
 **anti-padrão** e será pego na revisão manual dos PRs.
 

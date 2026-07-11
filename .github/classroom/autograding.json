@@ -32,9 +32,9 @@
       "points": 15
     },
     {
-      "name": "V-10 sem bypassSecurityTrustHtml no frontend",
+      "name": "V-10 sem dangerouslySetInnerHTML no frontend",
       "setup": "",
-      "run": "! grep -rq 'bypassSecurityTrustHtml' legacy-app/frontend/src && echo PASS",
+      "run": "! grep -rq 'dangerouslySetInnerHTML' legacy-app/frontend/src && echo PASS",
       "input": "",
       "output": "PASS",
       "comparison": "included",

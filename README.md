@@ -43,7 +43,7 @@ de segurança e privacidade plantadas de propósito**:
 
 | Camada | Stack | Papel |
 |--------|-------|-------|
-| Frontend | **Angular** | Portal web (paciente, médico, recepção, laboratório, admin) |
+| Frontend | **React** | Portal web (paciente, médico, recepção, laboratório, admin) |
 | Backend | **Java + Spring Boot** (estilo legado) | API REST |
 | Banco | **MySQL** | Dados cadastrais, prontuários, exames, logs |
 | Orquestração | **Docker Compose** | Sobe tudo com um comando |
@@ -80,7 +80,7 @@ projeto-vidaplus/
 │   ├── docker-compose.yml
 │   ├── db/         schema.sql + seed.sql (MySQL)
 │   ├── backend/    Java Spring Boot (Maven)
-│   └── frontend/   Angular
+│   └── frontend/   React
 ├── .github/workflows/              ← pipeline CI/CD (GitHub Actions)
 │   └── ssdlc-pipeline.yml
 └── security/                       ← configs dos scanners (ZAP, Semgrep, etc.)

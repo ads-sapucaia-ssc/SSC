@@ -49,7 +49,7 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 | ID | Funcionalidade | Estado no legado | Ação | Falhas / motivação |
 |----|----------------|------------------|:----:|--------------------|
 | F-13 | **Busca de pacientes (nome/CPF)** | Query por concatenação | 🛠️ | SQL Injection |
-| F-14 | **Notas/observações clínicas** | Renderizadas com `innerHTML`/bypassSecurity | 🛠️ | Stored XSS |
+| F-14 | **Notas/observações clínicas** | Renderizadas com `dangerouslySetInnerHTML` (React) | 🛠️ | Stored XSS |
 | F-15 | **Cadastro de paciente** | Coleta religião, estado civil, etc. sem finalidade | ⚖️ | Minimização (LINDDUN-U/N) |
 | F-16 | **Tratamento de erros** | Stack trace devolvido ao cliente | 🛠️ | Information disclosure |
 | F-17 | **CORS / cabeçalhos de segurança** | `Allow-Origin: *` com credenciais; sem HSTS/CSP | 🛠️ | Misconfiguration |

@@ -33,7 +33,7 @@ jobs:
         run: mvn -B -q verify -DexcludedGroups=security
 
   build-frontend:
-    name: Build frontend (Angular)
+    name: Build frontend (React)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
         working-directory: legacy-app/frontend
         run: |
           npm install || true
-          npx ng build || echo "build incompleto (esperado no legado)"
+          npm run build || echo "build incompleto (esperado no legado)"
 
   # ---------- Gate: Secret Scanning (V-05) - LGPD art. 46 ----------
   secret-scan:

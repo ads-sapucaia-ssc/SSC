@@ -37,9 +37,9 @@ rules:
     patterns:
       - pattern-regex: (SECRET|PASSWORD|SENHA)\s*=\s*"[^"]{6,}"
 
-  - id: vidaplus-angular-bypass-security
-    languages: [typescript]
+  - id: vidaplus-react-dangerous-html
+    languages: [javascript, typescript]
     severity: ERROR
-    message: "XSS (V-10): bypassSecurityTrustHtml em conteudo nao confiavel."
+    message: "XSS (V-10): dangerouslySetInnerHTML com conteudo nao confiavel (React)."
     patterns:
-      - pattern: $S.bypassSecurityTrustHtml(...)
+      - pattern: dangerouslySetInnerHTML={...}

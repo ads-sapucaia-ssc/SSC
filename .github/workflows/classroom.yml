@@ -74,12 +74,12 @@ jobs:
           command: "! grep -qE 'jwt.secret=[^$]' legacy-app/backend/src/main/resources/application.properties"
           max-score: 10
 
-      - name: "V-10 sem bypassSecurityTrustHtml"
+      - name: "V-10 sem dangerouslySetInnerHTML"
         id: v10
         uses: classroom-resources/autograding-command-grader@v1
         with:
-          test-name: "V-10 sem bypassSecurityTrustHtml"
-          command: "! grep -rq 'bypassSecurityTrustHtml' legacy-app/frontend/src"
+          test-name: "V-10 sem dangerouslySetInnerHTML"
+          command: "! grep -rq 'dangerouslySetInnerHTML' legacy-app/frontend/src"
           max-score: 10
 
       - name: "V-12 CORS sem allowedOrigins(*)"

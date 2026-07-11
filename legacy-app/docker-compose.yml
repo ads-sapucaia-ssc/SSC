@@ -1,5 +1,5 @@
 # VidaPlus - ambiente completo (legado)
-# Sobe MySQL + backend (Spring Boot) + frontend (Angular/nginx).
+# Sobe MySQL + backend (Spring Boot) + frontend (React/nginx).
 # ATENCAO: credenciais em texto claro de proposito (V-05) - discutir gestao de segredos.
 version: "3.8"
 
