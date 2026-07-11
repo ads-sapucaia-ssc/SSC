@@ -7,8 +7,7 @@ import { API_BASE } from '../config/api';
  *
  * V-10 (Stored XSS): a nota clinica vem do backend sem sanitizacao e e
  * renderizada com dangerouslySetInnerHTML -> executa scripts plantados
- * (ver seed.sql: '<img src=x onerror=...>'). E o equivalente React do
- * innerHTML/bypassSecurityTrustHtml.
+ * (ver seed.sql: '<img src=x onerror=...>').
  *
  * Correcao esperada (Grupo D): NAO usar dangerouslySetInnerHTML; renderizar como
  * texto (JSX escapa por padrao) ou sanitizar (DOMPurify) no cliente E no servidor,
