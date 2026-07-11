@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  VidaPlus backend (LEGADO).
-  V-18: Spring Boot 2.5.4 e conector antigos, propositalmente com CVEs conhecidos
-  para o gate de SCA (Dependency-Check/Trivy) acusar. Os grupos devem atualizar.
+  VidaPlus backend.
+  Stack ATUAL (Java 21 + Spring Boot 3). O "legado" e apenas o contexto narrativo:
+  o sistema nunca passou por revisao de seguranca. As vulnerabilidades estao no
+  CODIGO/DESIGN (SQLi, IDOR, MD5, segredos, sem auditoria...), nao em versoes antigas.
+  Mantenha as dependencias no 3.x mais recente disponivel (higiene de supply chain).
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,18 +14,18 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.5.4</version>
+    <version>3.3.5</version>
     <relativePath/>
   </parent>
 
   <groupId>br.ifsul</groupId>
   <artifactId>vidaplus</artifactId>
-  <version>1.0.0-LEGADO</version>
+  <version>1.0.0</version>
   <name>VidaPlus</name>
-  <description>Sistema de gestao de clinica (legado) - disciplina SSC</description>
+  <description>Sistema de gestao de clinica - disciplina SSC</description>
 
   <properties>
-    <java.version>11</java.version>
+    <java.version>21</java.version>
   </properties>
 
   <dependencies>
@@ -35,16 +37,28 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jdbc</artifactId>
     </dependency>
+    <!-- versao gerenciada pelo BOM do Spring Boot (atual) -->
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.26</version>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
     </dependency>
-    <!-- V-18: jjwt antigo (para SCA); usado de forma insegura em JwtUtil (V-07) -->
+    <!-- jjwt atual; usado de forma INSEGURA em JwtUtil (V-07: sem expiracao, segredo fixo) -->
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt</artifactId>
-      <version>0.9.1</version>
+      <artifactId>jjwt-api</artifactId>
+      <version>0.12.6</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>0.12.6</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-jackson</artifactId>
+      <version>0.12.6</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

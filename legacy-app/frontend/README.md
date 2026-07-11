@@ -1,8 +1,9 @@
-# Frontend VidaPlus (React 17 — legado)
+# Frontend VidaPlus (React 19 + Vite)
 
-Este diretório contém o **esqueleto representativo** do portal em **React**, com os pontos
-vulneráveis-chave já plantados para uso em aula. Não é o app completo de telas — os grupos
-vão expandir os componentes conforme os pacotes de trabalho.
+Esqueleto representativo do portal em **React (stack atual)**, com os pontos vulneráveis-
+chave já plantados para uso em aula. O "legado" é só o **contexto narrativo** — as falhas
+estão no **código/design**, não na versão da tecnologia. Não é o app completo de telas: os
+grupos expandem os componentes conforme os pacotes de trabalho.
 
 ## Falhas plantadas (front)
 
@@ -17,16 +18,15 @@ vão expandir os componentes conforme os pacotes de trabalho.
 
 - Telas de login, lista de exames, download de laudo, prontuário, cadastro.
 - Módulos LGPD (consentimento, exportação, exclusão) — Grupo C.
-- Interceptor/cliente HTTP (axios) para anexar o token de forma segura e tratar 401/403.
+- Cliente HTTP (axios) para anexar o token de forma segura e tratar 401/403.
 
 ## Rodar em desenvolvimento
 
 ```bash
 npm install
-npm start   # http://localhost:3000  (fala com a API em http://localhost:8080)
+npm run dev   # http://localhost:5173  (fala com a API em http://localhost:8080)
 ```
 
-> A estrutura React mínima (`public/index.html`, `src/index.js`, `src/App.jsx`) já está
-> aqui; os arquivos que carregam o conteúdo didático de segurança são os da tabela acima.
-> O `dangerouslySetInnerHTML` é o equivalente React do `innerHTML`/`bypassSecurityTrustHtml`
-> do Angular — mesma falha (Stored XSS), outra sintaxe.
+> `dangerouslySetInnerHTML` é o vetor de **Stored XSS** aqui — a correção é deixar o JSX
+> escapar o texto (padrão do React) ou sanitizar (DOMPurify) no cliente **e** no servidor,
+> além de CSP.

@@ -1,44 +1,39 @@
 package br.ifsul.vidaplus.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.Claims;
-import java.util.HashMap;
-import java.util.Map;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+
+import javax.crypto.SecretKey;
 
 /**
- * V-07 / V-05: emissao e validacao de token INSEGURAS.
- *  - segredo fixo e curto (compartilhado com application.properties);
- *  - SEM expiracao (token vale para sempre);
- *  - parse aceita token sem verificar assinatura de forma estrita (alg:none).
- * Os grupos devem: expiracao curta + refresh, assinatura forte, rejeitar alg:none,
- * invalidar no logout/troca de senha.
+ * V-07 / V-05: emissao e validacao de token INSEGURAS (mesmo usando jjwt atual).
+ *  - segredo FIXO no codigo (hardcoded, compartilhado com application.properties);
+ *  - SEM expiracao (o token vale para sempre) -> nao ha rotacao nem invalidacao.
+ * Os grupos devem: expiracao curta + refresh, segredo em cofre/variavel de ambiente,
+ * invalidacao no logout/troca de senha.
  */
 public class JwtUtil {
 
-    // V-05: mesmo segredo hardcoded
-    private static final String SECRET = "vidaplus-secret-123";
+    // V-05: segredo hardcoded (>=256 bits apenas para o HS256 nao recusar a chave)
+    private static final String SECRET = "vidaplus-secret-123-inseguro-de-proposito-ssc!";
+    private static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
 
     public static String gerarToken(Long usuarioId, String papel) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("papel", papel);
-        // V-07: nenhum setExpiration()
         return Jwts.builder()
-                .setSubject(String.valueOf(usuarioId))
-                .addClaims(claims)
-                .signWith(SignatureAlgorithm.HS256, SECRET)
+                .subject(String.valueOf(usuarioId))
+                .claim("papel", papel)
+                // V-07: nenhum .expiration(...) -> token eterno
+                .signWith(KEY)
                 .compact();
     }
 
-    /**
-     * V-07: valida sem checar expiracao; parseClaimsJws com segredo fixo.
-     * Retorna o id do usuario ou null.
-     */
+    /** V-07: valida assinatura, mas o token nunca expira. Retorna o id ou null. */
     public static Long usuarioIdDoToken(String token) {
         try {
-            Claims body = Jwts.parser().setSigningKey(SECRET)
-                    .parseClaimsJws(token).getBody();
-            return Long.valueOf(body.getSubject());
+            Claims c = Jwts.parser().verifyWith(KEY).build()
+                    .parseSignedClaims(token).getPayload();
+            return Long.valueOf(c.getSubject());
         } catch (Exception e) {
             return null;
         }
@@ -46,9 +41,9 @@ public class JwtUtil {
 
     public static String papelDoToken(String token) {
         try {
-            Claims body = Jwts.parser().setSigningKey(SECRET)
-                    .parseClaimsJws(token).getBody();
-            return (String) body.get("papel");
+            Claims c = Jwts.parser().verifyWith(KEY).build()
+                    .parseSignedClaims(token).getPayload();
+            return (String) c.get("papel");
         } catch (Exception e) {
             return null;
         }

@@ -63,7 +63,7 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 |----|----------------|------------------|:----:|-----------|
 | F-19 | **Perfil do usuário** | Sem validação de entrada | 🛠️ | Hardening |
 | F-20 | **Conteúdo institucional (site)** | Sem proteção anti-defacement | 🛠️ | Integridade |
-| F-21 | **Dependências desatualizadas** | Libs antigas com CVEs | 🛠️ | SCA (supply chain) |
+| F-21 | **Gestão de dependências (SCA/SBOM)** | Manter dependências atualizadas e sem CVE crítica (higiene contínua) | ⚙️ | Supply chain (OWASP A06/A03) |
 
 ---
 

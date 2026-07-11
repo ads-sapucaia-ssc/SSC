@@ -1,11 +1,10 @@
-# VidaPlus - ambiente completo (legado)
-# Sobe MySQL + backend (Spring Boot) + frontend (React/nginx).
+# VidaPlus - ambiente completo
+# Stack atual: MySQL 8.4 + backend (Java 21 / Spring Boot 3) + frontend (React 19 / Vite -> nginx).
+# O "legado" e so o contexto narrativo; as falhas estao no codigo/design.
 # ATENCAO: credenciais em texto claro de proposito (V-05) - discutir gestao de segredos.
-version: "3.8"
-
 services:
   db:
-    image: mysql:8.0
+    image: mysql:8.4
     environment:
       MYSQL_ROOT_PASSWORD: root123
       MYSQL_DATABASE: vidaplus
@@ -41,6 +40,6 @@ services:
     depends_on:
       - backend
     ports:
-      - "4200:4200"
+      - "4200:80"     # nginx serve o build do Vite na porta 80 do container
 
 # Usuarios de teste, endpoints e falhas exploraveis: ver README.md deste diretorio.

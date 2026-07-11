@@ -3,17 +3,19 @@
 **Disciplina:** Segurança em Sistemas Computacionais (SSC)
 **Câmpus:** IFSul — Sapucaia do Sul · Tecnologia em Análise e Desenvolvimento de Sistemas
 **Professor:** Dr. Alex Mulattieri Suarez Orozco
-**Modalidade:** projeto em grupos (3–4) conduzido ao longo de ~18 semanas
+**Modalidade:** projeto em grupos (3–4) conduzido ao longo de 16 semanas (3h/aula)
 
 ---
 
 ## 1. A ideia central
 
 A disciplina inteira gira em torno de **um único projeto vivo**. Em vez de teoria
-solta seguida de exercícios, o grupo recebe um **software legado real, inseguro e
-desatualizado** — o **VidaPlus**, um sistema de gestão de clínica — e tem a missão
-de **adequá-lo à realidade atual** de segurança e privacidade, seguindo um
-**SSDLC (Secure Software Development Lifecycle)** completo.
+solta seguida de exercícios, o grupo recebe um **software real e inseguro** — o
+**VidaPlus**, um sistema de gestão de clínica que **nunca passou por revisão de
+segurança** — e tem a missão de **adequá-lo à realidade atual** de segurança e
+privacidade, seguindo um **SSDLC (Secure Software Development Lifecycle)** completo.
+O sistema roda em **stack atual** (Java 21 / Spring Boot 3 · React 19 / Vite · MySQL 8.4);
+o "legado" é o **contexto** (falta de cuidado com segurança e LGPD), não a tecnologia.
 
 O conteúdo teórico é **puxado pela demanda do projeto** (*just-in-time learning*):
 quando a etapa exige modelar ameaças, a aula é threat modeling; quando exige
@@ -36,16 +38,18 @@ aplicá-la**, o que fixa o conhecimento e evita o antipadrão "segurança no fim
 
 ---
 
-## 2. O software legado (VidaPlus)
+## 2. O software (VidaPlus)
 
-Um sistema de clínica escrito por volta de 2015, no estilo da época, com **falhas
-de segurança e privacidade plantadas de propósito**:
+Um sistema de clínica que **nunca passou por revisão de segurança** — o "legado" é o
+**contexto narrativo**, não a tecnologia. A stack é **atual**; as **falhas de segurança e
+privacidade** estão plantadas no **código e no design** (não em versões obsoletas), o que
+é realista: sistemas modernos também têm SQLi, IDOR, MD5, segredos no código e XSS.
 
-| Camada | Stack | Papel |
-|--------|-------|-------|
-| Frontend | **React** | Portal web (paciente, médico, recepção, laboratório, admin) |
-| Backend | **Java + Spring Boot** (estilo legado) | API REST |
-| Banco | **MySQL** | Dados cadastrais, prontuários, exames, logs |
+| Camada | Stack (atual) | Papel |
+|--------|---------------|-------|
+| Frontend | **React 19 + Vite** | Portal web (paciente, médico, recepção, laboratório, admin) |
+| Backend | **Java 21 + Spring Boot 3** | API REST |
+| Banco | **MySQL 8.4** | Dados cadastrais, prontuários, exames, logs |
 | Orquestração | **Docker Compose** | Sobe tudo com um comando |
 
 O VidaPlus lida com **dados sensíveis de saúde** — PII sob a **LGPD art. 11** — e por

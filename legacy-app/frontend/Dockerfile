@@ -1,12 +1,13 @@
-# Frontend VidaPlus (legado - React 17 / react-scripts)
-FROM node:16 AS build
+# Frontend VidaPlus (React 19 + Vite)
+FROM node:20 AS build
 WORKDIR /app
 COPY package.json ./
 RUN npm install || true
 COPY . .
-RUN npm run build || echo "build placeholder - completar componentes/rotas"
+# garante que dist/ exista mesmo se o build ainda estiver incompleto (template)
+RUN npm run build || mkdir -p dist
 
-FROM nginx:1.21
+FROM nginx:1.27
 # V-12/V-13: nginx sem headers de seguranca / sem TLS (discutir no gate de DAST)
-COPY --from=build /app/build/ /usr/share/nginx/html/ 2>/dev/null || true
-EXPOSE 4200
+COPY --from=build /app/dist/ /usr/share/nginx/html/
+EXPOSE 80

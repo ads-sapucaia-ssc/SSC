@@ -26,7 +26,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "11"
+          java-version: "21"
           cache: maven
       - name: Compilar e testar (exclui testes @security, que rodam no gate proprio com MySQL)
         working-directory: legacy-app/backend
@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: "20"
       - name: Instalar e build
         working-directory: legacy-app/frontend
         run: |
@@ -81,13 +81,13 @@ jobs:
       - uses: github/codeql-action/init@v3
         with: { languages: "java,javascript" }
       - uses: actions/setup-java@v4
-        with: { distribution: temurin, java-version: "11" }
+        with: { distribution: temurin, java-version: "21" }
       - name: Build para CodeQL
         working-directory: legacy-app/backend
         run: mvn -B -q -DskipTests package
       - uses: github/codeql-action/analyze@v3
 
-  # ---------- Gate: SCA / dependencias (V-18) - supply chain ----------
+  # ---------- Gate: SCA / dependencias - higiene de supply chain ----------
   sca:
     name: "Gate - SCA (Dependency-Check + Trivy)"
     runs-on: ubuntu-latest
@@ -168,7 +168,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
-        with: { distribution: temurin, java-version: "11", cache: maven }
+        with: { distribution: temurin, java-version: "21", cache: maven }
       - name: Carregar schema + seed no MySQL de teste
         run: |
           sudo apt-get update && sudo apt-get install -y mysql-client

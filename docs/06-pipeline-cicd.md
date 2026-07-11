@@ -19,10 +19,10 @@ conceito** do grupo faz o(s) gate(s) da classe corrigida transitar **🔴 → �
 | Gate | Ferramenta | Fase SSDLC | Falhas que acusa |
 |------|-----------|:----------:|------------------|
 | Build backend | Maven | 4 | compila/roda + testes |
-| Build frontend | React (react-scripts) | 4 | compila |
+| Build frontend | React (Vite) | 4 | compila |
 | **Secret Scanning** | Gitleaks | 4/6 | V-05 (segredos no código) |
 | **SAST** | Semgrep + CodeQL | 4/5 | V-01, V-02, V-07, V-10 |
-| **SCA** | Dependency-Check + Trivy | 5/6 | V-18 (dependências com CVE) |
+| **SCA** | Dependency-Check + Trivy | 5/6 | higiene de supply chain (CVE em dependências) |
 | **SBOM** | Syft (CycloneDX) | 6 | inventário de componentes |
 | **DAST** | OWASP ZAP baseline | 5 | V-11, V-12, V-01, V-10 (dinâmico) |
 | **Testes de segurança** | JUnit (`-Dgroups=security`) | 5 | V-03 IDOR, V-04 RBAC, auth, V-06 auditoria |

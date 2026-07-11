@@ -53,7 +53,7 @@ Ao fazer o primeiro `push`, o **GitHub Actions** executa o
 |------|-----------------------------|-------------------|
 | Secret Scanning | Há segredo no código (V-05) | Fase 4/6 |
 | SAST (Semgrep/CodeQL) | Padrões inseguros: SQLi, MD5, XSS, JWT (V-01/02/07/10) | Fase 4 |
-| SCA | Dependências com CVE (V-18) | Fase 5/6 |
+| SCA | CVE em dependências (higiene de supply chain) | Fase 5/6 |
 | DAST (ZAP) | Faltam headers, stack trace, SQLi/XSS dinâmico | Fase 5 |
 | Testes de segurança | IDOR/RBAC/auditoria sem teste que prove correção | Fase 5 |
 
