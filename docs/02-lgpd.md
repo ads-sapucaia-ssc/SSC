@@ -107,6 +107,27 @@ a medida mitigadora compõem o RIPD. Ver [03-privacy-by-design-linddun.md](03-pr
 
 ---
 
+## 9. Mapa a frameworks de controle (rastreabilidade estendida)
+
+Um requisito ganha força quando **mapeado a controles padronizados** — facilita demonstrar
+conformidade e reaproveitar catálogos. Além de **LGPD** e **OWASP ASVS**, ligue os
+requisitos do VidaPlus a **NIST SP 800-53** (famílias) e **ISO/IEC 27001:2022 Anexo A**:
+
+| Requisito (exemplo) | Ameaça | LGPD / ASVS | NIST 800-53 | ISO 27001:2022 |
+|---------------------|--------|-------------|-------------|----------------|
+| Autenticação forte (F-01) | Spoofing | art. 46 / ASVS V2 | IA-2, IA-5 | A.5.17 (autenticação) |
+| Controle de acesso/IDOR (F-02/03) | EoP | art. 11,46 / ASVS V4 | AC-3, AC-6 | A.5.15, A.8.3 |
+| Trilha de auditoria (F-05) | Repudiation | art. 37,46 / ASVS V7 | AU-2, AU-9 | A.8.15 (logging) |
+| Cifra em repouso/trânsito (F-08/13-front) | Info disclosure | art. 46 / ASVS V6,V9 | SC-13, SC-28 | A.8.24 (cripto) |
+| Gestão de segredos (F-10) | Spoofing/Tampering | art. 46 | IA-5, SC-12 | A.8.24, A.5.17 |
+
+> Fio completo estendido: **REQ → ameaça (STRIDE/LINDDUN) → LGPD/ASVS → NIST 800-53 → ISO
+> 27001**. Basta acrescentar essas colunas de origem na matriz de rastreabilidade (Fase 6)
+> quando quiser demonstrar conformidade a mais de um framework. *Correlatos: **CIS Controls
+> v8** (18 controles priorizados) para times menores; **NIST SSDF** para ligar ao ciclo.*
+
+---
+
 ## Checklist LGPD do projeto (auto-verificação)
 
 - [ ] Todo dado sensível tem base legal registrada (art. 11).

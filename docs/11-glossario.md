@@ -19,13 +19,23 @@ Consulta rápida dos termos usados na disciplina. Para o detalhe, veja o documen
 
 - **RFS** (Requisito Funcional de Segurança) — o **mecanismo** que protege (autenticação,
   autorização, cripto, auditoria). Responde "o que o sistema faz para se proteger?".
+  ≈ **SFR** (Common Criteria).
 - **RGS** (Requisito de Garantia de Segurança / *assurance*) — a **evidência** de que o
   mecanismo funciona (teste, cobertura, nível ASVS). Responde "quanta confiança temos?".
+  ≈ **SAR** (Common Criteria).
 - **ASVS** (*Application Security Verification Standard*, OWASP) — catálogo de requisitos de
   segurança em 3 níveis (L1/L2/L3). O projeto adota **L2**.
 - **EARS / Gherkin (BDD)** — notações para escrever requisitos/critérios testáveis
-  (*Dado/Quando/Então*).
+  (*SE…ENTÃO…* / *Dado/Quando/Então*).
+- **Policy-as-code** — o requisito vira **regra executável** (ex.: OPA/Rego:
+  `deny[msg] { input.owner != input.user_id }`) — aproxima requisito e verificação.
 - **SMART** — requisito específico, mensurável, atingível, relevante e testável.
+- **SQUARE** (*Security Quality Requirements Engineering*, CMU/SEI) — processo formal de
+  9 passos para elicitar, categorizar e priorizar requisitos de segurança. O plano da
+  disciplina é "aproximado do SQUARE" (ver [01](01-plano-disciplina-ssdlc.md)).
+- **Common Criteria** (ISO/IEC 15408) — padrão de requisitos **certificáveis**: separa
+  **SFR** (o que protege) de **SAR** (prova de que protege), com níveis de rigor **EAL 1–7**
+  (TOE = alvo avaliado; PP/ST = perfis/alvos de requisitos).
 
 ## Ameaças — STRIDE (segurança)
 
@@ -148,3 +158,18 @@ Vale reconhecê-los pelo nome — são a base atemporal de todo o SSDLC.
 - **Priorização moderna** — não basta CVSS: combine **CVSS × EPSS × KEV** (ver a matriz
   em [10-dossie-template.md](10-dossie-template.md), Fase 3).
 - **SLA de remediação** — prazo para corrigir por severidade (ex.: críticas em < 14 dias).
+
+## Frameworks de controle e maturidade
+
+Catálogos aos quais se pode **mapear** requisitos para demonstrar conformidade (ver o mapa
+em [02-lgpd.md](02-lgpd.md), seção 9):
+
+- **NIST SP 800-53** — catálogo de controles em famílias (**AC** acesso, **AU** auditoria,
+  **IA** identificação/autenticação, **SC** cripto/comunicação…). Referência para sistemas
+  críticos.
+- **ISO/IEC 27001:2022** — SGSI; **Anexo A** com 93 controles (ex.: A.5.17 autenticação,
+  A.8.15 logging, A.8.24 cripto).
+- **CIS Controls v8** — 18 controles priorizados; pragmático para times menores.
+- **NIST SSDF** (SP 800-218) — liga requisitos ao ciclo (PO/PS/PW/RV) e à atestação. →
+  [01](01-plano-disciplina-ssdlc.md).
+- **OWASP SAMM / BSIMM** — modelos de **maturidade** de AppSec (quão maduro o processo é).

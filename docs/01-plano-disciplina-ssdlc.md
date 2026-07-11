@@ -133,3 +133,27 @@ projeto corresponde a práticas do **NIST SSDF**, agrupadas em PO/PS/PW/RV:
 > Assim o aluno relaciona o SSDLC "próprio" da disciplina ao padrão oficial usado na
 > atestação federal dos EUA — e entende que **SSDF diz "o que fazer", SAMM "quão maduro",
 > SDL "como codar"** (frameworks complementares).
+
+---
+
+## Anexo — as fases de requisitos ↔ SQUARE (CMU/SEI)
+
+O **SQUARE** (*Security Quality Requirements Engineering*) é o processo formal de 9 passos
+para elicitar, categorizar e priorizar requisitos de segurança. As fases 0–3 e 6/8 do
+projeto **percorrem exatamente esses passos** (por isso o plano é "aproximado do SQUARE"):
+
+| Passo SQUARE | Fase do projeto |
+|--------------|:---------------:|
+| 1 · Acordar definições (vocabulário comum) | 0 (kickoff) |
+| 2 · Identificar ativos e metas de segurança | 0 |
+| 3 · Desenvolver artefatos (use/misuse/abuse cases) | 1–2 |
+| 4 · Avaliação de risco | 3 (priorização) |
+| 5 · Selecionar técnica de elicitação | 1 |
+| 6 · Elicitar os requisitos | 1 |
+| 7 · Categorizar os requisitos (RFS × RGS) | 1, 3 |
+| 8 · Priorizar por risco (P0/P1/P2) | 3 |
+| 9 · Inspecionar e validar | 8 (V&V) + defesa |
+
+> Correlatos citados no material: **SREP**, **Microsoft SDL** (fase de requisitos) e
+> **Tropos seguro**. O SQUARE dá o "esqueleto de processo"; a disciplina o instancia sobre
+> o VidaPlus.

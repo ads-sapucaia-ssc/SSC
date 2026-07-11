@@ -37,12 +37,23 @@
 
 Para cada funcionalidade do pacote: RFS (mecanismo) + RGS (garantia) + **base legal**.
 
+> **RFS × RGS ≈ SFR × SAR (Common Criteria / ISO 15408).** O **RFS** é o *mecanismo* que
+> protege (equivale ao **SFR** — *Security Functional Requirement*: "o que o produto faz
+> para se proteger"); o **RGS** é a *evidência* de que funciona (equivale ao **SAR** —
+> *Security Assurance Requirement*: "como provo que protege"). O rigor da garantia é
+> proporcional à criticidade — a mesma ideia dos níveis **EAL** do Common Criteria.
+
 | ID | Funcionalidade | RFS (mecanismo testável) | RGS (garantia) | Ameaça | Base legal (LGPD/ASVS) | Prioridade |
 |----|----------------|--------------------------|----------------|--------|------------------------|:---------:|
 | _REQ-AC-01_ | _F-02 download_ | _validar ownership no servidor; senão 403 sem metadados_ | _teste anti-IDOR no CI_ | _EoP/IDOR_ | _art. 11/46; ASVS V4_ | _P0_ |
 |  |  |  |  |  |  |  |
 
 **Nível ASVS alvo:** _L2_ — **justificativa:** _dados sensíveis de saúde…_
+
+**Representações aceitas (use ≥2 por requisito P0):** declaração *shall* · notação **EARS**
+(*SE … ENTÃO …*) · **BDD/Gherkin** · item de **catálogo ASVS** · **policy-as-code**
+(ex.: OPA/Rego — `deny[msg] { input.owner != input.user_id }`). Combine uma forma para
+**especificar** e uma para **verificar**.
 
 ---
 
