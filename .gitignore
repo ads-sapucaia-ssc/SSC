@@ -21,3 +21,6 @@ zap-report.*
 # Local
 *.log
 .env
+
+# arquivos de lock de editores de escritorio
+.~lock.*#
