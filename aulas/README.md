@@ -4,6 +4,13 @@ Decks `.pptx` no template institucional do IFSul, um por aula, cobrindo a **base
 que habilita cada etapa do projeto**. Cada deck segue: capa → teoria (curada dos materiais
 da disciplina) → **ponte com o VidaPlus** (entregável da fase) → encerramento.
 
+> **São material de estudo do aluno.** Cada slide de conteúdo tem **notas de apresentação**
+> com a explicação aprofundada (uma apostila embutida): o **slide** é o resumo visual; as
+> **notas** são o texto para estudar. Para ler as notas, abra o `.pptx` no **modo de
+> anotações** (PowerPoint: *Exibir → Anotações*; LibreOffice/OnlyOffice: *Exibir → Notas*)
+> ou exporte "Handout com anotações" em PDF. Vários decks incluem **exemplos trabalhados**
+> (ex.: correção do IDOR, teste BDD anti-IDOR, STRIDE/LINDDUN-per-element).
+
 | Deck | Semana | Fase | Tema |
 |------|:------:|:----:|------|
 | `aula-01-contexto-e-dados.pptx` | 1 | 0 | Por que SSDLC · pilares CIA+AAN · classificação de dados |
