@@ -26,8 +26,12 @@
 
 | Ativo / Dado | Fluxo/Funcionalidade | Nível | Atributo prioritário | Base legal | Observação |
 |--------------|----------------------|:-----:|----------------------|-----------|-----------|
-| _Laudo (PDF)_ | _download (F-02)_ | _Crítico_ | _Confidentiality+Integrity_ | _LGPD art. 11_ | _saúde_ |
+| _Laudo (PDF)_ | _download (F-02)_ | _Crítico_ | _Confidentiality+Integrity_ | _(Fase 1)_ | _saúde = sensível_ |
 |  |  |  |  |  |  |
+
+> **Preencha agora (Fase 0):** Nível e Atributo — por **sensibilidade/impacto**. A coluna
+> **Base legal** é preenchida na **Fase 1** (após a aula de LGPD); aqui basta marcar o que é
+> dado sensível/PII.
 
 **Stakeholders e o que cada um define:** _negócio, jurídico/DPO, AppSec, dev, operações, titulares._
 

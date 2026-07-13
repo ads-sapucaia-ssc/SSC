@@ -18,7 +18,7 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 
 | Sem. | Fase | Teoria | Prática | Artefato entregue |
 |:---:|------|:---:|:---:|-------------------|
-| 1 | 0 · Kickoff + inventário | 1h | 2h | Inventário + classificação de dados 🟢 |
+| 1 | 0 · Kickoff + inventário | 1h | 2h | Inventário + classificação por sensibilidade |
 | 2 | 1 · Requisitos + LGPD | 1,5h | 1,5h | Requisitos de segurança + base legal 🟢🟠 |
 | 3 | 2 · DFD + STRIDE | 1h | 2h | DFD + STRIDE-per-element 🟠 |
 | 4 | 2 · LINDDUN + PbD + RIPD | 1h | 2h | LINDDUN + esboço de RIPD/DPIA 🔵 |
@@ -43,7 +43,13 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 ## Fase 0 — Kickoff & inventário do legado · Semana 1
 - **Teoria:** o que é SSDLC e "shift-left"; risco de legado; CIA + Aut./Autz./Não-repúdio.
 - **Prática:** subir o VidaPlus; explorar telas/endpoints/tabelas; sentir as falhas.
-- **Artefato:** inventário de ativos + **classificação de dados** 🟢 + fluxos críticos.
+- **Artefato:** inventário de ativos + **classificação de dados por sensibilidade/impacto**
+  (Crítico→Público, regra do nível mais alto) + fluxos críticos.
+
+> **Sequenciamento:** a classificação da Fase 0 é por **sensibilidade** (atividade de
+> segurança — não exige LGPD). A **base legal** de cada dado (LGPD art. 11, 46…) é
+> atribuída na **Fase 1**, quando a lei é ensinada. Aqui o aluno só marca *o que* é
+> sensível; *por que juridicamente* vem na semana seguinte.
 
 ## Fase 1 — Requisitos & conformidade legal · Semana 2
 - **Teoria:** requisitos de segurança (SMART/testável); **LGPD** 🟢 (princípios, bases
