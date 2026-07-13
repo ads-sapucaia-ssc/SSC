@@ -10,6 +10,9 @@ da disciplina) → **ponte com o VidaPlus** (entregável da fase) → encerramen
 > anotações** (PowerPoint: *Exibir → Anotações*; LibreOffice/OnlyOffice: *Exibir → Notas*)
 > ou exporte "Handout com anotações" em PDF. Vários decks incluem **exemplos trabalhados**
 > (ex.: correção do IDOR, teste BDD anti-IDOR, STRIDE/LINDDUN-per-element).
+>
+> **Leitura paralela:** o mesmo conteúdo, em texto corrido, está em
+> [`docs/12-apostila.md`](../docs/12-apostila.md) — uma seção por aula.
 
 | Deck | Semana | Fase | Tema |
 |------|:------:|:----:|------|

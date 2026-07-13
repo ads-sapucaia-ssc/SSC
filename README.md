@@ -78,7 +78,8 @@ projeto-vidaplus/
 │   ├── 08-rubrica-avaliacao.md      avaliação alinhada às fases
 │   ├── 09-setup-grupos.md           passo a passo para os grupos começarem
 │   ├── 10-dossie-template.md        TEMPLATE do entregável (copiar p/ DOSSIE.md)
-│   └── 11-glossario.md              consulta rápida dos termos da disciplina
+│   ├── 11-glossario.md              consulta rápida dos termos da disciplina
+│   └── 12-apostila.md               material de estudo em texto (acompanha os slides)
 │   (o gabarito das vulnerabilidades fica no repo privado do instrutor)
 ├── aulas/                          ← slides .pptx (template IFSul), um por aula
 │   └── README.md                    índice deck ↔ semana ↔ fase

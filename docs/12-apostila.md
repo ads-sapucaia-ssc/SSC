@@ -1,0 +1,325 @@
+# 12 · Apostila — material de estudo
+
+Texto de leitura que **acompanha os slides** ([aulas/](../aulas/)). Cada seção corresponde
+a uma aula; leia antes ou depois da aula para fixar. O conteúdo é o mesmo das **notas de
+estudo** embutidas nos `.pptx`, em formato corrido. Ao final de cada aula está o
+**entregável do projeto** que aquela base teórica habilita.
+
+> Fio condutor da disciplina: *Requisito bem-feito = ativo + ameaça + atributo + critério
+> verificável + rastreabilidade.*
+
+---
+
+## Aula 1 — Contexto e Dados · Semana 1 · Fase 0
+
+**Objetivo:** entender por que a segurança precisa estar em todo o ciclo de desenvolvimento
+e aprender a classificar os dados de um sistema.
+
+**Por que SSDLC.** Segurança não é custo opcional: uma violação de dados custa, em média,
+US$ 4,88 milhões e leva ~194 dias só para ser detectada (IBM 2024); 60% das brechas
+exploram vulnerabilidades **já conhecidas** (Verizon DBIR) — ou seja, corrigíveis. O
+**SDLC tradicional** trata segurança como um teste no fim (pentest na véspera do release),
+quando corrigir é caro e muitas vezes se "adia". O **SSDLC (Secure SDLC)** embute segurança
+em requisitos, design, código, teste e operação. Corrigir um bug na fase de requisitos
+custa até **100× menos** que em produção.
+
+**Pilares.** A tríade clássica é **CIA** — Confidentiality (só quem tem autorização
+acessa), Integrity (o dado não é alterado indevidamente) e Availability (o sistema está
+disponível). Sistemas modernos acrescentam **Autenticidade** (provar quem é quem),
+**Autorização** (o que cada um pode fazer) e **Não-repúdio** (não poder negar a autoria).
+Toda ameaça viola um desses atributos, e todo requisito existe para preservar um deles —
+por isso o 1º passo de qualquer requisito é perguntar *"qual atributo preciso garantir?"*.
+
+**Classificação de dados.** É um exercício de **segurança** (por impacto), não de direito:
+pergunte *"que dano se este dado vazar ou for alterado?"*. Quanto maior o dano, maior o
+nível (**Crítico → Confidencial → Interno → Público**), e o nível calibra o rigor (e o
+custo) dos controles. **Regra do nível mais alto:** um fluxo herda o nível do dado mais
+sensível que toca — a busca de pacientes é "só um formulário", mas retorna CPF, logo é
+crítica. No VidaPlus, laudo de exame é dado de saúde = o mais sensível = **Crítico**.
+
+**Entregável (Fase 0):** inventário de ativos/telas/endpoints/tabelas + tabela de
+classificação por sensibilidade + os 3 fluxos críticos (login, laudo, auditoria) + trust
+boundaries. A **base legal (LGPD)** de cada dado é preenchida só na Fase 1 (Aula 2) — aqui
+basta marcar o que é sensível.
+
+---
+
+## Aula 2 — Requisitos & LGPD · Semana 2 · Fase 1
+
+**Objetivo:** transformar "quero segurança" em requisitos específicos e testáveis, usando a
+LGPD como fonte formal.
+
+**Funcional × não-funcional.** RF é *o que* o sistema faz (ex.: "recuperar a senha por
+e-mail"); RNF é *como* se comporta (desempenho, segurança). Segurança aparece nos dois: há
+funções de segurança (autenticar, cifrar, auditar) e há segurança como atributo transversal.
+Tratar segurança como "RNF que dá para adiar" é a raiz da maioria dos incidentes —
+reposicione: *"o sistema deve fazer X e somente X, mesmo sob ataque"* é requisito de negócio.
+
+**RFS × RGS.** Distinção central da disciplina. O **RFS** (Requisito Funcional de Segurança)
+é o **mecanismo** que protege (MFA, RBAC, cripto, auditoria) — responde *"o que o sistema
+faz para se proteger?"*. O **RGS** (Requisito de Garantia / *assurance*) é a **evidência**
+de que o mecanismo funciona (teste, cobertura, nível ASVS) — responde *"quanta confiança
+temos?"*. Analogia: o RFS é "a porta deve ter fechadura"; o RGS é "a fechadura deve ser
+testada e certificada". Equivalem ao par **SFR × SAR** do Common Criteria. Todo controle P0
+tem um RGS associado.
+
+**As quatro fontes.** Requisitos não se inventam; garimpa-se em: **Negócio** (ativos, apetite
+a risco), **Legal** (LGPD, PCI-DSS — não-negociáveis), **Padrões** (OWASP ASVS/Top 10, NIST,
+CIS) e **Ameaças** (threat modeling, abuse cases). O negócio diz o que importa; a lei, o que
+é obrigatório; os padrões, o esperado; as ameaças, contra o que defender.
+
+**LGPD como fonte.** Cada cláusula vira um requisito rastreável ("art. 46 → cifrar dados em
+repouso com AES-256"). Artigos-chave: **art. 6** (princípios), **art. 7/11** (bases legais;
+saúde = sensível), **art. 18** (direitos do titular: acesso, portabilidade, eliminação),
+**arts. 8/9** (consentimento), **art. 46** (segurança), **art. 38** (RIPD).
+
+**Bom requisito (SMART).** Específico (sem "ser seguro"), mensurável/testável, rastreável.
+*Ruim:* "o sistema deve proteger as senhas". *Bom:* "senhas com Argon2id (m=19MiB), salt de
+16 bytes; MD5/SHA-1 proibidos" — verificável por teste. Requisito sem critério de aceite é
+só uma intenção.
+
+**Entregável (Fase 1):** catálogo inicial com RFS + RGS por funcionalidade, base legal por
+dado, nível ASVS alvo (L2) justificado.
+
+---
+
+## Aula 3 — DFD & STRIDE · Semana 3 · Fase 2a
+
+**Objetivo:** descobrir, de forma sistemática, como o sistema pode ser atacado — e derivar
+requisitos de cada ameaça.
+
+**As 4 perguntas (Shostack):** (1) o que construímos? — o DFD; (2) o que pode dar errado? —
+STRIDE por elemento; (3) o que vamos fazer? — mitigar/transferir/aceitar/eliminar cada
+ameaça; (4) fizemos um bom trabalho? — validar cobertura.
+
+**DFD com trust boundaries.** O Data Flow Diagram mostra *como* os dados circulam: entidades
+externas (retângulo), processos (círculo), armazenamentos (duas linhas), fluxos (seta) e
+**trust boundaries** (tracejado vermelho) — a linha onde o nível de confiança muda
+(internet → aplicação → banco). Toda travessia de fronteira é um ponto de controle
+obrigatório: ali entram autenticação, validação de entrada e log.
+
+**STRIDE.** Cada letra é uma categoria de ameaça mapeada a uma propriedade violada:
+**S**poofing (vs autenticidade), **T**ampering (vs integridade), **R**epudiation (vs
+não-repúdio), **I**nformation disclosure (vs confidencialidade), **D**enial of service (vs
+disponibilidade), **E**levation of privilege (vs autorização). A técnica prática é
+**STRIDE-per-element**: para cada elemento do DFD, pergunte quais das 6 ameaças se aplicam.
+Cada ameaça termina num **requisito** — é assim que o threat modeling "gera" requisitos.
+Exemplo: *Download de exame · Elevation of Privilege → validar ownership no servidor → 403*.
+
+**Árvore de ataque** (Schneier): raiz = objetivo do atacante, folhas = passos concretos com
+custo/esforço; a defesa de cada folha é um requisito. Priorize defender o caminho mais
+**barato** para o atacante.
+
+**Entregável (Fase 2a):** DFD + STRIDE-per-element + árvore de ataque do recorte; alvo do
+exercício: o **IDOR** no download (paciente A baixa o exame de B).
+
+---
+
+## Aula 4 — Privacidade (LINDDUN) · Semana 4 · Fase 2b
+
+**Objetivo:** modelar ameaças de **privacidade** (não só de segurança) e produzir o RIPD.
+
+**Privacy by Design** (Cavoukian, base da LGPD/GDPR): 7 princípios — proativo (não reativo),
+privacidade **por padrão**, embarcada no design (não é "add-on"), funcionalidade total
+(win-win, não trade-off), segurança fim a fim, transparência e respeito ao titular. A ideia:
+privacidade nasce no design, é o padrão e não pede esforço do usuário.
+
+**LINDDUN** — o "STRIDE da privacidade", roda sobre o **mesmo DFD**. As 7 categorias:
+**L**inkability (ligar registros ao mesmo titular), **I**dentifiability (identificar por
+trás do pseudônimo), **N**on-repudiation, **D**etectability (deduzir que um dado existe),
+**D**isclosure (vazar dado), **U**nawareness (titular não sabe) e **N**on-compliance (fere a
+lei). Um mesmo problema aparece em várias lentes: o IDOR do laudo é *Elevation of Privilege*
+(STRIDE), *Disclosure + Linkability* (LINDDUN) e violação do art. 11/46 (LGPD).
+
+**PETs (Privacy Enhancing Technologies)** — o repertório de controle: **minimização**
+(coletar só o necessário — art. 6), **pseudonimização** (id opaco no lugar do CPF),
+**anonimização** (titular não identificável, irreversível) e **retenção** (apagar/anonimizar
+após o prazo). Minimização e retenção atacam a causa; pseudonimização e anonimização reduzem
+o dano de um vazamento.
+
+**RIPD / DPIA (art. 38):** documento formal exigido em tratamento de alto risco (caso do
+VidaPlus). A tabela LINDDUN priorizada já é o miolo do RIPD (ameaça, risco, medida, risco
+residual).
+
+**Entregável (Fase 2b):** LINDDUN-per-element + controles/PET + esboço de RIPD + minimização
+(campos sem finalidade, como religião/renda no cadastro). É a fase de **maior peso** na
+avaliação.
+
+---
+
+## Aula 5 — Projeto Seguro · Semana 5 · Fase 3
+
+**Objetivo:** decidir *como* os controles serão construídos, antes de codar.
+
+**Princípios de Saltzer & Schroeder (1975):** *fail-safe defaults* (o padrão é NEGAR),
+*complete mediation* (verifique SEMPRE — não confie que "já autenticou antes"), *least
+privilege* (o mínimo necessário), *economy of mechanism* (simples = menos bugs), *open
+design* (não depende de obscuridade) e *separation of privilege* (duas chaves). No VidaPlus,
+o IDOR viola *complete mediation*; o banco com usuário root viola *least privilege*.
+
+**Fail Secure × Fail Safe.** Falhas vão acontecer — a pergunta é: para qual estado o sistema
+recai? Em software de segurança (autenticação, acesso a dado), **Fail Secure**: na dúvida,
+NEGUE. *Fail Safe* (na dúvida, preservar vidas) é para sistemas físicos (porta de incêndio
+abre). Todo controle do VidaPlus deve ser fail-secure: erro/timeout → acesso negado.
+
+**Priorização por risco** = probabilidade × impacto. **CVSS** pontua a gravidade (0–10);
+**DREAD** é qualitativo (documente os critérios — é subjetivo); **EPSS** dá a probabilidade
+de exploração em 30 dias; **KEV** (CISA) marca o que já é explorado no mundo real. Um
+requisito que mitiga risco crítico é **P0** e bloqueia o release; item no KEV **sobe um
+nível** de prioridade.
+
+**Representações do requisito** (use ≥2 por P0): declaração *shall*, **EARS** (*SE…ENTÃO…*),
+**BDD/Gherkin** (*Dado/Quando/Então* — vira teste executável), item de catálogo **ASVS**,
+**policy-as-code** (`deny[msg] { input.owner != input.user_id }`). Uma forma para
+especificar, outra para verificar.
+
+**Definition of Done segura:** a lista que precisa estar verde para "pronto" — threat model
+atualizado, SAST/SCA sem críticos, testes de authn/authz passando, sem segredos, logging,
+ASVS verificado. É o que impede a segurança de "cair" na pressa do release.
+
+**Entregável (Fase 3):** catálogo consolidado (RFS+RGS) + priorização (P0/P1/P2) + DoD; aqui
+o grupo escolhe qual controle será a prova de conceito da Fase 4.
+
+---
+
+## Aula 6 — Implementação Segura · Semanas 6–9 · Fase 4
+
+**Objetivo:** corrigir o código — as classes de falha do OWASP Top 10 e como remediá-las.
+
+**OWASP Top 10:2025** (categorias mais frequentes): **A01** Broken Access Control (IDOR,
+RBAC — o #1), **A02** Security Misconfiguration, **A03** Software Supply Chain (nova),
+**A04** Cryptographic Failures, **A05** Injection, **A06** Insecure Design, **A07** Auth
+Failures, **A08** Integrity Failures, **A09** Logging & Alerting, **A10** Mishandling of
+Exceptional Conditions (nova). Quase toda falha plantada no VidaPlus cai numa dessas classes.
+
+**Correções essenciais.** *Injection:* nunca concatenar SQL — use **consultas
+parametrizadas** ("... WHERE email = ?"). *Access Control:* valide no **servidor** que o
+recurso pertence ao usuário (deny by default, RBAC). *Crypto:* Argon2id, TLS 1.3,
+AES-256-GCM — nunca MD5/SHA-1. *Segredos:* fora do código, em cofre/variável de ambiente.
+
+**Exemplo — corrigir o IDOR (F-02).** *Antes:* `GET /api/exames/{id}` devolve qualquer
+exame. *Ataque:* A troca o id e baixa o exame de B. *Correção:* `if (exame.pacienteId !=
+usuarioAtual.id) return 403;`. *Fail-secure:* deny by default; 403 **sem vazar metadados**
+(senão vira enumeração). *Garantia (RGS):* teste anti-IDOR no CI — se a proteção some, o
+teste falha e bloqueia o merge.
+
+**Módulos LGPD a criar:** consentimento (versionado, revogável — art. 8/9), portabilidade
+(exportar dados — art. 18), eliminação (anonimizar o prontuário por dever de guarda +
+remover credencial), auditoria (trilha append-only, sem PII, hash-chain).
+
+**Entregável (Fase 4):** **prova de conceito** — corrigir 1–2 controles ponta-a-ponta
+(≥1 P0) num Pull Request, com o teste que os prova; para o restante, um **plano de
+remediação**. O objetivo é fechar o fio completo, não corrigir tudo.
+
+---
+
+## Aula 7 — Verificação · Semanas 10–11 · Fase 5
+
+**Objetivo:** provar que a correção funciona e não regride.
+
+**Tipos de teste** (cada um vê uma parte — use combinados): **SAST** (lê o código sem
+executar — SQLi, hardcoded secret), **DAST** (ataca a app rodando — headers, config, ZAP),
+**IAST** (instrumenta durante os testes), **SCA** (dependências e CVEs), **fuzzing**
+(entradas inesperadas), **pentest** (visão humana). Atenção: **IDOR e RBAC são falhas
+lógicas** — não aparecem em scanner genérico; precisam de teste de segurança escrito.
+
+**Onde entram no CI/CD:** rápidos e baratos cedo (linter, SAST, secret scan a cada commit);
+caros e profundos depois (DAST no pre-deploy, pentest 1–2×/ano). O pipeline do VidaPlus já
+traz SAST, SCA, DAST e um gate de testes de segurança com MySQL.
+
+**Verificação × Validação.** *Verificação* = "construímos o produto certo?" (atende à
+especificação — testes, SAST/DAST). *Validação* = "construímos a coisa certa?" (resolve o
+risco real; há ameaça sem requisito?). As duas são necessárias.
+
+**Exemplo — teste anti-IDOR (BDD).** *Dado* A logado e o exame 222 (de B); *Quando* `GET
+/api/exames/222` com o token de A; *Então* HTTP 403 e nenhum metadado de B. Um teste só
+prova algo se **falha quando a proteção some** ("quebrar para ver vermelho"): no legado ele
+falha (200); após a correção, passa (403).
+
+**Entregável (Fase 5):** teste que exercita o controle + evidências reais do CI; torne
+**bloqueante** o gate da classe corrigida. Requisito só está pronto com teste **E** evidência.
+
+---
+
+## Aula 8 — DevSecOps & Supply Chain · Semana 12 · Fase 6
+
+**Objetivo:** transformar segurança em processo automatizado e proteger a cadeia de
+suprimentos.
+
+**DevSecOps é cultura.** *"Security is everyone's job, but it's still someone's specialty."*
+**Security Champions** (1 dev por squad como elo), **threat modeling** leve por feature,
+**guardrails > gates** (o pipeline ajuda a fazer certo, não só bloqueia) e **blameless
+post-mortem** (foco no sistema, não na pessoa).
+
+**Supply chain — "assinar é o novo HTTPS".** Ataques cresceram +742%. Defesas: **SBOM** (a
+"lista de ingredientes" do software, legível por máquina — CycloneDX/SPDX); **SLSA** (níveis
+de garantia da proveniência do build, L0→L3; meta acadêmica L2); **Sigstore/cosign** (assinar
+artefatos por identidade OIDC, sem gerenciar chaves). O próprio pipeline é alvo de alto valor
+— trate-o como sistema crítico (runners efêmeros, OIDC, branch protection).
+
+**Priorização de CVEs.** Não basta CVSS: um CVSS 10 com **EPSS** baixo e fora do **KEV** é
+importante, não urgente; um CVSS 7 no KEV é urgente (explorado agora). Combine **CVSS × EPSS
+× KEV**. O **VEX** documenta quando sua aplicação não é afetada por uma CVE.
+
+**Entregável (Fase 6):** pipeline como **evidência** (não é a nota) — placar de gates
+(vermelho→verde), SBOM gerado, sem segredos; bônus: assinar a imagem com cosign (SLSA L2).
+
+---
+
+## Aula 9 — Operação & Incidentes · Semana 13 · Fase 7
+
+**Objetivo:** operar com segurança e responder a incidentes.
+
+**Auditoria e não-repúdio** — os requisitos mais esquecidos e os mais cobrados em incidentes.
+Registrar: autenticação, autorização negada, acesso/alteração de dado sensível, ações
+administrativas — **sem expor PII/segredos** no log (isso vira nova vulnerabilidade).
+Qualidade do log: **imutável/assinado**, tempo sincronizado (NTP), retenção conforme a lei,
+alertas em padrões anômalos. No VidaPlus a auditoria usa **hash-chain** (cada entrada
+encadeia a anterior) e `user_id` opaco.
+
+**Métricas de operação:** **MTTD** (tempo até detectar — média do setor: 194 dias), **MTTR**
+(tempo até remediar — meta: críticas < 14 dias), **% de cobertura** (código + dependências),
+**escape rate** (bugs que chegaram à produção).
+
+**Resposta a incidente** (fluxo de um vazamento de laudo): detecção → contenção → erradicação
+(corrigir a causa-raiz) → recuperação → **notificação à ANPD e ao titular (LGPD art. 48)** →
+lições (post-mortem realimenta os requisitos). Sem trilha de auditoria confiável, é impossível
+provar quem fez o quê.
+
+**Entregável (Fase 7):** trilha de auditoria funcional (com verificação de integridade) +
+runbook de resposta; adulterar uma entrada do log deve ser detectável.
+
+---
+
+## Aula 10 — Rastreabilidade & Métricas · Semana 14 · Fase 8
+
+**Objetivo:** fechar o ciclo — provar que cada controle existe por uma razão e foi testado.
+
+**Matriz de rastreabilidade.** Garante que cada requisito foi implementado **e** testado. É
+bidirecional: do requisito ao teste (foi verificado?) e do código ao requisito (por que este
+controle existe?). **Linha sem teste = requisito não verificado** — é onde mora o risco
+residual.
+
+**Mapa a frameworks de controle.** O requisito ganha força quando mapeado: **OWASP ASVS**
+(L1/L2/L3), **NIST 800-53** (famílias AC/AU/IA/SC), **ISO 27001:2022** (Anexo A, 93
+controles), **NIST SSDF** (liga ao ciclo). Fio completo estendido: *REQ → ameaça
+(STRIDE/LINDDUN) → LGPD/ASVS → NIST 800-53 → ISO 27001*.
+
+**Métricas do processo** (tornam segurança mensurável): % de ameaças com controle
+(cobertura do threat model), % de requisitos com teste (verificação), % de ameaças de
+privacidade mitigadas (LINDDUN), e o **placar de gates verdes/total** — a métrica-mestra do
+progresso.
+
+**Anti-padrões × boas práticas.** Pior antipadrão: requisito vago ("ser seguro") que ninguém
+testa; segundo: "segurança no fim". Boas práticas: requisitos SMART e testáveis, elicitar
+cedo (custo 500× menor), vincular requisito → ameaça → teste, rastreabilidade viva. A rubrica
+premia as boas práticas e penaliza os antipadrões.
+
+**Entregável (Fase 8 + defesa):** matriz completa + métricas + risco residual; na **defesa**,
+o grupo escolhe um ativo e percorre o **fio completo ao vivo**: *laudo → IDOR → REQ-AC-01 →
+403 → evidência do CI*.
+
+---
+
+> **Semanas 15–16:** defesas e buffer. Sem conteúdo novo — recapitule os conceitos-chave e
+> ensaie o fechamento do fio completo.
