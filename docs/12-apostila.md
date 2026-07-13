@@ -12,8 +12,34 @@ estudo** embutidas nos `.pptx`, em formato corrido. Ao final de cada aula está 
 
 ## Aula 1 — Contexto e Dados · Semana 1 · Fase 0
 
-**Objetivo:** entender por que a segurança precisa estar em todo o ciclo de desenvolvimento
-e aprender a classificar os dados de um sistema.
+**Objetivo:** conhecer o projeto e o funcionamento da disciplina; entender por que a
+segurança precisa estar em todo o ciclo; e aprender a classificar os dados de um sistema.
+
+**O projeto (contexto).** O cenário do semestre é o **VidaPlus**, portal web de uma clínica
+(paciente, médico, laboratório, admin) que opera desde 2015 e **nunca passou por revisão de
+segurança nem LGPD**. Um quase-incidente (um paciente viu o exame de outro trocando a URL —
+IDOR) e a fiscalização da ANPD motivam a missão: **adequar o sistema à realidade atual, sem
+reescrever do zero**. A stack é **atual** (React + Java 21/Spring Boot 3 + MySQL) — o
+"legado" é o descuido com segurança, não a tecnologia.
+
+**Como funciona a disciplina.** É **um projeto único e vivo** o semestre inteiro; a **teoria
+é puxada pela demanda** de cada fase (você aprende o conceito quando precisa aplicá-lo). O
+trabalho é em **grupos de 3–4**, cada um com um pacote de funcionalidades. A avaliação é
+**por artefato** (o dossiê) + defesa; o pipeline é evidência, não a nota. O foco é o
+**processo** (SSDLC + LGPD + privacidade), não codar muito: você **analisa** tudo, faz a
+**prova de conceito** de 1–2 controles e entrega um **plano de remediação** do restante.
+
+**Cronograma (16 semanas).** Fase 0 (sem. 1) kickoff+classificação · Fase 1 (sem. 2)
+requisitos+LGPD · Fase 2 (sem. 3–4) STRIDE+LINDDUN+RIPD · Fase 3 (sem. 5) projeto
+seguro+priorização+DoD · Fase 4 (sem. 6–9) remediação · Fase 5 (sem. 10–11)
+verificação · Fases 6–7 (sem. 12–13) DevSecOps+operação · Fase 8 (sem. 14)
+rastreabilidade · sem. 15–16 defesas. Detalhe em [01-plano-disciplina-ssdlc.md](01-plano-disciplina-ssdlc.md).
+
+**Assuntos abordados.** SSDLC & fundamentos (shift-left, CIA+AAN, princípios de design) ·
+requisitos & LGPD (RFS/RGS, 4 fontes, ASVS) · threat modeling (DFD, STRIDE, árvore de
+ataque) · privacidade (Privacy by Design, LINDDUN, PETs, RIPD) · implementação segura (OWASP
+Top 10, secure coding, cripto, segredos) · verificação & DevSecOps (SAST/DAST/SCA, CI/CD,
+SBOM, auditoria, métricas).
 
 **Por que SSDLC.** Segurança não é custo opcional: uma violação de dados custa, em média,
 US$ 4,88 milhões e leva ~194 dias só para ser detectada (IBM 2024); 60% das brechas
