@@ -80,6 +80,8 @@ projeto-vidaplus/
 │   ├── 10-dossie-template.md        TEMPLATE do entregável (copiar p/ DOSSIE.md)
 │   └── 11-glossario.md              consulta rápida dos termos da disciplina
 │   (o gabarito das vulnerabilidades fica no repo privado do instrutor)
+├── aulas/                          ← slides .pptx (template IFSul), um por aula
+│   └── README.md                    índice deck ↔ semana ↔ fase
 ├── legacy-app/                      ← o software a ser corrigido
 │   ├── docker-compose.yml
 │   ├── db/         schema.sql + seed.sql (MySQL)
