@@ -17,8 +17,8 @@ da disciplina) → **ponte com o VidaPlus** (entregável da fase) → encerramen
 | Deck | Semana | Fase | Tema |
 |------|:------:|:----:|------|
 | `aula-01-contexto-e-dados.pptx` | 1 | 0 | Por que SSDLC · pilares CIA+AAN · classificação de dados |
-| `aula-02-requisitos-e-lgpd.pptx` | 2 | 1 | RF×RNF · RFS×RGS · 4 fontes · LGPD · SMART · ASVS |
-| `aula-03-dfd-e-stride.pptx` | 3 | 2a | Threat modeling · DFD+trust boundaries · STRIDE |
+| `aula-02-requisitos-e-lgpd.pptx` | 2 | 1 | RF×RNF · RFS×RGS · 4 fontes · SMART · LGPD (conceitos, princípios, bases legais, direitos, incidentes) · ECA Digital · ASVS |
+| `aula-03-dfd-e-stride.pptx` | 3 | 2a | Threat modeling · DFD+trust boundaries (com exemplo trabalhado) · STRIDE |
 | `aula-04-privacidade-linddun.pptx` | 4 | 2b | Privacy by Design · LINDDUN · PETs · RIPD |
 | `aula-05-projeto-seguro.pptx` | 5 | 3 | Saltzer & Schroeder · fail-secure · priorização · DoD |
 | `aula-06-implementacao-segura.pptx` | 6–9 | 4 | OWASP Top 10:2025 · controles · módulos LGPD |

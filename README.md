@@ -1,6 +1,6 @@
 # Projeto Semestral SSC — VidaPlus (Sistema de Gestão em Saúde)
 
-**Disciplina:** Segurança em Sistemas Computacionais (SSC)
+**Disciplina:** Segurança de Sistemas Computacionais (SSC)
 **Câmpus:** IFSul — Sapucaia do Sul · Tecnologia em Análise e Desenvolvimento de Sistemas
 **Professor:** Dr. Alex Mulattieri Suarez Orozco
 **Modalidade:** projeto em grupos (3–4) conduzido ao longo de 16 semanas (3h/aula)
@@ -55,11 +55,6 @@ privacidade** estão plantadas no **código e no design** (não em versões obso
 O VidaPlus lida com **dados sensíveis de saúde** — PII sob a **LGPD art. 11** — e por
 isso é o pano de fundo ideal para **Privacy by Design** e **LINDDUN**.
 
-As vulnerabilidades plantadas (SQL Injection, autenticação quebrada, IDOR, segredos
-no código, ausência de auditoria, ausência de consentimento, sobrecoleta de dados,
-ausência de retenção/eliminação etc.) estão catalogadas — **para o professor** — em
-[docs/07-catalogo-vulnerabilidades.md](docs/07-catalogo-vulnerabilidades.md).
-
 ---
 
 ## 3. Estrutura do repositório
@@ -80,7 +75,6 @@ projeto-vidaplus/
 │   ├── 10-dossie-template.md        TEMPLATE do entregável (copiar p/ DOSSIE.md)
 │   ├── 11-glossario.md              consulta rápida dos termos da disciplina
 │   └── 12-apostila.md               material de estudo em texto (acompanha os slides)
-│   (o gabarito das vulnerabilidades fica no repo privado do instrutor)
 ├── aulas/                          ← slides .pptx (template IFSul), um por aula
 │   └── README.md                    índice deck ↔ semana ↔ fase
 ├── legacy-app/                      ← o software a ser corrigido

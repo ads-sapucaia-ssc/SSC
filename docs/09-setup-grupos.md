@@ -54,7 +54,8 @@ Ao fazer o primeiro `push`, o **GitHub Actions** executa o
 | Secret Scanning | Há segredo no código (V-05) | Fase 4/6 |
 | SAST (Semgrep/CodeQL) | Padrões inseguros: SQLi, MD5, XSS, JWT (V-01/02/07/10) | Fase 4 |
 | SCA | CVE em dependências (higiene de supply chain) | Fase 5/6 |
-| DAST (ZAP) | Faltam headers, stack trace, SQLi/XSS dinâmico | Fase 5 |
+| Container Scanning | CVE na imagem base/SO do backend/frontend | Fase 5/6 |
+| DAST autenticado | Faltam headers, stack trace, SQLi/XSS e IDOR (com JWT) | Fase 5 |
 | Testes de segurança | IDOR/RBAC/auditoria sem teste que prove correção | Fase 5 |
 
 ---
@@ -83,8 +84,8 @@ para vocês aprenderem a removê-los. Por isso:
 3. correção:    implemente o controle (deny-by-default, parametrizado, etc.)
 4. teste:       escreva o teste que prova a correção (ex.: A pede exame de B -> 403)
 5. PR:          abra o Pull Request; o pipeline roda os gates
-6. review:      revisão por pares (checklist em docs/08)
-7. merge:       só com o gate da classe corrigida verde
+6. review:      revisão intra-grupo, autor != revisor (checklist em docs/08); aprovar
+7. merge:       só com o gate da classe corrigida verde E a revisão aprovada
 8. matriz:      atualize a rastreabilidade (requisito -> teste -> evidência -> status)
 ```
 
@@ -101,6 +102,35 @@ cobrindo IDOR, RBAC e SQLi no login. Eles **nascem vermelhos** no legado — sã
 do "pronto". O gate `Gate - Testes de seguranca` do pipeline os executa (com um MySQL de
 serviço). **Você deve expandir** a cobertura com testes próprios na Fase 5; estes são só o
 mínimo.
+
+## 5.2 Proteger a `main` (branch protection)
+
+Isto é o que transforma "merge só com gate verde **e** revisão aprovada" (passos 6–7) em
+**regra** — não dá para pular. Configure **uma vez**, por um integrante com permissão de
+**admin** no repositório do grupo. É uma **configuração do GitHub** (não um job do workflow).
+
+> **Faça um `push` antes.** Os status checks (gates) só aparecem para seleção depois de
+> terem **rodado ao menos uma vez**.
+
+**Caminho recomendado — Rulesets** (funciona inclusive em repositório privado gratuito):
+
+1. **Settings → Rules → Rulesets → New ruleset → New branch ruleset**.
+2. **Name:** `protege-main`. **Enforcement status:** **Active**.
+3. **Target branches → Add target → Include default branch** (a `main`).
+4. Em **Rules**, marque:
+   - **Require a pull request before merging** → **Required approvals: `1`** (a revisão
+     intra-grupo; o **autor não aprova o próprio PR**).
+   - **Require status checks to pass** → **Add checks** e selecione **apenas os gates que o
+     grupo já tornou bloqueantes** (ex.: `Gate - Testes de seguranca`,
+     `Gate - Secret Scanning (Gitleaks)`). ⚠️ **Não** selecione todos: os gates ainda
+     informativos nascem vermelhos e **travariam** a `main` com o legado.
+   - **Block force pushes** — mantém o histórico da `main` **append-only**: ninguém
+     reescreve/apaga commits (protege a trilha e as evidências, mesmo de quem tem admin).
+5. **Create**.
+
+**Regra de ouro:** à medida que o grupo torna um gate bloqueante (removendo o
+`continue-on-error`), **adicione esse gate** à lista de status checks obrigatórios. Assim a
+proteção da `main` cresce junto com as correções.
 
 ## 6. Autograding (como sua nota parcial é calculada)
 

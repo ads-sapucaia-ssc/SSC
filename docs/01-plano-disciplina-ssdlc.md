@@ -48,7 +48,7 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 
 > **Sequenciamento:** a classificação da Fase 0 é por **sensibilidade** (atividade de
 > segurança — não exige LGPD). A **base legal** de cada dado (LGPD art. 11, 46…) é
-> atribuída na **Fase 1**, quando a lei é ensinada. Aqui o aluno só marca *o que* é
+> atribuída na **Fase 1**. Aqui o aluno só marca *o que* é
 > sensível; *por que juridicamente* vem na semana seguinte.
 
 ## Fase 1 — Requisitos & conformidade legal · Semana 2
@@ -77,7 +77,7 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 ## Fase 4 — Remediação (PROVA DE CONCEITO) · Semanas 6–9
 - **Teoria:** OWASP Top 10 e secure coding **da classe do controle escolhido** (só o
   necessário para a PoC).
-- **Prática:** cada grupo escolhe **1 P0 (obrigatório) + até 1 P1** e o corrige
+- **Prática:** cada grupo escolhe **1 P0 + 1 P1** e o corrige
   **ponta-a-ponta** (código → teste → evidência) num PR. Para as demais falhas do seu
   pacote, produz um **plano de remediação** (o quê, como, esforço, prioridade) — **sem
   precisar codar**.
@@ -159,7 +159,3 @@ projeto **percorrem exatamente esses passos** (por isso o plano é "aproximado d
 | 7 · Categorizar os requisitos (RFS × RGS) | 1, 3 |
 | 8 · Priorizar por risco (P0/P1/P2) | 3 |
 | 9 · Inspecionar e validar | 8 (V&V) + defesa |
-
-> Correlatos citados no material: **SREP**, **Microsoft SDL** (fase de requisitos) e
-> **Tropos seguro**. O SQUARE dá o "esqueleto de processo"; a disciplina o instancia sobre
-> o VidaPlus.

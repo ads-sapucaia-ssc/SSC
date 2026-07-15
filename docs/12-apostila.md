@@ -94,10 +94,78 @@ a risco), **Legal** (LGPD, PCI-DSS — não-negociáveis), **Padrões** (OWASP A
 CIS) e **Ameaças** (threat modeling, abuse cases). O negócio diz o que importa; a lei, o que
 é obrigatório; os padrões, o esperado; as ameaças, contra o que defender.
 
-**LGPD como fonte.** Cada cláusula vira um requisito rastreável ("art. 46 → cifrar dados em
-repouso com AES-256"). Artigos-chave: **art. 6** (princípios), **art. 7/11** (bases legais;
-saúde = sensível), **art. 18** (direitos do titular: acesso, portabilidade, eliminação),
-**arts. 8/9** (consentimento), **art. 46** (segurança), **art. 38** (RIPD).
+**OWASP ASVS.** O *Application Security Verification Standard* é o exemplo concreto da fonte
+"Padrões": um catálogo pronto de requisitos de segurança **verificáveis**, agrupado em três níveis
+de rigor — **L1** (básico, verificável de fora/black-box), **L2** (padrão recomendado para
+aplicações com **dados sensíveis**; exige revisão de projeto e código) e **L3** (avançado, para
+sistemas críticos como saúde e finanças). Escolhe-se o **nível-alvo** pela classificação de dados
+da Fase 0, e cada item do ASVS já vem testável — casando com o RGS. No VidaPlus, os dados de saúde
+justificam mirar **L2** como linha de base, subindo a **L3** nos módulos mais sensíveis (prontuário,
+exames).
+
+### LGPD como fonte formal de requisitos
+
+**O que é.** A LGPD (Lei 13.709/2018, em vigor desde 2020) disciplina o tratamento de dados
+pessoais no Brasil. Aplica-se a qualquer organização — pública ou privada, de qualquer porte —
+que trate dados de pessoas no país. Inspirada no GDPR europeu, sucede o Marco Civil da Internet.
+Não é "só um tema jurídico": decisões técnicas (modelagem, arquitetura, logs, segurança) impactam
+a privacidade, e a maioria dos vazamentos tem origem técnica — por isso a **TI é parte essencial
+da conformidade**.
+
+**Conceitos.** *Dado pessoal* = informação que identifica ou torna identificável uma pessoa (nome,
+CPF, e-mail, IP). *Dado sensível* (**art. 11**) = saúde, biometria, origem racial, religião, opinião
+política — regime reforçado. *Tratamento* = qualquer operação com o dado (coleta, uso, acesso,
+compartilhamento, eliminação — praticamente toda ação em um sistema). *Titular* = a pessoa a quem
+o dado se refere. No VidaPlus, prontuário e exame são **dados de saúde → sensíveis → o ativo mais
+crítico**.
+
+**Agentes.** *Controlador* decide as finalidades e os meios (a clínica); *Operador* trata em nome
+dele (cloud, TI terceirizada); *Encarregado* (DPO) é o canal com titulares e a ANPD. A TI viabiliza
+tecnicamente os deveres dos três.
+
+**Princípios (art. 6).** Dez regras: finalidade, adequação, necessidade (**minimização** — coletar
+só o mínimo), livre acesso, qualidade, transparência, segurança, prevenção, não discriminação e
+responsabilização (*accountability* — comprovar conformidade com evidência).
+
+**Bases legais (art. 7 e 11).** Todo tratamento precisa de uma; sem ela é irregular. Principais:
+consentimento (livre, específico, revogável — *checkbox nunca pré-marcado*), obrigação legal
+(retenção: prontuário ~20 anos pelo CFM, log 6 meses pelo Marco Civil), execução de contrato e
+legítimo interesse (exige avaliação de impacto). Para dado sensível (art. 11), a base típica de uma
+clínica é a **tutela da saúde**, não o consentimento. Erro comum: "usar consentimento para tudo".
+
+**Direitos do titular (art. 18 e 19).** Confirmação, acesso, correção, eliminação/anonimização
+(avaliando a retenção legal — exclusão lógica × física), portabilidade (CSV/JSON), informação sobre
+compartilhamento e revogação do consentimento. Cada direito vira funcionalidade. Prazos (art. 19):
+resposta simplificada imediata; declaração completa em até **15 dias**.
+
+**Segurança e incidentes (art. 46 e 48).** O art. 46 exige medidas técnicas *e* administrativas
+(cripto, controle de acesso, auditoria). Incidente = acesso não autorizado, vazamento, perda ou
+alteração indevida (*todo vazamento é incidente; nem todo incidente vira vazamento*). Com risco
+relevante, o art. 48 obriga comunicar à **ANPD e ao titular** (prazo regulamentado: **3 dias
+úteis**). Sem logs não há como demonstrar diligência. A ANPD fiscaliza e aplica sanções
+(advertência, multa, bloqueio, suspensão) — o risco técnico vira risco legal.
+
+**ECA Digital × LGPD (Lei 15.211/2025).** O ECA Digital (em vigor desde 17/03/2026) estende o
+Estatuto da Criança e do Adolescente ao ambiente digital e conversa diretamente com a LGPD. A LGPD
+já dava tratamento especial aos dados de menores no **art. 14**: o tratamento deve atender ao
+**melhor interesse** da criança/adolescente e, em regra, depende de **consentimento específico e
+destacado de um dos pais ou responsável** (§1); é vedado condicionar o uso à coleta de dados
+excessivos (§3); e a informação deve estar em **linguagem acessível à idade** (§6). O ECA Digital
+transforma esses princípios em exigências técnicas — quase todas com raiz na LGPD: **verificação de
+idade** confiável e proporcional (não o "clique se tem 18"), **privacidade por padrão** nas contas
+de menores (o mesmo Privacy by Design da Aula 4, agora obrigatório), **minimização** reforçada,
+**vedação a perfilamento e publicidade direcionada** a crianças, e **RIPD obrigatório** (o relatório
+de impacto do art. 38) antes de liberar função acessível a menores. No VidaPlus, o prontuário de um
+paciente pediátrico soma **duas camadas** — dado sensível de saúde *e* dado de criança —, e a tabela
+de sanções da ANPD já classifica como **grave** a infração que envolve dados de crianças e
+adolescentes; o ECA Digital acrescenta multa de até **R$ 50 milhões** por infração e suspensão da
+atividade.
+
+**Do artigo ao requisito.** Cada cláusula aplicável vira um requisito rastreável ("art. 46 → cifrar
+dados em repouso com AES-256"). Artigos que mais impactam o VidaPlus: **art. 6** (princípios),
+**art. 7/11** (bases legais; saúde = sensível), **art. 14** (dados de crianças/adolescentes;
+ECA Digital), **art. 18** (direitos do titular), **arts. 8/9** (consentimento), **art. 46**
+(segurança), **art. 38** (RIPD — feito na Aula 4).
 
 **Bom requisito (SMART).** Específico (sem "ser seguro"), mensurável/testável, rastreável.
 *Ruim:* "o sistema deve proteger as senhas". *Bom:* "senhas com Argon2id (m=19MiB), salt de
@@ -123,6 +191,13 @@ externas (retângulo), processos (círculo), armazenamentos (duas linhas), fluxo
 **trust boundaries** (tracejado vermelho) — a linha onde o nível de confiança muda
 (internet → aplicação → banco). Toda travessia de fronteira é um ponto de controle
 obrigatório: ali entram autenticação, validação de entrada e log.
+
+**Exemplo trabalhado (slide).** No DFD do "recuperar exame" do VidaPlus, o titular
+(Usuário/navegador, lado *não confiável*) cruza a fronteira para os processos *1.0 Autenticar* e
+*2.0 Recuperar exame* (lado *confiável*), que acessam o armazenamento *D1 Exames (PII saúde)*. O
+requisito de segurança aparece como uma **nota presa ao elemento que ele protege**: na travessia da
+fronteira, **REQ-AUTH** (autenticar + validar entrada, TLS 1.3); no acesso ao dado sensível,
+**REQ-CR** (cifrar em AES-256 e liberar só ao dono — o controle contra o IDOR do exame).
 
 **STRIDE.** Cada letra é uma categoria de ameaça mapeada a uma propriedade violada:
 **S**poofing (vs autenticidade), **T**ampering (vs integridade), **R**epudiation (vs
@@ -288,7 +363,8 @@ importante, não urgente; um CVSS 7 no KEV é urgente (explorado agora). Combine
 × KEV**. O **VEX** documenta quando sua aplicação não é afetada por uma CVE.
 
 **Entregável (Fase 6):** pipeline como **evidência** (não é a nota) — placar de gates
-(vermelho→verde), SBOM gerado, sem segredos; bônus: assinar a imagem com cosign (SLSA L2).
+(vermelho→verde), SBOM gerado, sem segredos; e **obrigatório**: assinar a imagem com cosign
+(proveniência **SLSA L2**).
 
 ---
 

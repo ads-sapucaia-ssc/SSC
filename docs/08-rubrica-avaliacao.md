@@ -14,7 +14,7 @@ como a nota em si.
 | 3 | Projeto seguro & priorização | 10 | Catálogo consolidado; risco→P0/P1/P2 (**CVSS/DREAD + EPSS/KEV**); **Definition of Done** segura |
 | 4 | **Remediação — prova de conceito** | 8 | 1–2 controles corrigidos ponta-a-ponta **+ plano de remediação** do restante |
 | 5 | Verificação & evidências | 12 | Teste que exercita o controle; scanners como evidência; evidência real |
-| 6 | DevSecOps / pipeline (evidência) | 6 | Pipeline gera evidência; SBOM; sem segredos no repo |
+| 6 | DevSecOps / pipeline (evidência) | 6 | Pipeline gera evidência; SBOM; sem segredos no repo; **imagem assinada (cosign) + proveniência SLSA L2** |
 | 7 | **Operação, incidente & LGPD art. 48** | 6 | Trilha de auditoria íntegra; runbook + fluxo de notificação ANPD |
 | 8 | Rastreabilidade & defesa | 8 + defesa | Matriz completa; métricas; **defesa fecha o fio ao vivo** |
 | — | **Total** | **100** | |
@@ -23,10 +23,9 @@ como a nota em si.
 > e rastreabilidade) somam **50 pts** — metade da nota está no **processo e na privacidade**.
 > A implementação (F4) vale **8**: importa **provar o ciclo**, não a quantidade de código.
 
-**Bônus (até +10):** attack-defense tree quantificada; DAST autenticado exercitando IDOR;
-mais de um módulo LGPD implementado; anonimização real na eliminação; gate tornado
-bloqueante e mantido verde; **assinatura de artefatos (cosign) + SLSA L2**; priorização
-usando **EPSS/KEV** além do CVSS.
+**Bônus (até +10):** attack-defense tree quantificada; mais de um módulo LGPD implementado;
+anonimização real na eliminação; gate tornado bloqueante e mantido verde; priorização usando
+**EPSS/KEV** além do CVSS.
 
 **Penalidades (até −15):** requisito vago/não testável; "privacidade/segurança no fim";
 correção sem teste/evidência; status "OK" na matriz sem prova; **PII em log**; segredo

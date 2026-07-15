@@ -7,78 +7,97 @@ integrar as correções num só pipeline.
 Cada pacote atravessa **todas as fases do SSDLC** para as suas funcionalidades:
 requisito → LINDDUN/STRIDE → design → correção (PR) → teste → evidência → rastreabilidade.
 
-> Sugestão para turma de ~4 grupos. Ajuste conforme o número de equipes. Funcionalidades
-> transversais (F-05 auditoria, F-10 segredos, F-17 CORS/headers, F-21 SCA) são
-> **compartilhadas**: um grupo "dono" implementa e os demais consomem.
+> **Pacotes independentes.** Os cinco pacotes são **disjuntos e autossuficientes**: cada
+> funcionalidade tem **um único dono**. O entregável de um grupo (análise de todas as suas
+> funcionalidades + 1–2 provas de conceito) **nunca depende de outro grupo ter terminado** —
+> depende só do próprio pacote e da base legada comum. Onde uma funcionalidade **pressupõe**
+> logicamente outra de outro grupo (ex.: o módulo de consentimento roda "atrás" do RBAC, ou
+> qualquer grupo se beneficiaria da trilha de auditoria), isso entra na análise como uma
+> **interface/suposição documentada**, não como bloqueio: a prova de conceito é fechada de
+> forma isolada (com stub/mock ou log mínimo próprio, se necessário).
 
 ---
 
-## Grupo A — Identidade & Acesso
+## Grupo 1 — Identidade & Autenticação
 
 | Func. | Criticidade | Ação |
 |-------|:-----------:|:----:|
 | F-01 Autenticação (login) | 🔴 P0 | 🛠️ |
 | F-11 Sessão / token | 🟠 P1 | 🛠️ |
 | F-12 Recuperação de senha | 🟠 P1 | 🛠️ |
-| F-03 RBAC (co-dono com Grupo B) | 🔴 P0 | 🛠️ |
+| F-17 CORS / headers de segurança | 🟡 P1 | 🛠️ |
 
 **Foco teórico puxado:** Auth Failures, hashing (Argon2id), rate limiting, JWT/sessão,
-enumeração, anti-brute-force.
+enumeração, anti-brute-force, CORS com credenciais, CSP/HSTS.
 
 ---
 
-## Grupo B — Prontuário & Autorização
+## Grupo 2 — Autorização & Prontuário
 
 | Func. | Criticidade | Ação |
 |-------|:-----------:|:----:|
 | F-02 Visualização/download de laudo (IDOR) | 🔴 P0 | 🛠️ |
-| F-03 RBAC (co-dono com Grupo A) | 🔴 P0 | 🛠️ |
+| F-03 RBAC (controle de acesso por papel) | 🔴 P0 | 🛠️ |
 | F-07 Publicação de laudo | 🟠 P1 | 🛠️ |
 | F-08 Armazenamento de PDFs | 🟠 P1 | 🛠️⚖️ |
 
 **Foco teórico puxado:** Broken Access Control, IDOR, RBAC deny-by-default,
-integridade/hash de laudo, URLs assinadas.
+integridade/hash de laudo, URLs assinadas, acesso direto a arquivo.
 
 ---
 
-## Grupo C — Privacidade & LGPD (DPO)
+## Grupo 3 — Consentimento & Direitos do Titular (DPO)
 
 | Func. | Criticidade | Ação |
 |-------|:-----------:|:----:|
 | F-04 Gestão de consentimento | 🔴 P0 | ✨⚖️ |
-| F-06 Eliminação / anonimização | 🔴 P0 | ✨⚖️ |
 | F-09 Exportação (portabilidade) | 🟠 P1 | ✨⚖️ |
 | F-15 Minimização no cadastro | 🟡 P1 | ⚖️ |
+| F-19 Perfil do usuário (autosserviço do titular) | 🟢 P2 | 🛠️ |
 
 **Foco teórico puxado:** LGPD arts. 8, 9, 11, 18; **LINDDUN**; minimização,
-pseudonimização, anonimização, retenção; RIPD/DPIA.
+pseudonimização, consentimento versionado/revogável, portabilidade; RIPD/DPIA.
 
 ---
 
-## Grupo D — Injeção, Dados & Robustez
+## Grupo 4 — Auditoria & Prevenção de Vazamento
 
 | Func. | Criticidade | Ação |
 |-------|:-----------:|:----:|
-| F-13 Busca de pacientes (SQLi) | 🟡 P1 | 🛠️ |
-| F-14 Notas clínicas (XSS) | 🟡 P1 | 🛠️ |
+| F-05 Trilha de auditoria | 🔴 P0 | ✨ |
+| F-18 Notificação (e-mail/SMS) com link | 🟠 P1 | 🛠️⚖️ |
 | F-16 Tratamento de erros | 🟡 P2 | 🛠️ |
-| F-18 Notificação com link | 🟡 P1 | 🛠️⚖️ |
+| F-20 Conteúdo institucional (site) | 🟢 P2 | 🛠️ |
 
-**Foco teórico puxado:** Injection (SQLi), consultas parametrizadas, XSS e
-sanitização/output encoding, erro seguro, links seguros.
+**Foco teórico puxado:** não-repúdio e trilha de auditoria (arts. 37/46), Information
+Disclosure, erro seguro (sem stack trace ao cliente), links autenticados/expiráveis,
+hardening/anti-defacement de conteúdo público.
 
 ---
 
-## Transversais (donos rotativos / compartilhadas)
+## Grupo 5 — Injeção & Anonimização de Dados
 
-| Func. | Criticidade | Dono sugerido |
-|-------|:-----------:|---------------|
-| F-05 Trilha de auditoria | 🔴 P0 | Grupo B (consumida por todos) |
-| F-10 Gestão de segredos | 🟠 P1 | DevSecOps de cada grupo |
-| F-17 CORS / headers de segurança | 🟡 P1 | Grupo A |
-| F-19 Perfil do usuário | 🟢 P2 | Grupo D |
-| F-20 Conteúdo institucional | 🟢 P2 | Grupo D |
-| F-21 Dependências (SCA) | 🟢 P2 | DevSecOps de cada grupo |
+| Func. | Criticidade | Ação |
+|-------|:-----------:|:----:|
+| F-06 Eliminação / anonimização | 🔴 P0 | ✨⚖️ |
+| F-13 Busca de pacientes (SQLi) | 🟡 P1 | 🛠️ |
+| F-14 Notas clínicas (XSS) | 🟡 P1 | 🛠️ |
+
+**Foco teórico puxado:** Injection (SQLi) e consultas parametrizadas; XSS e
+sanitização/output encoding; anonimização/pseudonimização e ciclo de vida do dado
+(retenção → eliminação), respeitando a retenção legal.
+
+---
+
+## Higiene contínua — responsabilidade de **todos** os grupos
+
+Não são "de um dono": **cada grupo** aplica ao **próprio** serviço/deploy, para o próprio
+código. Não geram dependência entre equipes.
+
+| Func. | Criticidade | Quem faz |
+|-------|:-----------:|----------|
+| F-10 Gestão de segredos e configuração | 🟠 P1 | cada grupo, no seu módulo (nada de segredo em código) |
+| F-21 Gestão de dependências (SCA/SBOM) | 🟢 P2 | cada grupo, nas dependências que introduz/toca |
 
 ---
 
