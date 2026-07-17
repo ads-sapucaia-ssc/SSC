@@ -388,6 +388,28 @@ encadeia a anterior) e `user_id` opaco.
 lições (post-mortem realimenta os requisitos). Sem trilha de auditoria confiável, é impossível
 provar quem fez o quê.
 
+**Runbook-exemplo (modelo a adaptar) — vazamento de laudo no VidaPlus.** Cenário: a trilha de
+auditoria detecta que o paciente A baixou o laudo do paciente B (IDOR, V-03).
+
+1. **Detecção.** Alerta da auditoria: acesso a `/api/exames/{id}` com `user_id ≠ dono do
+   exame` (ou pico de downloads). Registre **quem, quando, qual exame**; **preserve o log**
+   (hash-chain) — é a prova.
+2. **Contenção** (minutos). **Revogue** as sessões/tokens suspeitos e **bloqueie/rate-limite**
+   o endpoint afetado (se for PDF público, tire as URLs do ar). Objetivo: **estancar sem
+   destruir evidência** — nunca apague o log para "limpar".
+3. **Erradicação** (causa-raiz). Corrija o **IDOR**: validar **ownership no servidor** (o
+   `user_id` vem do JWT, não do cliente), **deny-by-default**; se for o laudo público, exigir
+   autenticação + **URL assinada com expiração**.
+4. **Recuperação.** Faça o **redeploy** da correção e **valide com o teste anti-IDOR** (A pede
+   exame de B → **403 sem metadados**); confirme a auditoria íntegra e volte a **monitorar**.
+5. **Avaliação de risco + notificação (art. 48).** Dado de saúde é **sensível** → quase sempre
+   há "risco ou dano relevante". Comunique **ANPD e titulares afetados em até 3 dias úteis**,
+   com: **natureza dos dados** (laudos/exames), **nº de titulares**, **medidas técnicas
+   adotadas**, **riscos** e **ações de mitigação/recomendações** ao titular. Registre tudo.
+6. **Lições** (post-mortem sem culpados). Documente a **linha do tempo** e a **causa-raiz**;
+   gere **novos requisitos** (ex.: teste anti-IDOR obrigatório no CI + **alerta** de acesso
+   *cross-owner*) e atualize a **matriz de rastreabilidade**. O incidente vira requisito.
+
 **Entregável (Fase 7):** trilha de auditoria funcional (com verificação de integridade) +
 runbook de resposta; adulterar uma entrada do log deve ser detectável.
 

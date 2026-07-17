@@ -118,8 +118,11 @@ Vale reconhecê-los pelo nome — são a base atemporal de todo o SSDLC.
 - **Argon2id / bcrypt** — funções de hash de senha fortes (com salt); substituem MD5/SHA-1.
 - **TLS** — cifra em trânsito (HTTPS). **Cifra em repouso** — dados cifrados no
   armazenamento.
-- **Hash-chain** — encadeamento de registros por hash para tornar a auditoria à prova de
-  adulteração (append-only).
+- **Hash-chain** (encadeamento por hash) — cada registro da auditoria guarda um hash dos
+  **próprios dados + o hash do registro anterior** (`hash[n] = H(dados[n] + hash[n-1])`).
+  Alterar, apagar ou inserir uma linha **quebra a cadeia** dali em diante, tornando a
+  adulteração **detectável**. Com **append-only** (só acrescenta) e **sem PII**, dá à trilha
+  integridade e não-repúdio (STRIDE-**R**; arts. 37/46). É o mesmo princípio do git/blockchain.
 
 ## Vulnerabilidades comuns
 
@@ -134,12 +137,26 @@ Vale reconhecê-los pelo nome — são a base atemporal de todo o SSDLC.
 
 ## Verificação & pipeline
 
+- **Linter** — **ferramenta** de análise estática **leve** que aplica regras ao código-fonte
+  (estilo + bugs simples; ex.: ESLint, Ruff, Checkstyle). Roda em segundos no **pre-commit** —
+  a triagem mais barata do *shift-left*. *Linting* é a **prática** de usá-lo. Mais raso que o
+  **SAST** (que faz análise de fluxo de dados focada em vulnerabilidades).
 - **SAST** — análise **estática** do código (ex.: Semgrep, CodeQL).
 - **DAST** — análise **dinâmica** da aplicação em execução (ex.: OWASP ZAP).
 - **SCA** (*Software Composition Analysis*) — análise de dependências vulneráveis (ex.:
   Dependency-Check, Trivy).
 - **Secret scanning** — detecção de segredos no repositório (ex.: Gitleaks).
 - **SBOM** (*Software Bill of Materials*) — inventário de componentes (ex.: CycloneDX).
+- **Proveniência** (*provenance*) — registro **verificável de origem** do artefato: de qual
+  **fonte (repo + commit)**, por qual **builder** e com quais **insumos** ele foi produzido
+  (identificado pelo **digest**). Permite verificar que o binário não foi trocado/adulterado
+  **no build** (defesa tipo anti-SolarWinds).
+- **SLSA** (*Supply-chain Levels for Software Artifacts*, OpenSSF) — níveis (**L0–L3**) que
+  medem **quão confiável** é a proveniência: `L1` existe · `L2` **assinada** por plataforma
+  hospedada (meta do projeto) · `L3` build **isolado/não-forjável**.
+- **Sigstore / cosign** — assinatura de artefatos por **identidade OIDC** (*keyless*, sem
+  gerenciar chaves), registrada no log público **Rekor**. É como se atinge a proveniência
+  assinada (SLSA L2). → [06](06-pipeline-cicd.md)
 - **Gate** — verificação no CI que pode **bloquear** o merge; no projeto, começa
   informativo e vira bloqueante conforme o grupo corrige. → [06](06-pipeline-cicd.md)
 - **CVSS / DREAD** — métodos de pontuação de risco para priorização (P0/P1/P2).

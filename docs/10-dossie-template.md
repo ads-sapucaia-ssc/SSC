@@ -167,10 +167,27 @@ Para cada controle implementado:
 
 ## 9. Fase 7 — Operação & resposta a incidente
 
-- **Trilha de auditoria:** _append-only? sem PII? integridade verificável?_
-- **Runbook de incidente (vazamento de laudo):** _detecção → contenção → erradicação →
-  recuperação → lições._
-- **Notificação LGPD (art. 48):** _quando comunicar à ANPD e ao titular; prazo; conteúdo._
+- **Trilha de auditoria:** _append-only? sem PII? integridade verificável (hash-chain)?_
+
+### 9.1 Runbook de incidente — vazamento de laudo
+
+> Preencha cada passo com **ação concreta**, **quem faz** e **o que registrar**. Regra de ouro:
+> **conter antes de erradicar**, e **nunca apagar o log** (é a prova).
+
+| Passo | O que fazer (concreto) | Quem | Evidência a registrar |
+|-------|------------------------|------|-----------------------|
+| **1 Detecção** | _como o incidente é percebido? (alerta da auditoria: acesso `user_id ≠ dono`)_ | _quem_ | _quem/quando/qual exame; log preservado_ |
+| **2 Contenção** | _revogar sessão? bloquear/rate-limit endpoint? tirar URL do ar?_ | _quem_ | _hora da contenção; ações tomadas_ |
+| **3 Erradicação** | _causa-raiz e correção (ownership no servidor; deny-by-default; URL assinada)_ | _quem_ | _PR da correção_ |
+| **4 Recuperação** | _redeploy + validação com teste anti-IDOR (A→B = 403); volta a monitorar_ | _quem_ | _log do teste/CI verde_ |
+| **5 Lições** | _post-mortem sem culpados; qual requisito novo nasce?_ | _quem_ | _linha do tempo; item na matriz_ |
+
+### 9.2 Notificação LGPD (art. 48)
+
+- **Há risco/dano relevante?** _dado de saúde é sensível → justifique a decisão._
+- **Prazo:** _comunicar à ANPD e aos titulares em **até 3 dias úteis** da ciência._
+- **Conteúdo mínimo:** _natureza dos dados afetados; nº de titulares; medidas técnicas
+  adotadas; riscos; ações de mitigação e recomendações ao titular._
 
 ---
 
