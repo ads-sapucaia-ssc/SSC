@@ -166,7 +166,7 @@ O passo `id: push` expõe **`steps.push.outputs.digest`** — use-o para assinar
 ### Entregável (evidência)
 - job **verde** com `cosign sign` + `cosign verify` passando (print/log do run);
 - a imagem em **Packages** do repo, marcada como assinada;
-- **bônus:** atestar o **SBOM** da imagem (`cosign attest --type cyclonedx …`), ligando a
-  proveniência ao **conteúdo**.
+- **SBOM da imagem atestado** (`cosign attest --type cyclonedx …`) e verificado
+  (`cosign verify-attestation`), ligando a proveniência ao **conteúdo**.
 
 Imagem assinada + verificação + SBOM atestado = **SLSA L2** na prática para o artefato do grupo.

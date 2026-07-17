@@ -5,32 +5,70 @@ A avaliação é **contínua e por fase** — não há prova única. O foco da d
 remediação de código entra como **prova de conceito** e o pipeline como **evidência**, não
 como a nota em si.
 
-| # | Fase / critério | Pontos | O que se espera |
-|---|-----------------|:------:|-----------------|
-| 0 | Inventário & classificação de dados | 8 | Ativos e endpoints mapeados; dados classificados; fluxos críticos identificados |
-| 1 | Requisitos & **LGPD** | 14 | RFS+RGS testáveis; **base legal por dado**; nível ASVS justificado |
-| 2 | Threat modeling (STRIDE) | 10 | DFD com trust boundaries; STRIDE-per-element; árvore de ataque |
-| 2p | **Privacidade — LINDDUN + PbD + RIPD/DPIA** | 18 | LINDDUN-per-element; controles/PET; minimização; **RIPD** derivado |
-| 3 | Projeto seguro & priorização | 10 | Catálogo consolidado; risco→P0/P1/P2 por **gravidade (CVSS/DREAD) × exploração real (EPSS/KEV)**; **Definition of Done** segura |
-| 4 | **Remediação — prova de conceito** | 8 | 1–2 controles corrigidos ponta-a-ponta **+ plano de remediação** do restante |
-| 5 | Verificação & evidências | 12 | Teste que exercita o controle; scanners como evidência; evidência real |
-| 6 | DevSecOps / pipeline (evidência) | 6 | Pipeline gera evidência; SBOM; sem segredos no repo; **imagem assinada (cosign) + proveniência SLSA L2** |
-| 7 | **Operação, incidente & LGPD art. 48** | 6 | Trilha de auditoria íntegra; runbook + fluxo de notificação ANPD |
-| 8 | Rastreabilidade & defesa | 8 + defesa | Matriz completa; métricas; **defesa fecha o fio ao vivo** |
-| — | **Total** | **100** | |
+Escala **0–10**. A tabela abaixo é a **nota de artefatos** (do grupo); a **defesa** entra
+depois (0–10, com fator individual) e as duas se combinam na **nota final** — ver
+"Como fecha a nota (0–10)".
+
+| # | Fase / critério | Peso (0–10) | O que se espera |
+|---|-----------------|:-----------:|-----------------|
+| 0 | Inventário & classificação de dados | 0,8 | Ativos e endpoints mapeados; dados classificados; fluxos críticos identificados |
+| 1 | Requisitos & **LGPD** | 1,4 | RFS+RGS testáveis; **base legal por dado**; nível ASVS justificado |
+| 2 | Threat modeling (STRIDE) | 1,0 | DFD com trust boundaries; STRIDE-per-element; árvore de ataque |
+| 2p | **Privacidade — LINDDUN + PbD + RIPD/DPIA** | 1,8 | LINDDUN-per-element; controles/PET; minimização; **RIPD** derivado |
+| 3 | Projeto seguro & priorização | 1,0 | Catálogo consolidado; risco→P0/P1/P2 por **gravidade (CVSS/DREAD) × exploração real (EPSS/KEV)**; **Definition of Done** segura |
+| 4 | **Remediação — prova de conceito** | 0,8 | 1–2 controles corrigidos ponta-a-ponta **+ plano de remediação** do restante |
+| 5 | Verificação & evidências | 1,2 | Teste que exercita o controle; scanners como evidência; evidência real |
+| 6 | DevSecOps / pipeline (evidência) | 0,6 | Pipeline gera evidência; SBOM; sem segredos no repo; **imagem assinada (cosign) + SBOM atestado → proveniência SLSA L2** |
+| 7 | **Operação, incidente & LGPD art. 48** | 0,6 | Trilha de auditoria íntegra; runbook + fluxo de notificação ANPD |
+| 8 | Rastreabilidade & defesa | 0,8 | Matriz completa; métricas; **defesa fecha o fio ao vivo** (pontuada à parte) |
+| — | **Nota de artefatos (grupo)** | **10,0** | |
 
 > **Onde está o peso:** Fases 1, 2, 2p e 8 (requisitos+LGPD, threat modeling, **privacidade**
-> e rastreabilidade) somam **50 pts** — metade da nota está no **processo e na privacidade**.
-> A implementação (F4) vale **8**: importa **provar o ciclo**, não a quantidade de código.
+> e rastreabilidade) somam **5,0** — metade da nota está no **processo e na privacidade**.
+> A implementação (F4) vale **0,8**: importa **provar o ciclo**, não a quantidade de código.
 
-**Bônus (até +10):** attack-defense tree quantificada; mais de um módulo LGPD implementado;
-anonimização real na eliminação; gate tornado bloqueante e mantido verde; priorização usando
-**EPSS/KEV** além do CVSS.
+> Sem bônus nem penalidades à parte: **a qualidade entra na nota da própria fase**. Ex.:
+> PII em log ou "OK" na matriz sem prova **rebaixam** a fase correspondente (7 e 5/8); um
+> requisito vago rebaixa a Fase 1; fazer além do mínimo (ex.: mais um módulo LGPD) **eleva**
+> a fase respectiva.
 
-**Penalidades (até −15):** requisito vago/não testável; "privacidade/segurança no fim";
-correção sem teste/evidência; status "OK" na matriz sem prova; **PII em log**; segredo
-reintroduzido no código; ameaça de privacidade (LINDDUN) sem controle; comportamento sob
-falha ignorado.
+---
+
+## Defesa — como pontuar (banca: o professor)
+
+A defesa é **do grupo** (10–15 min), mas **cada integrante demonstra domínio
+individualmente**: cada um **conduz ao menos um elo do fio** e **responde a perguntas sobre
+qualquer parte** do projeto — o professor direciona as perguntas, então ninguém se esconde
+no grupo.
+
+### Nota da defesa (0–10) — do grupo
+
+| Critério | Pontos | O que avaliar |
+|----------|:------:|---------------|
+| **Fio ao vivo** | 4,0 | percorre ativo → ameaça → requisito → controle → teste → **evidência real** (mostra o teste no CI / a linha na matriz); correto e coerente |
+| **Privacidade** | 1,5 | ameaça **LINDDUN** → PET/controle → trecho do **RIPD** |
+| **Justificativa das decisões** | 2,0 | **priorização** P0/P1/P2; o que ficou no **plano de remediação** e por quê; **fail-secure** |
+| **Respostas à arguição** | 2,5 | responde com precisão e segurança às perguntas do professor |
+
+### Domínio individual (fator por integrante)
+
+Cada integrante recebe um conceito, pelo elo que conduziu **e** pelas respostas:
+
+- **Pleno (× 1,0)** — conduz bem e responde sobre **qualquer** parte;
+- **Parcial (× 0,8)** — conduz o seu, mas hesita fora dele;
+- **Insuficiente (× 0,5)** — não sustenta nem o próprio elo.
+
+### Como fecha a nota (0–10)
+
+Artefatos e Defesa são **cada um 0–10**. A nota final é individual:
+
+```
+Nota final (individual) = 0,8 × Artefatos(grupo) + 0,2 × Defesa(grupo) × fator individual
+```
+
+Assim o grupo pode ir bem, mas **quem não domina não leva a nota cheia** (combate o
+"caroneiro"). Se quiser que o domínio individual pese mais, aplique o fator ao total:
+`(0,8 × Artefatos + 0,2 × Defesa) × fator`.
 
 ---
 

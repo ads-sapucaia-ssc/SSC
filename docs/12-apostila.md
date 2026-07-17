@@ -364,7 +364,7 @@ importante, não urgente; um CVSS 7 no KEV é urgente (explorado agora). Combine
 
 **Entregável (Fase 6):** pipeline como **evidência** (não é a nota) — placar de gates
 (vermelho→verde), SBOM gerado, sem segredos; e **obrigatório**: assinar a imagem com cosign
-(proveniência **SLSA L2**).
+**e atestar o SBOM da imagem** (`cosign attest`) — proveniência **SLSA L2**.
 
 ---
 

@@ -214,6 +214,12 @@ Para cada controle implementado:
 
 ## 11. Defesa (roteiro)
 
+**Formato:** 10–15 min, **banca = o professor**. É do **grupo**, mas **cada integrante conduz
+ao menos um elo do fio e responde sobre qualquer parte** do projeto — o professor pode
+perguntar a qualquer um sobre qualquer etapa. Prepare-se para defender o **todo**, não só a
+sua parte. *(Como a defesa é pontuada — nota da defesa 0–10 e fator individual — em
+[08-rubrica-avaliacao.md](08-rubrica-avaliacao.md), seção "Defesa — como pontuar".)*
+
 Prepare-se para **fechar o fio ao vivo** partindo de **um** ativo:
 
 ```
@@ -224,3 +230,13 @@ Ativo (ex.: laudo) → Ameaça (STRIDE: Disclosure / LINDDUN: Disclosure)
 
 E saber responder: _qual dado é sensível e por quê (LGPD)? qual base legal? que ameaça de
 privacidade o LINDDUN revelou? o que ficou no plano de remediação e por quê?_
+
+### Checklist de preparação (cada integrante)
+
+- [ ] Sei percorrer o **fio completo** de **um** ativo, do dado à **evidência**, sem consultar.
+- [ ] Consigo **mostrar ao vivo** a evidência: o teste passando no **CI** e a linha na **matriz**.
+- [ ] Sei explicar **um** achado de privacidade: ameaça **LINDDUN → PET/controle → RIPD**.
+- [ ] Sei **justificar a priorização** (por que P0/P1/P2) e **o que ficou no plano** e por quê.
+- [ ] Sei o **comportamento sob falha** (fail-secure) do controle e por que é o correto.
+- [ ] Conheço as **bases legais** dos dados do nosso pacote (LGPD) e por que são sensíveis.
+- [ ] Combinei com o grupo **qual elo cada um conduz** — e estudei também os **elos dos colegas**.

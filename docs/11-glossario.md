@@ -64,7 +64,7 @@ Consulta rápida dos termos usados na disciplina. Para o detalhe, veja o documen
   controle obrigatório).
 - **Árvore de ataque** — decomposição dos caminhos para atingir um objetivo do atacante,
   com custo/esforço e a defesa-requisito de cada folha.
-- **Attack-defense tree** — árvore de ataque que também modela as defesas (bônus).
+- **Attack-defense tree** — árvore de ataque que também modela as defesas (avançado).
 
 ## Privacidade / LGPD
 
