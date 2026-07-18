@@ -363,8 +363,11 @@ importante, não urgente; um CVSS 7 no KEV é urgente (explorado agora). Combine
 × KEV**. O **VEX** documenta quando sua aplicação não é afetada por uma CVE.
 
 **Entregável (Fase 6):** pipeline como **evidência** (não é a nota) — placar de gates
-(vermelho→verde), SBOM gerado, sem segredos; e **obrigatório**: assinar a imagem com cosign
-**e atestar o SBOM da imagem** (`cosign attest`) — proveniência **SLSA L2**.
+(vermelho→verde), SBOM, sem segredos. A **entrega segura já vem pré-fiada** (você **não
+configura ferramenta**): na `main`, `release-sign` (build+push+**assina**+**atesta o SBOM** →
+SLSA L2) → `deploy-staging` (smoke/DAST) → `deploy-prod` (**verifica a assinatura** e exige
+**aprovação manual**). Seu trabalho: tornar os gates bloqueantes, e **explicar o fluxo + a
+evidência** no dossiê. Único setup: criar o *environment* `production` com revisor (docs/09 §5.3).
 
 ---
 

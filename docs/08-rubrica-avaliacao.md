@@ -18,7 +18,7 @@ depois (0–10, com fator individual) e as duas se combinam na **nota final** �
 | 3 | Projeto seguro & priorização | 1,0 | Catálogo consolidado; risco→P0/P1/P2 por **gravidade (CVSS/DREAD) × exploração real (EPSS/KEV)**; **Definition of Done** segura |
 | 4 | **Remediação — prova de conceito** | 0,8 | 1–2 controles corrigidos ponta-a-ponta **+ plano de remediação** do restante |
 | 5 | Verificação & evidências | 1,2 | Teste que exercita o controle; scanners como evidência; evidência real |
-| 6 | DevSecOps / pipeline (evidência) | 0,6 | Pipeline gera evidência; SBOM; sem segredos no repo; **imagem assinada (cosign) + SBOM atestado → proveniência SLSA L2** |
+| 6 | DevSecOps / pipeline (evidência) | 0,6 | Gates verdes + tornados bloqueantes; **assinatura + SBOM atestado (SLSA L2)** e **promoção verificada** (staging → aprovação → prod), **explicados** no dossiê (o pipeline já provê; o aluno usa e justifica) |
 | 7 | **Operação, incidente & LGPD art. 48** | 0,6 | Trilha de auditoria íntegra; runbook + fluxo de notificação ANPD |
 | 8 | Rastreabilidade & defesa | 0,8 | Matriz completa; métricas; **defesa fecha o fio ao vivo** (pontuada à parte) |
 | — | **Nota de artefatos (grupo)** | **10,0** | |

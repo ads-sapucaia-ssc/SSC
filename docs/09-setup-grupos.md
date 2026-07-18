@@ -132,6 +132,21 @@ Isto é o que transforma "merge só com gate verde **e** revisão aprovada" (pas
 `continue-on-error`), **adicione esse gate** à lista de status checks obrigatórios. Assim a
 proteção da `main` cresce junto com as correções.
 
+## 5.3 Ambiente `production` com aprovação (1 passo)
+
+O pipeline **já** builda, assina, atesta e promove a imagem (jobs `release-sign` →
+`deploy-staging` → `deploy-prod`) — você **não configura ferramenta**. Só a **aprovação
+manual** de produção exige criar o *environment* (é política do repo, não vem no arquivo).
+Faça **uma vez**, por um integrante com **admin**:
+
+1. **Settings → Environments → New environment → `production`**.
+2. Marque **Required reviewers** e adicione **1 revisor** (um integrante ou o professor).
+3. (opcional) **Deployment branches → Selected → `main`**.
+
+A partir daí, o job `deploy-prod` **pausa aguardando aprovação** e só roda se a **assinatura
+e a atestação** da imagem **passarem** na verificação (admission gate). *(O environment
+`staging` é criado automaticamente, sem revisor.)*
+
 ## 6. Autograding (como sua nota parcial é calculada)
 
 O `.github/classroom/autograding.json` roda a cada push e pontua **quando o padrão

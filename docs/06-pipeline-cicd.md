@@ -98,75 +98,41 @@ Cada execução do pipeline gera evidências reutilizáveis na defesa (Fase 8):
 
 ---
 
-## 5. Atividade obrigatória — supply chain: assinatura e proveniência
+## 5. Entrega segura (já pré-fiada): assinatura, verificação e promoção
 
-Fecha a Parte 9 do conteúdo (Deploy + Supply Chain) e é **entregável da Fase 6** (ver
-[08-rubrica-avaliacao.md](08-rubrica-avaliacao.md)). O grupo demonstra que sabe **provar a
-origem** de um artefato, não só produzi-lo.
+Fecha a Parte 9 (Deploy + Supply Chain) e é **entregável da Fase 6**. **O pipeline já faz
+tudo isto** — você **não configura ferramenta** (usa **OIDC + `GITHUB_TOKEN`**, sem
+segredos). Seu trabalho é **entender, tornar bloqueante quando fizer sentido e explicar no
+dossiê** com a evidência do run.
 
-**SLSA** (*Supply-chain Levels for Software Artifacts*, OpenSSF) — 4 níveis:
-`L0` sem proveniência · `L1` proveniência básica · `L2` proveniência **assinada** ·
-`L3` build endurecido/auditado. **Meta obrigatória: L2.**
+### O fluxo de CD (roda na `main`)
 
-**Sigstore / cosign** assina por **identidade OIDC** (*keyless* — sem gerenciar chaves de
-longa duração): o GitHub Actions emite um token OIDC, o cosign registra a assinatura no log
-público **Rekor** e a amarra ao **quem/como** do build.
-
-### Ponto-chave: assina-se imagem **publicada**, pelo digest
-
-Você **não** assina um `docker build` local — assina uma imagem que já está **num registry**,
-e **pelo digest** (imutável), não pela tag. Logo, a ordem é: **login → build & push →
-assinar → verificar**. Adicione um **job novo** ao seu `ssdlc-pipeline.yml`.
-
-**1) Permissões (no job) — sem isto, falha:**
-
-```yaml
-permissions:
-  contents: read
-  packages: write     # publicar a imagem no GHCR (ghcr.io)
-  id-token: write     # token OIDC que o cosign usa (keyless)
+```
+release-sign  →  deploy-staging  →  deploy-prod
 ```
 
-**2) Login no GHCR + build & push (capture o digest):**
+1. **`release-sign`** — *build once*: builda e **publica** a imagem no **GHCR**, **assina**
+   com **cosign** (keyless/OIDC, registrado no **Rekor**) e **atesta o SBOM** da imagem →
+   **proveniência assinada = SLSA L2**.
+2. **`deploy-staging`** — "sobe" a app num **staging** efêmero e faz um *smoke* (o **DAST
+   autenticado** exercita essa instância).
+3. **`deploy-prod`** — **admission gate**: `cosign verify` + `verify-attestation` **recusam
+   imagem não assinada/atestada**, e só executa **após aprovação manual** do ambiente
+   `production`. É o "*build once, deploy many*" **com portão**.
 
-```yaml
-- uses: actions/checkout@v4
-- uses: docker/login-action@v3
-  with:
-    registry: ghcr.io
-    username: ${{ github.actor }}
-    password: ${{ secrets.GITHUB_TOKEN }}
-- id: push
-  uses: docker/build-push-action@v6
-  with:
-    context: legacy-app/backend
-    push: true
-    tags: ghcr.io/${{ github.repository }}/vidaplus-backend:${{ github.sha }}
-```
+**Conceitos (para a defesa):** **SLSA** L0→L3 mede a confiança da proveniência (meta **L2**,
+assinada); **Sigstore/cosign** assina por **identidade** (não por chave); e assinar só tem
+valor porque **alguém verifica** — por isso o `deploy-prod` recusa o não-assinado.
 
-O passo `id: push` expõe **`steps.push.outputs.digest`** — use-o para assinar.
+### O que você faz (não é configurar ferramenta)
+- **Rodar** na `main` e **ler** os jobs `release-sign` / `deploy-staging` / `deploy-prod`.
+- **Tornar bloqueantes** os gates de segurança das suas PoCs (Seção 2).
+- **Explicar no dossiê (§8)**: o fluxo acima + a **evidência** (imagem assinada em
+  **Packages**; `cosign verify`/`verify-attestation` passando; a **pausa de aprovação** do
+  `production`).
+- **Único passo de setup** (é política do repo, não ferramenta): criar o **Environment
+  `production` com *required reviewer*** — ver [09-setup-grupos.md §5.3](09-setup-grupos.md).
 
-**3) Assinar (keyless) e verificar:**
-
-```yaml
-- uses: sigstore/cosign-installer@v3
-- name: Assinar por digest
-  run: cosign sign --yes
-        ghcr.io/${{ github.repository }}/vidaplus-backend@${{ steps.push.outputs.digest }}
-- name: Verificar (a identidade deve ser o SEU workflow)
-  run: cosign verify
-        --certificate-identity-regexp "https://github.com/${{ github.repository }}/.*"
-        --certificate-oidc-issuer "https://token.actions.githubusercontent.com"
-        ghcr.io/${{ github.repository }}/vidaplus-backend@${{ steps.push.outputs.digest }}
-```
-
-> ⚠️ Na verificação, **não** use `--certificate-identity-regexp '.*'`: isso aceitaria
-> **qualquer** signatário e esvazia a proveniência. Amarre ao **seu** repositório.
-
-### Entregável (evidência)
-- job **verde** com `cosign sign` + `cosign verify` passando (print/log do run);
-- a imagem em **Packages** do repo, marcada como assinada;
-- **SBOM da imagem atestado** (`cosign attest --type cyclonedx …`) e verificado
-  (`cosign verify-attestation`), ligando a proveniência ao **conteúdo**.
-
-Imagem assinada + verificação + SBOM atestado = **SLSA L2** na prática para o artefato do grupo.
+> ⚠️ A verificação amarra a identidade ao **seu** repositório
+> (`--certificate-identity-regexp "https://github.com/<owner>/<repo>/.*"`) — **nunca** `.*`,
+> que aceitaria qualquer signatário e esvaziaria a proveniência.

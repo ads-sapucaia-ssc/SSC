@@ -222,6 +222,108 @@ jobs:
         # No legado FALHA de proposito (gate vermelho); fica verde quando corrigido.
         run: mvn -B -q test -Dgroups=security
 
+  # ==================================================================
+  # CD — assinatura, verificacao e promocao (so na branch main).
+  # Tudo PRE-FIADO e ZERO-CONFIG (usa OIDC + GITHUB_TOKEN, sem segredos).
+  # O aluno NAO configura ferramenta: apenas observa, torna bloqueante,
+  # verifica e EXPLICA no dossie. Ver docs/06-pipeline-cicd.md.
+  # ==================================================================
+
+  # ---------- Release: build once -> push -> assinar -> atestar (SLSA L2) ----------
+  release-sign:
+    name: "Release - build, push, sign & attest (SLSA L2)"
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: [build-backend]
+    permissions:
+      contents: read
+      packages: write      # publicar no GHCR
+      id-token: write      # OIDC keyless (cosign)
+    outputs:
+      image: ${{ steps.meta.outputs.image }}
+      digest: ${{ steps.push.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: meta
+        run: echo "image=ghcr.io/${{ github.repository }}/vidaplus-backend" >> "$GITHUB_OUTPUT"
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: legacy-app/backend
+          push: true
+          tags: ${{ steps.meta.outputs.image }}:${{ github.sha }}
+      - uses: sigstore/cosign-installer@v3
+      - name: Assinar por digest (keyless)
+        run: cosign sign --yes "${{ steps.meta.outputs.image }}@${{ steps.push.outputs.digest }}"
+      - name: SBOM da imagem
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ steps.meta.outputs.image }}@${{ steps.push.outputs.digest }}
+          format: cyclonedx-json
+          output-file: sbom-image.cdx.json
+      - name: Atestar o SBOM
+        run: cosign attest --yes --predicate sbom-image.cdx.json --type cyclonedx "${{ steps.meta.outputs.image }}@${{ steps.push.outputs.digest }}"
+
+  # ---------- Deploy staging (ambiente efemero + smoke) ----------
+  deploy-staging:
+    name: "Deploy staging + smoke"
+    runs-on: ubuntu-latest
+    needs: [release-sign]
+    environment: staging      # criado automaticamente; sem reviewer
+    steps:
+      - uses: actions/checkout@v4
+      - name: Subir a app (staging efemero) e checar saude
+        working-directory: legacy-app
+        run: |
+          docker compose up -d --build
+          echo "aguardando API..."; sleep 40
+          curl -fsS http://localhost:8080/ >/dev/null && echo "staging no ar" || echo "smoke incompleto (esperado no legado)"
+      - name: Derrubar ambiente
+        if: always()
+        working-directory: legacy-app
+        run: docker compose down -v
+
+  # ---------- Deploy prod: ADMISSION GATE (verifica assinatura) + APROVACAO manual ----------
+  deploy-prod:
+    name: "Deploy prod - verifica assinatura + aprovacao"
+    runs-on: ubuntu-latest
+    needs: [release-sign, deploy-staging]
+    environment: production   # defina 'required reviewers' em Settings -> Environments (1 passo)
+    permissions:
+      contents: read
+      packages: read          # ler a imagem/assinatura no GHCR (repo privado). Menor privilegio: sem id-token.
+    steps:
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: sigstore/cosign-installer@v3
+      # So promove imagem ASSINADA e ATESTADA por ESTE repositorio (estilo admission control).
+      - name: Verificar assinatura da imagem
+        run: |
+          cosign verify \
+            --certificate-identity-regexp "https://github.com/${{ github.repository }}/.*" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "${{ needs.release-sign.outputs.image }}@${{ needs.release-sign.outputs.digest }}"
+      - name: Verificar atestacao do SBOM
+        run: |
+          cosign verify-attestation --type cyclonedx \
+            --certificate-identity-regexp "https://github.com/${{ github.repository }}/.*" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "${{ needs.release-sign.outputs.image }}@${{ needs.release-sign.outputs.digest }}"
+      - name: Promover para producao
+        # 'Deploy' simbolico (sem host externo): o valor pedagogico e o PORTAO -
+        # so passa imagem verificada, e so apos aprovacao manual do ambiente 'production'.
+        run: |
+          echo "Imagem assinada, atestada e aprovada. Promovendo para producao:"
+          echo "${{ needs.release-sign.outputs.image }}@${{ needs.release-sign.outputs.digest }}"
+
   # ---------- Placar dos gates (resumo) ----------
   gate-summary:
     name: "Placar de gates SSDLC"
