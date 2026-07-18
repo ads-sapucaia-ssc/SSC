@@ -3,7 +3,7 @@
 **Disciplina:** Segurança de Sistemas Computacionais (SSC)
 **Câmpus:** IFSul — Sapucaia do Sul · Tecnologia em Análise e Desenvolvimento de Sistemas
 **Professor:** Dr. Alex Mulattieri Suarez Orozco
-**Modalidade:** projeto em grupos (3–4) conduzido ao longo de 16 semanas (3h/aula)
+**Modalidade:** projeto em grupos de 3–4 alunos conduzido ao longo de 16 semanas (3h/aula)
 
 ---
 
@@ -64,7 +64,7 @@ projeto-vidaplus/
 ├── README.md                        ← este arquivo
 ├── docs/                            ← desenho da disciplina e do projeto
 │   ├── 00-visao-geral.md            visão, contexto do legado, papéis
-│   ├── 01-plano-disciplina-ssdlc.md SSDLC ↔ teoria ↔ 18 semanas
+│   ├── 01-plano-disciplina-ssdlc.md SSDLC ↔ teoria ↔ 16 semanas
 │   ├── 02-lgpd.md                   LGPD embutida no SSDLC
 │   ├── 03-privacy-by-design-linddun.md  PbD + LINDDUN
 │   ├── 04-catalogo-funcionalidades.md   funcionalidades por criticidade
