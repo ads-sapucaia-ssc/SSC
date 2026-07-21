@@ -59,7 +59,7 @@ Ao fazer o primeiro `push`, o **GitHub Actions** executa o
 | SCA | CVE em dependências (higiene de supply chain) | Fase 5/6 |
 | Container Scanning | CVE na imagem base/SO do backend/frontend | Fase 5/6 |
 | DAST autenticado | Faltam headers, stack trace, SQLi/XSS e IDOR (com JWT) | Fase 5 |
-| Testes de segurança | IDOR/RBAC/auditoria sem teste que prove correção | Fase 5 |
+| Testes de segurança | IDOR/RBAC e SQLi no login sem teste que prove correção | Fase 5 |
 
 ---
 

@@ -26,7 +26,7 @@ conceito** do grupo faz o(s) gate(s) da classe corrigida transitar **🔴 → �
 | **Container Scanning** | Trivy (image) | 5/6 | CVE na imagem base/SO do backend/frontend |
 | **SBOM** | Syft (CycloneDX) | 6 | inventário de componentes |
 | **DAST autenticado** | OWASP ZAP (com JWT) | 5 | V-03 IDOR, V-11, V-12, V-10 (dinâmico, autenticado) |
-| **Testes de segurança** | JUnit (`-Dgroups=security`) | 5 | V-03 IDOR, V-04 RBAC, auth, V-06 auditoria |
+| **Testes de segurança** | JUnit (`-Dgroups=security`) | 5 | V-03 IDOR, V-04 RBAC, V-01 SQLi no login |
 | Placar | summary job | 8 | consolida o estado dos gates |
 
 > IDOR (V-03) e RBAC (V-04) são falhas **lógicas** — não aparecem em scanner genérico.

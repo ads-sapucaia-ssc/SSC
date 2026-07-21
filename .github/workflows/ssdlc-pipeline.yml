@@ -192,7 +192,7 @@ jobs:
         working-directory: legacy-app
         run: docker compose down -v
 
-  # ---------- Gate: testes de seguranca (IDOR/RBAC/auth/auditoria) ----------
+  # ---------- Gate: testes de seguranca (IDOR/RBAC/SQLi no login) ----------
   security-tests:
     name: "Gate - Testes de seguranca"
     runs-on: ubuntu-latest
