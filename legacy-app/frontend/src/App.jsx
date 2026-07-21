@@ -1,63 +1,36 @@
 import React, { useState } from 'react';
-import { login, logout, salvarToken, getToken } from './services/auth';
-import { getExame } from './services/exame';
-import Prontuario from './components/Prontuario';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { getUsuario } from './services/auth';
+import Layout from './components/Layout';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import ExameDetalhe from './pages/ExameDetalhe';
+import BuscaPacientes from './pages/BuscaPacientes';
+import PacienteFicha from './pages/PacienteFicha';
 
 /**
- * Portal VidaPlus (LEGADO) - esqueleto representativo em React.
- * Concentra os pontos vulneraveis-chave para uso em aula (ver README).
+ * Portal VidaPlus (LEGADO) - React 19 + React Router.
+ * Concentra os pontos vulneraveis-chave para uso em aula (ver README e docs/07
+ * no repositorio do professor). A UI foi desenhada para parecer um sistema de
+ * saude real; NENHUMA falha muda de comportamento por causa da UI - so a
+ * apresentacao em volta delas.
  */
 export default function App() {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [logado, setLogado] = useState(!!getToken());
-  const [exameId, setExameId] = useState('101');
-  const [exame, setExame] = useState(null);
+  const [usuario, setUsuario] = useState(getUsuario());
 
-  const entrar = async (e) => {
-    e.preventDefault();
-    const resp = await login(email, senha); // V-01/V-13: login sobre HTTP, SQLi no backend
-    if (resp && resp.access_token) {
-      salvarToken(resp.access_token); // V-07/V-10: token em localStorage
-      setLogado(true);
-    }
-  };
-
-  // V-03 (IDOR do lado cliente): busca por id livre; backend nao checa dono
-  const buscarExame = async () => setExame(await getExame(exameId));
-
-  // V-07: "logout" SOMENTE no cliente. Descarta o token do navegador, mas o JWT
-  // continua VALIDO no servidor - nao ha expiracao nem invalidacao (ver JwtUtil).
-  // Comprove: copie o token antes de sair e reenvie com curl; ainda funciona.
-  const sair = () => {
-    logout();
-    setLogado(false);
-    setEmail('');
-    setSenha('');
-    setExame(null);
-  };
-
-  if (!logado) {
-    return (
-      <form onSubmit={entrar}>
-        <h1>VidaPlus — Login</h1>
-        <input placeholder="e-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input placeholder="senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
-        <button type="submit">Entrar</button>
-      </form>
-    );
+  if (!usuario) {
+    return <Login onEntrar={() => setUsuario(getUsuario())} />;
   }
 
   return (
-    <div>
-      <h1>VidaPlus</h1>
-      {/* V-07: o "Sair" so limpa o localStorage; o token segue valido no servidor */}
-      <button onClick={sair}>Sair</button>
-      {/* V-03: troque o id para tentar acessar exame de outro paciente */}
-      <input value={exameId} onChange={(e) => setExameId(e.target.value)} />
-      <button onClick={buscarExame}>Ver exame</button>
-      {exame && <pre>{JSON.stringify(exame, null, 2)}</pre>}
-      <Prontuario pacienteId={1} />
-    </div>
+    <Layout usuario={usuario}>
+      <Routes>
+        <Route path="/" element={<Dashboard usuario={usuario} />} />
+        <Route path="/exames/:id" element={<ExameDetalhe usuario={usuario} />} />
+        <Route path="/pacientes" element={<BuscaPacientes />} />
+        <Route path="/pacientes/:id" element={<PacienteFicha />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Layout>
   );
 }

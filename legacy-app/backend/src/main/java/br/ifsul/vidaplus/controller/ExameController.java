@@ -5,6 +5,7 @@ import br.ifsul.vidaplus.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,6 +42,21 @@ public class ExameController {
         if (uid == null) throw new RuntimeException("nao autenticado");
         // FALHA: nenhuma verificacao de que 'id' pertence a 'uid'
         return exameDao.porId(id);
+    }
+
+    /**
+     * V-03 (tambem na listagem): historico de exames do paciente, sem checar
+     * se 'pacienteId' e o proprio autenticado nem se o medico o atende
+     * (ver ExameDao.medicoAtende - existe e NAO e chamado aqui de proposito).
+     * Usado pela UI (Dashboard do paciente e Ficha do paciente).
+     */
+    @GetMapping("/paciente/{pacienteId}")
+    public List<Map<String, Object>> porPaciente(@PathVariable long pacienteId,
+                                        @RequestHeader(value = "Authorization", required = false) String auth) {
+        Long uid = usuarioId(auth);
+        if (uid == null) throw new RuntimeException("nao autenticado");
+        // FALHA: nenhuma verificacao de que 'pacienteId' pertence/e atendido por 'uid'
+        return exameDao.doPaciente(pacienteId);
     }
 
     /** V-03/V-09: "download" do PDF por caminho previsivel, sem autorizacao. */

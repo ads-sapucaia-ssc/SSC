@@ -2,6 +2,11 @@
 Sistema de gestão de clínica **intencionalmente vulnerável**, base do projeto da  
    
  disciplina SSC. Objetivo: os grupos o **corrigem e adequam** ao longo do SSDLC.  
+A interface (React + React Router) é uma UI real de sistema de saúde — login, painel por
+papel, busca de pacientes, ficha e exames navegáveis por URL — para que a exploração das
+falhas (ex.: trocar o id na barra de endereços) aconteça como um usuário real faria, não só
+via `curl`. Os comandos abaixo continuam valendo para testar a API diretamente.  
+  
 **Subir o ambiente**  
 docker compose up --build  
  # Frontend:  http://localhost:4200  
@@ -44,6 +49,9 @@ docker compose up --build
  curl -s -X POST localhost:8080/api/auth/reset -H 'Content-Type: application/json' \  
    -d '{"email":"naoexiste@x.com"}'   # resposta denuncia inexistência  
    
+ # V-19 nota clinica sem NENHUMA autenticacao (nem token):  
+ curl -s localhost:8080/api/pacientes/1/notas   # 200 mesmo sem header algum (FALHA)  
+    
  # V-07 o "logout" é cosmético (o token nunca morre):  
  #  1. logue na UI e copie o token: DevTools > Console > localStorage.access_token  
  #  2. clique em "Sair" (a tela volta ao login e o localStorage é limpo)  

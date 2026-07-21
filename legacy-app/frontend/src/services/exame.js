@@ -20,3 +20,13 @@ export function getPdf(id) {
   // V-03/V-09: qualquer id retorna o caminho do PDF (pasta publica)
   return axios.get(`${API_BASE}/exames/${id}/pdf`, authHeader()).then((r) => r.data);
 }
+
+export function publicar(id) {
+  // V-04: qualquer autenticado publica (backend nao checa papel BIOQUIMICO)
+  return axios.post(`${API_BASE}/exames/${id}/publicar`, {}, authHeader()).then((r) => r.data);
+}
+
+export function listarExamesDoPaciente(pacienteId) {
+  // V-03 tambem na listagem: nenhum vinculo checado - id de paciente livre.
+  return axios.get(`${API_BASE}/exames/paciente/${pacienteId}`, authHeader()).then((r) => r.data);
+}
