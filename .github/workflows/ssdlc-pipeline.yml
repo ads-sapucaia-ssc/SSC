@@ -312,11 +312,14 @@ jobs:
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
             "${{ needs.release-sign.outputs.image }}@${{ needs.release-sign.outputs.digest }}"
       - name: Verificar atestacao do SBOM
+        # A verificacao (stderr) e o que importa; o payload DSSE (stdout, o SBOM inteiro)
+        # e descartado com > /dev/null para nao travar o streaming do log. timeout como rede de seguranca.
         run: |
-          cosign verify-attestation --type cyclonedx \
+          timeout 120 cosign verify-attestation --type cyclonedx \
             --certificate-identity-regexp "https://github.com/${{ github.repository }}/.*" \
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
-            "${{ needs.release-sign.outputs.image }}@${{ needs.release-sign.outputs.digest }}"
+            "${{ needs.release-sign.outputs.image }}@${{ needs.release-sign.outputs.digest }}" > /dev/null
+          echo "Atestacao do SBOM verificada."
       - name: Promover para producao
         # 'Deploy' simbolico (sem host externo): o valor pedagogico e o PORTAO -
         # so passa imagem verificada, e so apos aprovacao manual do ambiente 'production'.
