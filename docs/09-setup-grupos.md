@@ -147,6 +147,13 @@ A partir daí, o job `deploy-prod` **pausa aguardando aprovação** e só roda s
 e a atestação** da imagem **passarem** na verificação (admission gate). *(O environment
 `staging` é criado automaticamente, sem revisor.)*
 
+> ⚠️ **"Required reviewers" não aparece?** As regras de proteção de *environment* só existem
+> em repositório **público** ou **privado** com plano **Pro/Team/Enterprise/Education**. Num
+> repo **privado gratuito** a opção fica oculta — nesse caso o `deploy-prod` **roda sem
+> pausar** (a verificação da assinatura **continua** valendo). Para ter a pausa em repo
+> privado, use uma **organização GitHub Education** (o IFSul se qualifica; via **Classroom**
+> os repos dos alunos herdam features **Team**) — ou deixe o repo **público**.
+
 ## 6. Autograding (como sua nota parcial é calculada)
 
 O `.github/classroom/autograding.json` roda a cada push e pontua **quando o padrão
