@@ -5,15 +5,10 @@ rules:
     languages: [java]
     severity: ERROR
     message: >-
-      Possivel SQL Injection (V-01/V-13): query montada por concatenacao de String.
+      Possivel SQL Injection (V-01/V-13): query SQL montada por concatenacao de String.
       Use PreparedStatement/JdbcTemplate parametrizado.
     patterns:
-      - pattern-either:
-          - pattern: $STMT.executeQuery("..." + $X + "...")
-          - pattern: |
-              String $Q = "..." + $X + "...";
-              ...
-              $STMT.executeQuery($Q);
+      - pattern-regex: '"[^"]*\b(SELECT|INSERT|UPDATE|DELETE|WHERE)\b[^"]*"\s*\+'
 
   - id: vidaplus-weak-hash-md5
     languages: [java]
@@ -25,10 +20,10 @@ rules:
   - id: vidaplus-jwt-no-expiration
     languages: [java]
     severity: WARNING
-    message: "JWT sem expiracao (V-07): faltou setExpiration(). Token eterno."
+    message: "JWT sem expiracao (V-07): faltou .expiration(...). Token eterno."
     patterns:
-      - pattern: Jwts.builder() ... .compact()
-      - pattern-not: Jwts.builder() ... .setExpiration(...) ... .compact()
+      - pattern: Jwts.builder(). ... .compact()
+      - pattern-not: Jwts.builder(). ... .expiration(...). ... .compact()
 
   - id: vidaplus-hardcoded-secret
     languages: [java]
@@ -42,4 +37,4 @@ rules:
     severity: ERROR
     message: "XSS (V-10): dangerouslySetInnerHTML com conteudo nao confiavel (React)."
     patterns:
-      - pattern: dangerouslySetInnerHTML={...}
+      - pattern-regex: 'dangerouslySetInnerHTML\s*='
