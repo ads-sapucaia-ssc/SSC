@@ -103,9 +103,11 @@ Quando terminar de corrigir uma classe de falha, **torne o gate bloqueante** rem
 > e isso é o esperado.
 >
 > **Testes de segurança são um job só** (roda os `@security` juntos), mas cada teste-semente
-> tem **um dono**: `sqli_no_login` → Grupo 1 (F-01); `idor…403` → Grupo 2 (F-02);
-> `rbac…403` → Grupo 2 (F-03/F-07). Grupos 3, 4 e 5 **não** têm teste-semente — provam o seu
-> pacote com **testes próprios** (Fase 5) + dossiê. Para tornar bloqueante **só o seu** teste
+> tem **dono(s)**: `sqli_no_login` → **G1 e G5** (F-01); `idor…403` → **G2 e G4** (F-02);
+> `rbac…403` → **G3** (F-03; toca também F-07, de G2). **Todo grupo tem um teste-semente no
+> seu P0 de correção** — é o seu 🔴→🟢 objetivo. A funcionalidade de **criação** (✨) do
+> pacote **não** tem teste-semente: o grupo escreve o **teste próprio** (Fase 5) e usa o
+> dossiê. Para tornar bloqueante **só o seu** teste
 > sem depender de outro pacote, restrinja a execução aos seus testes (ex.: uma `@Tag` mais
 > específica ou `-Dtest=...`); ou mantenha o gate informativo e use o **teste específico verde
 > no log** + a **matriz de rastreabilidade** como evidência.
