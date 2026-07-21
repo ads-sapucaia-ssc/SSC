@@ -48,7 +48,7 @@ enumeração, CORS com credenciais, CSP/HSTS; **não-repúdio** e trilha append-
 | F-02 Visualização/download de laudo (IDOR) | 🔴 P0 | 🛠️ | *compartilhada com G4* — aqui a lente é **autorização/ownership**: deny-by-default no acesso ao laudo |
 | F-09 Exportação do titular (portabilidade) | 🟠 P1 | ✨⚖️ | criar — é o **espelho** do IDOR: negar o alheio, entregar o próprio |
 | F-07 Publicação de laudo | 🟠 P1 | 🛠️ | |
-| F-08 Armazenamento de PDFs | 🟠 P1 | 🛠️⚖️ | |
+| F-08 Armazenamento de PDFs | 🟠 P1 | 🛠️⚖️ | teste com um exame **não publicado** — ver nota em `docs/04` |
 
 **Teste-semente:** `idor…403`.
 **Foco teórico puxado:** Broken Access Control, IDOR, ownership server-side,

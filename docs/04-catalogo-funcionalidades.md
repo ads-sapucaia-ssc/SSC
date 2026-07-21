@@ -42,6 +42,14 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 | F-11 | **Sessão / token** | Token longo, sem expiração/rotação; `alg:none` aceito | 🛠️ | Session hijacking |
 | F-12 | **Recuperação de senha** | Token previsível, sem expiração, resposta que enumera e-mail | 🛠️ | Account takeover, enumeração |
 
+> ⚠️ **F-07 e F-08 não são independentes.** O status de "publicado" (F-07) é um **rótulo
+> de fluxo de trabalho** no banco — ele não controla o acesso ao arquivo (F-08). No
+> legado, um exame **ainda em rascunho** (`publicado = 0`, ex.: sorologia não liberada)
+> é baixável do mesmo jeito, sem nenhuma autenticação. Ao escrever o RGS de F-08, teste
+> justamente um exame **não publicado**: se ele também vazar, corrigir só um dos dois
+> (RBAC na publicação **ou** acesso ao arquivo) deixa a lacuna real — os dois requisitos
+> precisam ser corrigidos e verificados **juntos**.
+
 ---
 
 ## 🟡 Criticidade MÉDIA (P1/P2)

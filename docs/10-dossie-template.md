@@ -50,6 +50,7 @@ Para cada funcionalidade do pacote: RFS (mecanismo) + RGS (garantia) + **base le
 | ID | Funcionalidade | RFS (mecanismo testável) | RGS (garantia) | Ameaça | Base legal (LGPD/ASVS) | Prioridade |
 |----|----------------|--------------------------|----------------|--------|------------------------|:---------:|
 | _REQ-AC-01_ | _F-02 download_ | _validar ownership no servidor; senão 403 sem metadados_ | _teste anti-IDOR no CI_ | _EoP/IDOR_ | _art. 11/46; ASVS V4_ | _P0_ |
+| _REQ-AC-02_ | _F-08 armazenamento_ | _download de PDF exige autorização, independente de F-07 (`publicado`)_ | _teste com exame **não publicado**: baixa sem token deve dar 401/403_ | _Info Disclosure_ | _art. 11/46; ASVS V4_ | _P1_ |
 |  |  |  |  |  |  |  |
 
 **Nível ASVS alvo:** _L2_ — **justificativa:** _dados sensíveis de saúde…_
