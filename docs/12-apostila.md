@@ -339,6 +339,10 @@ falha (200); após a correção, passa (403).
 
 **Entregável (Fase 5):** teste que exercita o controle + evidências reais do CI; torne
 **bloqueante** o gate da classe corrigida. Requisito só está pronto com teste **E** evidência.
+Cada grupo torna bloqueante **só o gate do seu pacote** — os gates de funcionalidades de
+outros pacotes (ou das suas apenas *analisadas*) seguem **informativos**, e o workflow já
+conclui **verde** desde o 1º push. A nota **não** exige o pipeline 100% verde (nota = dossiê
++ defesa; pipeline = evidência).
 
 ---
 
@@ -434,13 +438,15 @@ controles), **NIST SSDF** (liga ao ciclo). Fio completo estendido: *REQ → amea
 
 **Métricas do processo** (tornam segurança mensurável): % de ameaças com controle
 (cobertura do threat model), % de requisitos com teste (verificação), % de ameaças de
-privacidade mitigadas (LINDDUN), e o **placar de gates verdes/total** — a métrica-mestra do
-progresso.
+privacidade mitigadas (LINDDUN), e o **placar de gates verdes/total do seu pacote** — a
+métrica-mestra do progresso (medida sobre as funcionalidades que o grupo implementa, não
+sobre todos os gates do repositório).
 
 **Anti-padrões × boas práticas.** Pior antipadrão: requisito vago ("ser seguro") que ninguém
 testa; segundo: "segurança no fim". Boas práticas: requisitos SMART e testáveis, elicitar
 cedo (custo 500× menor), vincular requisito → ameaça → teste, rastreabilidade viva. A rubrica
-premia as boas práticas e penaliza os antipadrões.
+valoriza as boas práticas; os antipadrões derrubam a nota da própria fase (sem penalidades à
+parte).
 
 **Entregável (Fase 8 + defesa):** matriz completa + métricas + risco residual; na **defesa**,
 o grupo escolhe um ativo e percorre o **fio completo ao vivo**: *laudo → IDOR → REQ-AC-01 →
