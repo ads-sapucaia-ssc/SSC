@@ -48,14 +48,15 @@ public class AuthController {
     public Map<String, Object> reset(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         Map<String, Object> resp = new HashMap<>();
-        // (No legado, a consulta e feita e o retorno denuncia a existencia do e-mail.)
-        boolean existe = email != null && email.contains("@");
-        if (existe) {
-            String token = email.hashCode() + "-" + System.currentTimeMillis(); // previsivel
+        // V-08: consulta o banco de verdade e DENUNCIA o resultado na resposta.
+        Map<String, Object> u = (email != null) ? usuarioDao.porEmail(email) : null;
+        if (u != null) {
+            // V-08: token previsivel (id do usuario + timestamp), sem uso unico nem expiracao
+            String token = u.get("id") + "-" + System.currentTimeMillis();
             resp.put("mensagem", "e-mail encontrado, enviando link de reset");
             resp.put("reset_token", token); // V-08: token exposto na resposta
         } else {
-            resp.put("mensagem", "e-mail nao cadastrado"); // denuncia inexistencia
+            resp.put("mensagem", "e-mail nao cadastrado"); // V-08: denuncia inexistencia
         }
         return resp;
     }

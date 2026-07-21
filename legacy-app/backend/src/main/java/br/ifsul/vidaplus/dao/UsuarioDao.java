@@ -24,6 +24,32 @@ public class UsuarioDao {
     private DataSource dataSource;
 
     /**
+     * Busca usuario pelo e-mail (usado pelo reset de senha).
+     * V-08: e o que permite a ENUMERACAO - o controller denuncia na resposta se
+     *       o e-mail existe ou nao.
+     * V-01 tambem: e-mail concatenado na query.
+     */
+    public Map<String, Object> porEmail(String email) {
+        String sql = "SELECT id, email, papel FROM usuario " +
+                "WHERE email = '" + email + "' AND ativo = 1";
+        try (Connection c = dataSource.getConnection();
+             Statement st = c.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                Map<String, Object> u = new HashMap<>();
+                u.put("id", rs.getLong("id"));
+                u.put("email", rs.getString("email"));
+                u.put("papel", rs.getString("papel"));
+                return u;
+            }
+            return null;
+        } catch (Exception e) {
+            // V-11: excecao crua
+            throw new RuntimeException("Erro na consulta por e-mail: " + e.getMessage(), e);
+        }
+    }
+
+    /**
      * V-01: monta a query concatenando entradas do usuario. NAO usar como referencia.
      */
     public Map<String, Object> autenticar(String email, String senha) {
