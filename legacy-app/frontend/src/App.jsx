@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { login, salvarToken, getToken } from './services/auth';
+import { login, logout, salvarToken, getToken } from './services/auth';
 import { getExame } from './services/exame';
 import Prontuario from './components/Prontuario';
 
@@ -26,6 +26,17 @@ export default function App() {
   // V-03 (IDOR do lado cliente): busca por id livre; backend nao checa dono
   const buscarExame = async () => setExame(await getExame(exameId));
 
+  // V-07: "logout" SOMENTE no cliente. Descarta o token do navegador, mas o JWT
+  // continua VALIDO no servidor - nao ha expiracao nem invalidacao (ver JwtUtil).
+  // Comprove: copie o token antes de sair e reenvie com curl; ainda funciona.
+  const sair = () => {
+    logout();
+    setLogado(false);
+    setEmail('');
+    setSenha('');
+    setExame(null);
+  };
+
   if (!logado) {
     return (
       <form onSubmit={entrar}>
@@ -40,6 +51,8 @@ export default function App() {
   return (
     <div>
       <h1>VidaPlus</h1>
+      {/* V-07: o "Sair" so limpa o localStorage; o token segue valido no servidor */}
+      <button onClick={sair}>Sair</button>
       {/* V-03: troque o id para tentar acessar exame de outro paciente */}
       <input value={exameId} onChange={(e) => setExameId(e.target.value)} />
       <button onClick={buscarExame}>Ver exame</button>

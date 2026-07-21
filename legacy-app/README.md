@@ -44,6 +44,13 @@ docker compose up --build
  curl -s -X POST localhost:8080/api/auth/reset -H 'Content-Type: application/json' \  
    -d '{"email":"naoexiste@x.com"}'   # resposta denuncia inexistência  
    
+ # V-07 o "logout" é cosmético (o token nunca morre):  
+ #  1. logue na UI e copie o token: DevTools > Console > localStorage.access_token  
+ #  2. clique em "Sair" (a tela volta ao login e o localStorage é limpo)  
+ #  3. reenvie o token antigo — segue valendo, pois não há expiração  
+ #     nem invalidação no servidor:  
+ curl -s localhost:8080/api/exames/101 -H "Authorization: Bearer $TOKEN_ANTIGO"   # 200 (FALHA)  
+   
 **Estado esperado ao final do semestre**  
 Cada uma dessas explorações deve **deixar de funcionar** e o gate correspondente no  
    
