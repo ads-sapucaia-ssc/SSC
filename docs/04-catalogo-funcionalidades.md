@@ -108,3 +108,17 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 > Cada funcionalidade é um "pacote de trabalho" que atravessa **todas as fases do SSDLC**
 > (requisito → threat model → design → correção → teste → evidência). A distribuição entre
 > os grupos está em [05-pacotes-trabalho-estudantes.md](05-pacotes-trabalho-estudantes.md).
+
+---
+
+## Lacunas identificadas, fora do catálogo formal (não implementadas, mas necessárias)
+
+> Estas lacunas são reais e exigidas por lei (mesmo critério do "✨ Criar", linha 6) —
+> mas **não** entram como funcionalidade numerada (F-XX): não alteram os 5 pacotes já
+> balanceados nem a rubrica. Ficam aqui como referência; um grupo pode citá-las na
+> análise/dossiê como observação, **sem obrigação de implementar ou entregar prova de
+> conceito**.
+
+| Lacuna | Por que é necessária | Onde foi identificada |
+|--------|------------------------|------------------------|
+| **Canal de comunicação com o titular / encarregado** | LGPD **art. 41** exige um encarregado (DPO) e um canal para o titular se comunicar — inclusive para relatar **suspeita de uso indevido dos próprios dados** por um funcionário (ex.: acesso a prontuário sem necessidade). O VidaPlus não tem nada disso hoje. | Cruzamento com o caso real "vazamento de rastreamento de contato" (`docs/03`, seção *Casos reais*) — acesso **legítimo** por insiders, sem invasão; um canal de denúncia é a mitigação que falta. |
