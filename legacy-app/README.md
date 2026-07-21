@@ -52,6 +52,11 @@ docker compose up --build
  # V-19 nota clinica sem NENHUMA autenticacao (nem token):  
  curl -s localhost:8080/api/pacientes/1/notas   # 200 mesmo sem header algum (FALHA)  
     
+ # V-09 arquivo de laudo em pasta publica, SEM NENHUM auth (nem token):  
+  curl -s localhost:4200/laudos/laudo-102.pdf   # 200 application/pdf (FALHA)  
+  # o exame 104 (sorologia, NAO publicado) tambem baixa - 'publicado' e so rotulo:  
+  curl -s localhost:4200/laudos/laudo-104.pdf   # 200 mesmo assim (FALHA)  
+    
  # V-07 o "logout" é cosmético (o token nunca morre):  
  #  1. logue na UI e copie o token: DevTools > Console > localStorage.access_token  
  #  2. clique em "Sair" (a tela volta ao login e o localStorage é limpo)  
