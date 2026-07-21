@@ -7,12 +7,15 @@ pipeline pela primeira vez e entender por que ele nasce **vermelho**.
 
 ## 1. Gerar o repositório do grupo
 
-**Via GitHub Classroom (recomendado):** aceite o convite do assignment; o Classroom cria
-automaticamente um repositório **privado** do grupo a partir do template, já com o
-autograding ligado.
+**Via Classroom 50 (recomendado):** o professor compartilha um **link de convite** do
+assignment; ao aceitar, você **cria/entra num time** e o Classroom 50 gera automaticamente
+o repositório **privado** do grupo a partir do template, já com acesso **admin** do grupo.
 
-**Ou manualmente:** na página do template `SSC`, clique em **"Use this template" →
-"Create a new repository"**, marque **Private** e dê um nome (ex.: `ssc-grupo-A`).
+**Ou manualmente** (sem Classroom 50): na página do template na org, clique em **"Use this
+template" → "Create a new repository"**, marque **Private** e dê um nome (ex.: `ssc-grupo-1`).
+
+> O **GitHub Classroom** oficial foi **descontinuado** (2026). Usamos o **Classroom 50**
+> (alternativa open-source endossada pelo GitHub, roda sobre GitHub Actions).
 
 Depois, clone:
 
@@ -151,8 +154,8 @@ e a atestação** da imagem **passarem** na verificação (admission gate). *(O 
 > em repositório **público** ou **privado** com plano **Pro/Team/Enterprise/Education**. Num
 > repo **privado gratuito** a opção fica oculta — nesse caso o `deploy-prod` **roda sem
 > pausar** (a verificação da assinatura **continua** valendo). Para ter a pausa em repo
-> privado, use uma **organização GitHub Education** (o IFSul se qualifica; via **Classroom**
-> os repos dos alunos herdam features **Team**) — ou deixe o repo **público**.
+> privado, a **organização** precisa do plano **Team** — **grátis via GitHub Education** para
+> docente verificado (o IFSul se qualifica). Alternativa: deixar o repo **público**.
 
 ## 6. Autograding (como sua nota parcial é calculada)
 
