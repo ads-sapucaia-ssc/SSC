@@ -22,18 +22,34 @@ verificável.
 
 ## 2. LINDDUN — threat modeling de privacidade
 
-LINDDUN é o "STRIDE da privacidade". Roda-se sobre o **mesmo DFD** usado no STRIDE. Para
-cada elemento do DFD, pergunta-se quais das 7 categorias de ameaça se aplicam:
+LINDDUN é o "STRIDE da privacidade" (o nome vem das iniciais das 7 categorias em inglês —
+Linking, Identifying, Non-repudiation, Detecting, Data Disclosure, Unawareness,
+Non-compliance — por isso as letras abaixo seguem essa ordem, mesmo com os nomes em
+português). Roda-se sobre o **mesmo DFD** usado no STRIDE. Para cada elemento do DFD,
+pergunta-se quais das 7 categorias de ameaça se aplicam:
 
 | Letra | Categoria | Pergunta-guia | Ameaça-exemplo no VidaPlus |
 |:---:|-----------|---------------|-----------------------------|
-| **L** | Linkability | Dá para ligar dois itens ao mesmo titular? | IDs sequenciais permitem correlacionar exames de um paciente |
-| **I** | Identifiability | Dá para identificar o titular por trás do dado? | Logs guardam CPF em texto claro |
-| **N** | Non-repudiation | O titular fica preso a algo que negaria? | Ação registrada de forma que exponha o titular indevidamente |
-| **D** | Detectability | Dá para deduzir que um item existe? | Resposta diferente para "paciente existe" vs "não existe" |
-| **D** | Disclosure of information | Vazamento de dado a quem não deveria | Laudo de B acessível por A (IDOR) |
-| **U** | Unawareness | Titular não sabe/controla o tratamento | Coleta sem consentimento nem aviso |
-| **N** | Non-compliance | Sistema desобedece política/lei | Retenção infinita; sem base legal registrada |
+| **L** | Vinculação (*Linking*) | Dá para ligar dois itens ao mesmo titular? | IDs sequenciais permitem correlacionar exames de um paciente |
+| **I** | Identificabilidade | Dá para identificar o titular por trás do dado? | Logs guardam CPF em texto claro |
+| **N** | Não-repúdio | O titular fica preso a algo que negaria? | Ação registrada de forma que exponha o titular indevidamente |
+| **D** | Detectabilidade | Dá para deduzir que um item existe? | Resposta diferente para "paciente existe" vs "não existe" |
+| **D** | Divulgação de informação | Vazamento de dado a quem não deveria | Laudo de B acessível por A (IDOR) |
+| **U** | Desconhecimento (*Unawareness*) / incapacidade de intervenção (*Unintervenability*) | Titular não sabe do tratamento **ou** sabe mas não consegue agir sobre ele | Coleta sem consentimento nem aviso; ou aviso existe, mas não há como revogar |
+| **N** | Não-conformidade | Sistema desobedece política/lei | Retenção infinita; sem base legal registrada |
+
+> **Por que "Vinculação" mantém a letra L, e "Desconhecimento" mantém a letra U?** As
+> letras do LINDDUN seguem as palavras em **inglês** (Linking, Unawareness). Nem toda
+> tradução para português começa com a mesma letra — por isso, sempre que a letra do
+> acrônimo não corresponder à primeira letra do termo em português, este documento
+> mostra as duas línguas (como acima), para não perder a referência à sigla.
+>
+> **"U" cobre duas coisas diferentes — vale separar.** *Desconhecimento* (o titular não
+> sabe que o tratamento acontece, um problema de **transparência**) é diferente de
+> *incapacidade de intervenção* (o titular sabe, mas não tem como agir — dar/revogar
+> consentimento, corrigir, apagar — um problema de **controle**). No VidaPlus, o F-04
+> (consentimento) é sobretudo o segundo caso: não é que o app engane o titular sobre o
+> que faz — é que **não existe nenhum mecanismo** para ele consentir ou revogar.
 
 ### Metodologia aplicada (passos da Fase 2)
 
@@ -64,10 +80,37 @@ cada elemento do DFD, pergunta-se quais das 7 categorias de ameaça se aplicam:
 
 | Elemento | Categoria | Ameaça concreta | Controle/PET | Requisito |
 |----------|-----------|------------------|--------------|-----------|
-| Logs de auditoria | **I** Identifiability | Logs gravam CPF e nome em texto claro; qualquer leitura do log identifica o titular | **Pseudonimização**: registrar `user_id` opaco, nunca CPF; mascarar campos sensíveis | REQ-PRIV-LOG-01 |
-| Download de laudo | **D** Disclosure | Paciente A baixa laudo de B trocando o ID (IDOR) | Validação server-side de *ownership*; deny-by-default | REQ-AC-IDOR-01 |
-| Cadastro | **U** Unawareness | Coleta religião/estado civil sem finalidade nem aviso | **Minimização** (remover campo) + aviso + consentimento | REQ-PRIV-MIN-01 |
-| Base de dados | **N** Non-compliance | Retenção infinita de exames de pacientes inativos | Política de retenção + rotina de anonimização | REQ-PRIV-RET-01 |
+| Logs de auditoria | **I** Identificabilidade | Logs gravam CPF e nome em texto claro; qualquer leitura do log identifica o titular | **Pseudonimização**: registrar `user_id` opaco, nunca CPF; mascarar campos sensíveis | REQ-PRIV-LOG-01 |
+| Download de laudo | **D** Divulgação | Paciente A baixa laudo de B trocando o ID (IDOR) | Validação, no servidor, de quem é o dono do recurso; negar por padrão | REQ-AC-IDOR-01 |
+| Cadastro | **U** Desconhecimento (*Unawareness*) | Coleta religião/estado civil sem finalidade nem aviso | **Minimização** (remover campo) + aviso + consentimento | REQ-PRIV-MIN-01 |
+| Base de dados | **N** Não-conformidade | Retenção infinita de exames de pacientes inativos | Política de retenção + rotina de anonimização | REQ-PRIV-RET-01 |
+| Busca de pacientes | **I** Identificabilidade (nó `I.2.3`) | Um filtro estreito (nome + CPF) devolve um único registro completo — a pessoa fica **distinguível das demais**, mesmo que a query esteja parametrizada (sem SQLi) | Limitar/mascarar campos no retorno da busca; exigir critério mínimo de abrangência | REQ-PRIV-BUSCA-01 |
+| IDs de exame/paciente | **L** Vinculação (*Linking*, nó `L.1.1`) | IDs sequenciais e previsíveis (101, 102, 103...) permitem correlacionar e enumerar registros de um mesmo titular | IDs não sequenciais (UUID) para recursos referenciados por URL | REQ-PRIV-ID-01 |
+| Conta do usuário (ADMIN) | **U** Incapacidade de intervenção (*Unintervenability*, nó `U.2.3`) | "Desativar" uma conta (`ativo = 0`) só bloqueia login — os dados do titular continuam intactos e processados; **desativar não é eliminar** | F-06 precisa apagar/anonimizar de verdade, não só sinalizar um status | REQ-PRIV-ELIM-01 |
+| Controle de acesso interno | **N** Não-conformidade (nó `Nc.3`) | Nenhum endpoint verifica papel — RBAC ausente não é só uma falha STRIDE (elevação de privilégio), é também descumprimento do dever de segurança do art. 46 | `SecurityFilterChain`/checagem de papel deny-by-default | REQ-AC-RBAC-01 |
+
+> ⚠️ **F-13 — duas falhas diferentes, duas correções diferentes.** Corrigir a injeção
+> de SQL da busca (parametrizar a query) **não corrige** o problema acima: mesmo
+> parametrizada, uma busca que aceita nome+CPF e devolve o registro completo ainda
+> torna o titular **distinguível**. São ameaças distintas (uma é injeção de código;
+> a outra é desenho da consulta) — cada uma com seu próprio requisito e teste.
+
+### Casos reais para citar em aula
+
+Dois incidentes documentados no catálogo de exemplos LINDDUN se conectam diretamente
+ao VidaPlus e são úteis para justificar, na defesa, por que threat modeling de
+privacidade vai além do STRIDE:
+
+- **Vazamento de dados de rastreamento de contato (Países Baixos, covid).** Milhões de
+  registros foram vendidos por **funcionários com acesso legítimo** aos sistemas — não
+  houve invasão. *"Essa ameaça não seria encontrada pelo STRIDE clássico de divulgação
+  de informação, pois não houve violação do sistema."* É exatamente o padrão da tela de
+  gestão de usuários do VidaPlus: qualquer autenticado lista todo mundo via API
+  "legítima", sem exploração nenhuma.
+- **Vazamento de dados do Facebook (500 milhões de registros, 2021).** O vazamento
+  atingiu até usuários que **já haviam apagado a própria conta** — os dados continuavam
+  retidos apesar da "exclusão". Mesmo padrão do achado acima sobre desativação ×
+  eliminação no VidaPlus.
 
 ---
 
@@ -77,10 +120,10 @@ Um mesmo problema costuma aparecer nas três lentes — e é isso que fecha o "f
 
 ```
 IDOR no download de laudo
-   ├─ STRIDE:  Information Disclosure / Elevation of Privilege
-   ├─ LINDDUN: Disclosure of information + Linkability
+   ├─ STRIDE:  Divulgação de informação (Information Disclosure) / Elevação de privilégio
+   ├─ LINDDUN: Divulgação + Vinculação (Linking, ID sequencial do exame)
    └─ LGPD:    art. 46 (segurança) + art. 11 (dado sensível)
-        → Requisito REQ-AC-IDOR-01 → controle (ownership server-side)
+        → Requisito REQ-AC-IDOR-01 → controle (checagem de dono do recurso no servidor)
         → teste TC-IDOR-01 (DAST no CI) → evidência (HTTP 403, sem metadados)
 ```
 

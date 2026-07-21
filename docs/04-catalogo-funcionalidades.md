@@ -79,13 +79,31 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 
 | Funcionalidade | STRIDE dominante | LINDDUN dominante | Base LGPD |
 |----------------|------------------|-------------------|-----------|
-| F-01 Login | Spoofing | Identifiability | art. 46 |
-| F-02 Laudo (IDOR) | Info Disclosure / EoP | Disclosure / Linkability | arts. 11, 46 |
-| F-04 Consentimento | — | Unawareness | arts. 8, 9 |
-| F-05 Auditoria | Repudiation | Non-repudiation | arts. 37, 46 |
-| F-06 Eliminação | — | Non-compliance | art. 18 |
-| F-13 Busca | Tampering | Detectability | art. 46 |
-| F-15 Cadastro | — | Unawareness / Non-compliance | art. 6 (minimização) |
+| F-01 Login | Falsificação de identidade (Spoofing) | Identificabilidade (`I.1.1` — e-mail reutilizado como identificador único) | art. 46 |
+| F-02 Laudo (IDOR) | Divulgação de informação (Information Disclosure) / Elevação de privilégio | Divulgação + Vinculação (Linking, `L.1.1` — ID sequencial do exame) | arts. 11, 46 |
+| F-03 RBAC | Elevação de privilégio | Não-conformidade (`Nc.3` — ausência de controle de acesso interno) | art. 46 |
+| F-04 Consentimento | — | Incapacidade de intervenção (Unintervenability, `U.2.1` — sem mecanismo de consentimento) | arts. 8, 9 |
+| F-05 Auditoria | Repúdio | Não-repúdio (`Nr.2`) | arts. 37, 46 |
+| F-06 Eliminação | — | Não-conformidade (`Nc.1.1.4` — retenção além do necessário) | art. 18 |
+| F-13 Busca | Adulteração (Tampering) | Identificabilidade (`I.2.3` — filtro estreito isola um único registro) | art. 46 |
+| F-15 Cadastro | — | Divulgação (`DD.2.1`, volume) + Desconhecimento (Unawareness) + Não-conformidade | art. 6 (minimização) |
+| F-19 Perfil | — | Incapacidade de retificação/acesso (Unintervenability, `U.2.2`/`U.2.3`) | art. 18 |
+
+> Os nós entre parênteses (ex.: `I.2.3`, `Nc.3`) referenciam a árvore de ameaças oficial do
+> LINDDUN — mais específicos que a categoria de topo, úteis para justificar a escolha na
+> defesa. Ver `docs/03` para os exemplos completos e a distinção Desconhecimento ×
+> Incapacidade de intervenção (as duas metades do "U").
+>
+> **Por que "Divulgação" e "Adulteração" aparecem com o nome em inglês ao lado?** As
+> letras do STRIDE e do LINDDUN vêm das palavras em **inglês** (Spoofing, Tampering,
+> Information Disclosure...). Quando a tradução para português não começa com a mesma
+> letra do acrônimo, o nome original acompanha entre parênteses.
+
+> ⚠️ **Duas falhas que parecem uma só, mas não são.** (1) F-13: corrigir a injeção de SQL da
+> busca **não** resolve o problema de um filtro estreito devolver um registro único e
+> completo — são requisitos e testes separados (ver `docs/03`). (2) "Desativar" uma conta
+> (ex.: o toggle do ADMIN em F-03) só bloqueia login — **não é** a eliminação exigida pelo
+> F-06; os dados do titular continuam intactos e processados.
 
 > Cada funcionalidade é um "pacote de trabalho" que atravessa **todas as fases do SSDLC**
 > (requisito → threat model → design → correção → teste → evidência). A distribuição entre
