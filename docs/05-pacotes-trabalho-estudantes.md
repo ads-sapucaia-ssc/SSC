@@ -121,3 +121,11 @@ Além de A, fecha o fio completo:
 > **Por que assim:** o objetivo não é corrigir muito código, e sim **provar que o grupo
 > sabe fechar o ciclo** de engenharia de segurança/privacidade — do ativo à evidência — e
 > **planejar** a adequação do restante como faria num projeto real.
+
+> **E os gates dos outros pacotes?** Cada grupo trabalha no **seu próprio repositório** e
+> torna bloqueante **apenas o gate da classe que corrigiu**. O pipeline **já conclui verde**
+> desde o 1º push (gates informativos); o placar vermelho das funcionalidades de **outros
+> pacotes** — ou das suas que ficaram só **analisadas** — é **esperado** e **não** derruba o
+> build nem a nota (nota = dossiê + defesa; pipeline = evidência). Nenhum grupo precisa
+> corrigir teste de outro pacote. Detalhe de como fazer isso com o job de testes de
+> segurança: [09-setup-grupos.md](09-setup-grupos.md) §5.

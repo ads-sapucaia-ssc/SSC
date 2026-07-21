@@ -95,6 +95,21 @@ para vocês aprenderem a removê-los. Por isso:
 Quando terminar de corrigir uma classe de falha, **torne o gate bloqueante** removendo o
 `continue-on-error: true` daquele job no workflow (ver [06-pipeline-cicd.md](06-pipeline-cicd.md)).
 
+> **Cada grupo só torna bloqueante o gate do seu pacote.** O workflow **já nasce verde**
+> (conclui com sucesso — os gates são informativos por `continue-on-error`); o que fica
+> vermelho é o **placar de gates**, não o build. A nota **não exige** o pipeline 100% verde
+> — nota = dossiê + defesa; o pipeline é **evidência**. Os gates das funcionalidades de
+> **outros pacotes** (ou apenas *analisadas*, não implementadas) **permanecem informativos**,
+> e isso é o esperado.
+>
+> **Testes de segurança são um job só** (roda os `@security` juntos), mas cada teste-semente
+> tem **um dono**: `sqli_no_login` → Grupo 1 (F-01); `idor…403` → Grupo 2 (F-02);
+> `rbac…403` → Grupo 2 (F-03/F-07). Grupos 3, 4 e 5 **não** têm teste-semente — provam o seu
+> pacote com **testes próprios** (Fase 5) + dossiê. Para tornar bloqueante **só o seu** teste
+> sem depender de outro pacote, restrinja a execução aos seus testes (ex.: uma `@Tag` mais
+> específica ou `-Dtest=...`); ou mantenha o gate informativo e use o **teste específico verde
+> no log** + a **matriz de rastreabilidade** como evidência.
+
 ---
 
 ## 5.1 Testes de aceite já fornecidos
