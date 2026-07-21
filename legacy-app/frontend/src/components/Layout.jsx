@@ -5,10 +5,26 @@ import { BadgePapel } from './Badge';
 
 const NAV_POR_PAPEL = {
   PACIENTE: [{ to: '/', label: 'Início' }],
-  MEDICO: [{ to: '/', label: 'Início' }, { to: '/pacientes', label: 'Pacientes' }],
-  RECEPCAO: [{ to: '/', label: 'Início' }, { to: '/pacientes', label: 'Pacientes' }],
-  BIOQUIMICO: [{ to: '/', label: 'Início' }, { to: '/pacientes', label: 'Pacientes' }],
-  ADMIN: [{ to: '/', label: 'Início' }, { to: '/pacientes', label: 'Pacientes' }],
+  MEDICO: [
+    { to: '/', label: 'Início' },
+    { to: '/pacientes', label: 'Pacientes' },
+    { to: '/meus-pacientes', label: 'Meus Pacientes' },
+  ],
+  RECEPCAO: [
+    { to: '/', label: 'Início' },
+    { to: '/pacientes', label: 'Pacientes' },
+    { to: '/agenda', label: 'Agenda' },
+  ],
+  BIOQUIMICO: [
+    { to: '/', label: 'Início' },
+    { to: '/pacientes', label: 'Pacientes' },
+    { to: '/fila-laudos', label: 'Fila de Laudos' },
+  ],
+  ADMIN: [
+    { to: '/', label: 'Início' },
+    { to: '/pacientes', label: 'Pacientes' },
+    { to: '/usuarios', label: 'Usuários' },
+  ],
 };
 
 function iniciais(nome) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { listarExamesDoPaciente } from '../services/exame';
+import { listarExamesDoPaciente, solicitar } from '../services/exame';
 import { BadgeStatus } from '../components/Badge';
 import Prontuario from '../components/Prontuario';
 
@@ -13,13 +13,30 @@ function saudacao() {
 
 function DashboardPaciente({ usuario }) {
   const [exames, setExames] = useState(null);
+  const [tipo, setTipo] = useState('');
+  const [solicitando, setSolicitando] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const carregarExames = () =>
     listarExamesDoPaciente(usuario.pacienteId).then(setExames).catch(() => setExames([]));
-  }, [usuario.pacienteId]);
+
+  useEffect(() => { carregarExames(); }, [usuario.pacienteId]);
 
   const pendentes = (exames || []).filter((e) => !e.publicado).length;
+
+  const solicitarExame = async (e) => {
+    e.preventDefault();
+    if (!tipo.trim()) return;
+    setSolicitando(true);
+    try {
+      // V-03: o backend nao verifica se pacienteId e o proprio autenticado
+      await solicitar(usuario.pacienteId, tipo.trim());
+      setTipo('');
+      await carregarExames();
+    } finally {
+      setSolicitando(false);
+    }
+  };
 
   return (
     <>
@@ -39,6 +56,17 @@ function DashboardPaciente({ usuario }) {
           <div className="stat-value">{exames === null ? '—' : pendentes}</div>
           <div className="stat-label">Laudos pendentes de publicação</div>
         </div>
+      </div>
+
+      <div className="card mt-24">
+        <div className="card-header"><h3>Solicitar exame</h3></div>
+        <form onSubmit={solicitarExame} className="card-pad row">
+          <input type="text" placeholder="Ex.: Raio-X do tórax" value={tipo}
+                 onChange={(e) => setTipo(e.target.value)} />
+          <button type="submit" className="btn btn-primary" disabled={solicitando}>
+            {solicitando ? <span className="spinner" /> : 'Solicitar'}
+          </button>
+        </form>
       </div>
 
       <div className="card mt-24">
@@ -112,7 +140,30 @@ function DashboardEquipe({ usuario }) {
           </div>
         </div>
       </div>
+
+      <CardDoPapel usuario={usuario} navigate={navigate} />
     </>
+  );
+}
+
+const CARD_POR_PAPEL = {
+  ADMIN: { titulo: 'Gestão de usuários', texto: 'Ative ou desative contas de acesso ao VidaPlus.', destino: '/usuarios', rotulo: 'Ir para Usuários' },
+  MEDICO: { titulo: 'Meus pacientes', texto: 'Veja a carteira de pacientes vinculados a você.', destino: '/meus-pacientes', rotulo: 'Ir para Meus Pacientes' },
+  RECEPCAO: { titulo: 'Agenda', texto: 'Consulte e marque atendimentos entre médico e paciente.', destino: '/agenda', rotulo: 'Ir para Agenda' },
+  BIOQUIMICO: { titulo: 'Fila de laudos', texto: 'Exames de todos os pacientes ainda sem publicação.', destino: '/fila-laudos', rotulo: 'Ir para Fila de Laudos' },
+};
+
+function CardDoPapel({ usuario, navigate }) {
+  const c = CARD_POR_PAPEL[usuario.papel];
+  if (!c) return null;
+  return (
+    <div className="card mt-16">
+      <div className="card-header"><h3>{c.titulo}</h3></div>
+      <div className="card-pad">
+        <p className="muted text-sm">{c.texto}</p>
+        <button className="btn btn-primary mt-16" onClick={() => navigate(c.destino)}>{c.rotulo}</button>
+      </div>
+    </div>
   );
 }
 

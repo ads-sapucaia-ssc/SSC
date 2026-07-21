@@ -80,4 +80,31 @@ public class ExameController {
         exameDao.publicar(id, uid);
         return Map.of("id", id, "publicado", true);
     }
+
+    /**
+     * Fila de laudos pendentes de TODOS os pacientes (tela do BIOQUIMICO).
+     * FALHA (F-03/V-04): nao verifica papel BIOQUIMICO.
+     */
+    @GetMapping("/pendentes")
+    public List<Map<String, Object>> pendentes(
+            @RequestHeader(value = "Authorization", required = false) String auth) {
+        if (usuarioId(auth) == null) throw new RuntimeException("nao autenticado");
+        // FALHA: nao verifica papel
+        return exameDao.pendentes();
+    }
+
+    /**
+     * Paciente solicita um novo exame (autoatendimento).
+     * FALHA (V-03 IDOR): nao verifica se 'pacienteId' e o proprio autenticado.
+     */
+    @PostMapping("/solicitar")
+    public Map<String, Object> solicitar(@RequestBody Map<String, Object> body,
+            @RequestHeader(value = "Authorization", required = false) String auth) {
+        if (usuarioId(auth) == null) throw new RuntimeException("nao autenticado");
+        long pacienteId = Long.parseLong(String.valueOf(body.get("pacienteId")));
+        String tipo = String.valueOf(body.get("tipo"));
+        // FALHA: nao verifica se pacienteId == o proprio paciente autenticado
+        long id = exameDao.solicitar(pacienteId, tipo);
+        return Map.of("id", id, "pacienteId", pacienteId, "tipo", tipo, "solicitado", true);
+    }
 }

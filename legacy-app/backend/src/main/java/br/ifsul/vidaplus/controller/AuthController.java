@@ -37,6 +37,7 @@ public class AuthController {
         resp.put("access_token", token);      // V-07: token eterno
         resp.put("papel", u.get("papel"));
         resp.put("paciente_id", u.get("paciente_id"));
+        resp.put("medico_id", u.get("medico_id"));
         resp.put("nome", u.get("nome"));      // so para saudacao na UI
         return resp;
     }

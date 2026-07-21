@@ -7,6 +7,10 @@ import Dashboard from './pages/Dashboard';
 import ExameDetalhe from './pages/ExameDetalhe';
 import BuscaPacientes from './pages/BuscaPacientes';
 import PacienteFicha from './pages/PacienteFicha';
+import Usuarios from './pages/Usuarios';
+import MeusPacientes from './pages/MeusPacientes';
+import Agenda from './pages/Agenda';
+import FilaLaudos from './pages/FilaLaudos';
 
 /**
  * Portal VidaPlus (LEGADO) - React 19 + React Router.
@@ -29,6 +33,10 @@ export default function App() {
         <Route path="/exames/:id" element={<ExameDetalhe usuario={usuario} />} />
         <Route path="/pacientes" element={<BuscaPacientes />} />
         <Route path="/pacientes/:id" element={<PacienteFicha />} />
+        <Route path="/usuarios" element={<Usuarios />} />
+        <Route path="/meus-pacientes" element={<MeusPacientes usuario={usuario} />} />
+        <Route path="/agenda" element={<Agenda />} />
+        <Route path="/fila-laudos" element={<FilaLaudos />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Layout>

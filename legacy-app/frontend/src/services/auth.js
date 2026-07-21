@@ -24,6 +24,7 @@ export function salvarSessao(resp) {
   localStorage.setItem('access_token', resp.access_token);
   localStorage.setItem('papel', resp.papel || '');
   localStorage.setItem('paciente_id', resp.paciente_id ?? '');
+  localStorage.setItem('medico_id', resp.medico_id ?? '');
   localStorage.setItem('nome', resp.nome || '');
 }
 
@@ -37,6 +38,7 @@ export function getUsuario() {
   return {
     papel: localStorage.getItem('papel') || '',
     pacienteId: localStorage.getItem('paciente_id') || '',
+    medicoId: localStorage.getItem('medico_id') || '',
     nome: localStorage.getItem('nome') || '',
   };
 }
@@ -47,5 +49,6 @@ export function logout() {
   localStorage.removeItem('access_token');
   localStorage.removeItem('papel');
   localStorage.removeItem('paciente_id');
+  localStorage.removeItem('medico_id');
   localStorage.removeItem('nome');
 }

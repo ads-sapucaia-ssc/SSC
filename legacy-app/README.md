@@ -64,6 +64,27 @@ docker compose up --build
  #     nem invalidação no servidor:  
  curl -s localhost:8080/api/exames/101 -H "Authorization: Bearer $TOKEN_ANTIGO"   # 200 (FALHA)  
    
+ **Funcionalidades por papel (F-03 RBAC — mesma falha, mais superfície)**  
+ Cada papel ganhou uma tela própria (menu no topo), mas o backend **não checa papel em nenhuma delas** — todas reproduzem com o token de **qualquer** usuário autenticado, inclusive PACIENTE:  
+   
+ # ADMIN: gestao de usuarios (listar + ativar/desativar QUALQUER conta)  
+ curl -s localhost:8080/api/usuarios -H "Authorization: Bearer $TOKEN"   # 200 mesmo p/ Ana (PACIENTE)  
+   
+ # RECEPCAO: agenda (listar + marcar atendimento medico x paciente)  
+ curl -s localhost:8080/api/atendimentos -H "Authorization: Bearer $TOKEN"  
+   
+ # MEDICO: carteira de pacientes por id de medico livre (troque o 1 por outro)  
+ curl -s localhost:8080/api/atendimentos/medico/1 -H "Authorization: Bearer $TOKEN"  
+   
+ # BIOQUIMICO: fila de TODOS os laudos pendentes (qualquer paciente, qualquer status)  
+ curl -s localhost:8080/api/exames/pendentes -H "Authorization: Bearer $TOKEN"  
+   
+ # PACIENTE: solicitar exame - tambem em nome de OUTRO paciente (IDOR)  
+ curl -s -X POST localhost:8080/api/exames/solicitar -H "Authorization: Bearer $TOKEN" \
+   -H 'Content-Type: application/json' -d '{"pacienteId":2,"tipo":"exame em nome do Bruno"}'  
+   
+ *(Estas 5 telas são enriquecimento de UI/demonstração do F-03 — não são novos itens do catálogo F-01..F-21; a correção esperada é a mesma: checar `JwtUtil.papelDoToken(...)` deny-by-default em cada endpoint.)*  
+   
 **Estado esperado ao final do semestre**  
 Cada uma dessas explorações deve **deixar de funcionar** e o gate correspondente no  
    

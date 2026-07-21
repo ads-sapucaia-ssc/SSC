@@ -43,4 +43,30 @@ public class ExameDao {
         jdbc.update("UPDATE exame SET publicado = 1, publicado_por = ? WHERE id = ?",
                 publicadoPor, exameId);
     }
+
+    /**
+     * Fila de laudos pendentes de publicacao, de TODOS os pacientes
+     * (tela do BIOQUIMICO).
+     * FALHA: lista o sistema inteiro, incluindo exames sensiveis ainda em
+     * rascunho de qualquer paciente - sem filtrar por nada alem de
+     * publicado = 0 (ver nota F-07 x F-08 em docs/04: "publicado" e so
+     * rotulo de fluxo, nao controle de acesso - esta fila prova isso de novo).
+     */
+    public List<Map<String, Object>> pendentes() {
+        return jdbc.queryForList(
+                "SELECT e.id, e.tipo, e.criado_em, e.paciente_id, p.nome AS paciente_nome " +
+                "FROM exame e JOIN paciente p ON p.id = e.paciente_id " +
+                "WHERE e.publicado = 0 ORDER BY e.criado_em");
+    }
+
+    /**
+     * Paciente solicita um novo exame (autoatendimento).
+     * FALHA (V-03 IDOR tambem aqui): nao verifica se 'pacienteId' e o proprio
+     * paciente autenticado - da para solicitar exame em nome de outro paciente.
+     */
+    public long solicitar(long pacienteId, String tipo) {
+        jdbc.update("INSERT INTO exame (paciente_id, tipo, publicado) VALUES (?, ?, 0)",
+                pacienteId, tipo);
+        return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+    }
 }
