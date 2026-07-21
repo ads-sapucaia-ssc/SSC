@@ -37,6 +37,33 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jdbc</artifactId>
     </dependency>
+    <!--
+      spring-boot-starter-data-jpa: base pronta (entity + repository) para as
+      4 funcionalidades que NAO EXISTEM no legado e os grupos devem criar
+      (F-04 consentimento, F-05 auditoria, F-06/F-09 solicitacao_titular).
+      As DAOs vulneraveis atuais (login, busca, exames) continuam em JDBC
+      cru, sem relacao com isto - Spring Data gera query parametrizada por
+      padrao, o que apagaria a falha se usado nelas.
+    -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <!--
+      spring-security-crypto (NAO spring-boot-starter-security): so o
+      PasswordEncoder/Argon2PasswordEncoder. De proposito NAO trazemos o
+      starter completo, que auto-configuraria autenticacao HTTP em toda
+      rota e quebraria o app inteiro (nada disso foi decidido ainda).
+    -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-crypto</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>1.78.1</version>
+    </dependency>
     <!-- versao gerenciada pelo BOM do Spring Boot (atual) -->
     <dependency>
       <groupId>com.mysql</groupId>

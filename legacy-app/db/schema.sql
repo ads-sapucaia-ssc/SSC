@@ -99,6 +99,12 @@ CREATE TABLE nota_clinica (
 --   * auditoria            (F-05, append-only, hash-chain, sem PII)
 --   * solicitacao_titular  (F-06/F-09, direitos art. 18: export/erasure)
 -- Modelos de referencia comentados abaixo para o professor.
+--
+-- Ja existe uma entity + repository Spring Data prontos para cada uma
+-- destas 3 (backend/.../entity/ e .../repository/) - CRUD sem SQL escrito
+-- a mao. O grupo ainda precisa CRIAR a tabela de verdade (decidir o schema
+-- e rodar o CREATE TABLE) - isso continua sendo trabalho de analise/design,
+-- o Spring Data so poupa a camada de acesso a dados repetitiva.
 -- =====================================================================
 -- CREATE TABLE consentimento (
 --   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -117,4 +123,12 @@ CREATE TABLE nota_clinica (
 --   recurso VARCHAR(80) NULL,
 --   prev_hash CHAR(64) NOT NULL,
 --   hash CHAR(64) NOT NULL
+-- );
+-- CREATE TABLE solicitacao_titular (      -- rascunho, NAO e solucao pronta
+--   id BIGINT AUTO_INCREMENT PRIMARY KEY,
+--   paciente_id BIGINT NOT NULL,
+--   tipo VARCHAR(20) NOT NULL,             -- EXPORTACAO | ELIMINACAO
+--   status VARCHAR(20) NOT NULL,           -- PENDENTE | CONCLUIDA | NEGADA
+--   solicitado_em DATETIME NOT NULL,
+--   concluido_em  DATETIME NULL
 -- );

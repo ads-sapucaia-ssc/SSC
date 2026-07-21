@@ -85,6 +85,12 @@ docker compose up --build
    
  *(Estas 5 telas são enriquecimento de UI/demonstração do F-03 — não são novos itens do catálogo F-01..F-21; a correção esperada é a mesma: checar `JwtUtil.papelDoToken(...)` deny-by-default em cada endpoint.)*  
    
+ **Infraestrutura ja pronta (nao precisa escrever)**  
+   
+ *Hash de senha:* o V-02 agora e um bean `PasswordEncoder` (`config/SenhaConfig.java`) em vez de uma chamada direta a MD5. Trocar por `Argon2PasswordEncoder.defaultsInstance()` (ja vem no `pom.xml`, e config de 1 linha) so funciona **depois** de parametrizar a query do login (V-01) - Argon2/bcrypt geram salt aleatorio por chamada, entao a verificacao tem que virar `passwordEncoder.matches(...)` em Java, nao mais `=` dentro do SQL.  
+   
+ *Spring Data JPA:* ja ha entity + repository prontos (CRUD sem SQL escrito a mao) para as 4 funcionalidades que **nao existem** no legado e precisam ser criadas - `entity/` e `repository/`: `Consentimento` (F-04), `Auditoria` (F-05), `SolicitacaoTitular` (F-06/F-09). Falta **criar a tabela de verdade** (modelos de referencia comentados em `db/schema.sql`) e decidir o fluxo/regras de negocio - isso continua sendo trabalho de analise do grupo.  
+   
 **Estado esperado ao final do semestre**  
 Cada uma dessas explorações deve **deixar de funcionar** e o gate correspondente no  
    

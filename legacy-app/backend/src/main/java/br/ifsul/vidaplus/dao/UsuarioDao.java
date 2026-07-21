@@ -1,7 +1,7 @@
 package br.ifsul.vidaplus.dao;
 
-import br.ifsul.vidaplus.security.LegacyHash;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -18,13 +18,17 @@ import java.util.Map;
  * Acesso a usuarios (LEGADO).
  * V-01: login por CONCATENACAO de SQL -> SQL Injection (A03/CWE-89).
  *       ex.: email = "' OR '1'='1' -- " ignora a senha.
- * V-02: compara com MD5 (via LegacyHash).
+ * V-02: hash de senha fraco - o PasswordEncoder configurado (ver
+ *       SenhaConfig) usa MD5 sem salt.
  */
 @Repository
 public class UsuarioDao {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * Busca usuario pelo e-mail (usado pelo reset de senha).
@@ -56,16 +60,24 @@ public class UsuarioDao {
      * V-01: monta a query concatenando entradas do usuario. NAO usar como referencia.
      * LEFT JOINs so para exibir um nome de saudacao na UI - nao alteram a falha
      * (o email/senha continuam concatenados do mesmo jeito).
+     *
+     * V-02: o hash vem do PasswordEncoder configurado (ver SenhaConfig), hoje
+     * MD5 - mas ainda e CONCATENADO na propria SQL abaixo (nao comparado via
+     * passwordEncoder.matches()). Isso e proposital: preserva o V-01 (o
+     * "-- " no email comenta esta clausula inteira, ignorando a senha).
+     * Argon2/bcrypt NAO funcionam aqui (salt aleatorio por chamada nunca
+     * bateria com "="): so dá pra trocar o encoder de verdade DEPOIS de
+     * parametrizar esta query (corrigir o V-01 primeiro).
      */
     public Map<String, Object> autenticar(String email, String senha) {
-        String senhaMd5 = LegacyHash.md5(senha);
+        String senhaHash = passwordEncoder.encode(senha);
         String sql = "SELECT u.id, u.email, u.papel, u.paciente_id, m.id AS medico_id, " +
                 "COALESCE(p.nome, m.nome, SUBSTRING_INDEX(u.email, '@', 1)) AS nome " +
                 "FROM usuario u " +
                 "LEFT JOIN paciente p ON p.id = u.paciente_id " +
                 "LEFT JOIN medico m ON m.usuario_id = u.id " +
                 "WHERE u.email = '" + email + "' " +
-                "AND u.senha_hash = '" + senhaMd5 + "' AND u.ativo = 1";
+                "AND u.senha_hash = '" + senhaHash + "' AND u.ativo = 1";
         try (Connection c = dataSource.getConnection();
              Statement st = c.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
