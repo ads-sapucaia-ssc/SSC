@@ -33,6 +33,18 @@ public class PacienteController {
         return pacienteDao.porId(id);
     }
 
+    /**
+     * Nota clinica do prontuario (consumida por Prontuario.jsx).
+     * V-10: devolve HTML CRU, sem sanitizacao -> Stored XSS ao ser renderizado
+     *       com dangerouslySetInnerHTML no front.
+     * FALHA adicional: sem autenticacao e sem vinculo - qualquer um le a nota
+     *       clinica de qualquer paciente (dado de saude, LGPD art. 11).
+     */
+    @GetMapping("/{id}/notas")
+    public Map<String, Object> notas(@PathVariable long id) {
+        return pacienteDao.notaDoPaciente(id);
+    }
+
     /** V-04: qualquer autenticado edita qualquer cadastro; sem auditoria (V-06). */
     @PutMapping("/{id}")
     public Map<String, Object> editar(@PathVariable long id,

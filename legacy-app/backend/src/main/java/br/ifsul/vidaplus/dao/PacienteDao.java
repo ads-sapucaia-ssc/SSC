@@ -47,6 +47,35 @@ public class PacienteDao {
         }
     }
 
+    /**
+     * V-10 (origem do Stored XSS): devolve o 'conteudo' da nota clinica como HTML CRU,
+     * sem sanitizacao - o front o injeta com dangerouslySetInnerHTML.
+     * V-13 tambem: id concatenado na query.
+     */
+    public Map<String, Object> notaDoPaciente(long pacienteId) {
+        String sql = "SELECT id, paciente_id, autor_id, conteudo, criado_em " +
+                "FROM nota_clinica WHERE paciente_id = " + pacienteId +
+                " ORDER BY criado_em DESC, id DESC LIMIT 1";
+        try (Connection c = dataSource.getConnection();
+             Statement st = c.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                Map<String, Object> n = new HashMap<>();
+                n.put("id", rs.getLong("id"));
+                n.put("paciente_id", rs.getLong("paciente_id"));
+                n.put("autor_id", rs.getObject("autor_id"));
+                n.put("conteudo", rs.getString("conteudo"));   // V-10: HTML sem sanitizacao
+                n.put("criado_em", String.valueOf(rs.getObject("criado_em")));
+                return n;
+            }
+            Map<String, Object> vazio = new HashMap<>();
+            vazio.put("conteudo", "");
+            return vazio;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Map<String, Object> porId(long id) {
         String sql = "SELECT * FROM paciente WHERE id = " + id; // V-13 tambem
         try (Connection c = dataSource.getConnection();
