@@ -122,3 +122,9 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 | Lacuna | Por que é necessária | Onde foi identificada |
 |--------|------------------------|------------------------|
 | **Canal de comunicação com o titular / encarregado** | LGPD **art. 41** exige um encarregado (DPO) e um canal para o titular se comunicar — inclusive para relatar **suspeita de uso indevido dos próprios dados** por um funcionário (ex.: acesso a prontuário sem necessidade). O VidaPlus não tem nada disso hoje. | Cruzamento com o caso real "vazamento de rastreamento de contato" (`docs/03`, seção *Casos reais*) — acesso **legítimo** por insiders, sem invasão; um canal de denúncia é a mitigação que falta. |
+| **Cifra de dados em repouso** | LGPD **art. 46** exige proteção contra acesso não autorizado e situações acidentais/ilícitas; ASVS **V6** (o nível-alvo, L2, cobra isso) exige criptografia de dados sensíveis armazenados. Hoje `cpf` é `VARCHAR` em texto claro e `resultado`/`conteudo` (dado clínico) não têm nenhuma cifra — só o MySQL padrão, sem TDE nem cifra de coluna. | Já **citado como requisito esperado** em 3 lugares (`docs/02` linha 121/137, `docs/12`, Aula 3 slide 8 — "AES-256 em repouso"), mas nunca amarrado a uma falha rastreável nem a um dono. |
+
+> **Candidatas a versão futura.** Esta lista é o backlog natural para quando o VidaPlus
+> ganhar uma nova rodada de funcionalidades planejadas (F-22 em diante) — cada lacuna
+> aqui já vem com a base legal e a onde foi identificada, prontas para virar entrada
+> formal do catálogo (com dono, RFS/RGS e teste) quando isso acontecer.
