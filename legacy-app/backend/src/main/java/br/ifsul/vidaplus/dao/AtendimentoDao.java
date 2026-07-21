@@ -21,13 +21,14 @@ public class AtendimentoDao {
 
     /** Agenda completa (RECEPCAO). FALHA: sem paginacao nem filtro por unidade. */
     public List<Map<String, Object>> listarTodos() {
-        return jdbc.queryForList(
-                "SELECT a.id, a.data, a.medico_id, m.nome AS medico_nome, " +
-                "a.paciente_id, p.nome AS paciente_nome " +
-                "FROM atendimento a " +
-                "JOIN medico m ON m.id = a.medico_id " +
-                "JOIN paciente p ON p.id = a.paciente_id " +
-                "ORDER BY a.data DESC");
+        return jdbc.queryForList("""
+                SELECT a.id, a.data, a.medico_id, m.nome AS medico_nome,
+                       a.paciente_id, p.nome AS paciente_nome
+                FROM atendimento a
+                JOIN medico m ON m.id = a.medico_id
+                JOIN paciente p ON p.id = a.paciente_id
+                ORDER BY a.data DESC
+                """);
     }
 
     /**
@@ -46,10 +47,10 @@ public class AtendimentoDao {
      * autenticado - qualquer um ve a carteira de pacientes de qualquer medico.
      */
     public List<Map<String, Object>> pacientesDoMedico(long medicoId) {
-        return jdbc.queryForList(
-                "SELECT DISTINCT p.id, p.nome, p.cpf " +
-                "FROM atendimento a JOIN paciente p ON p.id = a.paciente_id " +
-                "WHERE a.medico_id = ? ORDER BY p.nome",
-                medicoId);
+        return jdbc.queryForList("""
+                SELECT DISTINCT p.id, p.nome, p.cpf
+                FROM atendimento a JOIN paciente p ON p.id = a.paciente_id
+                WHERE a.medico_id = ? ORDER BY p.nome
+                """, medicoId);
     }
 }

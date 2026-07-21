@@ -53,10 +53,11 @@ public class ExameDao {
      * rotulo de fluxo, nao controle de acesso - esta fila prova isso de novo).
      */
     public List<Map<String, Object>> pendentes() {
-        return jdbc.queryForList(
-                "SELECT e.id, e.tipo, e.criado_em, e.paciente_id, p.nome AS paciente_nome " +
-                "FROM exame e JOIN paciente p ON p.id = e.paciente_id " +
-                "WHERE e.publicado = 0 ORDER BY e.criado_em");
+        return jdbc.queryForList("""
+                SELECT e.id, e.tipo, e.criado_em, e.paciente_id, p.nome AS paciente_nome
+                FROM exame e JOIN paciente p ON p.id = e.paciente_id
+                WHERE e.publicado = 0 ORDER BY e.criado_em
+                """);
     }
 
     /**
