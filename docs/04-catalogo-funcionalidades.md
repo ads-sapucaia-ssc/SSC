@@ -128,3 +128,29 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 > ganhar uma nova rodada de funcionalidades planejadas (F-22 em diante) — cada lacuna
 > aqui já vem com a base legal e a onde foi identificada, prontas para virar entrada
 > formal do catálogo (com dono, RFS/RGS e teste) quando isso acontecer.
+
+### Ameaças de privacidade (LINDDUN) candidatas a versão futura
+
+> Estas **não** são controles faltando (como as duas acima) — são **ameaças de privacidade**
+> extraídas do **catálogo oficial de exemplos do LINDDUN** (`linddunexamples` e
+> `lindduncomplexexamples`, os PDFs de referência) que o VidaPlus **ainda não modela**. Hoje
+> o app é rico em falhas **STRIDE** (IDOR, RBAC, injeção de SQL, XSS…) e pobre nas ameaças que
+> **só o LINDDUN enxerga**: aquelas em que **não há invasão**, o sistema "funciona", e mesmo
+> assim a privacidade do titular é atingida. Uma versão futura pode **plantá-las** como
+> vulnerabilidades didáticas (novos V-XX no gabarito) **ou** um grupo pode citá-las na análise
+> do próprio pacote. **Não estão plantadas hoje.**
+
+| Ameaça de privacidade (nó LINDDUN) | Como apareceria no VidaPlus | Por que o STRIDE não a vê | Fonte (exemplo LINDDUN) |
+|---|---|---|---|
+| **Detectabilidade** — oráculo de existência (`D.3`) | `GET /api/exames/{id}` responder **403** quando o exame existe (é de outro) e **404** quando não existe — a diferença revela *quais* IDs existem, sem ler o conteúdo | é o **complemento** do IDOR (V-03): devolver 403 "resolve" o acesso, mas 403 ≠ 404 continua vazando a existência dos registros | *Wrong password* / *DB access denied* (`linddunexamples` §4.9, §4.11) |
+| **Vinculação (Linking)** — inferência por consulta agregada (`L.2.2.3`) | um endpoint de estatística/painel (ex.: `/api/estatisticas?diagnostico=…&unidade=…&idade=…`) que devolve contagem/média **sem exigir coorte mínima** (k-anonimato): filtro estreito isola **um** paciente | **parametrizar a query (corrigir a injeção de SQL / V-01) não corrige** — a falha é o *design da consulta*, não a injeção de código | *DB Query inference* / *Salary statistics queries* (`lindduncomplexexamples` §5; `linddunexamples` §1.17) |
+| **Identificabilidade** — metadados em arquivo exportado (`I.1.2`) | o PDF do laudo (`laudo-{id}.pdf`) carregar, nos **metadados do arquivo** (Author/Creator/Keywords), o nome do médico revisor, IDs internos e timestamps — dado invisível no corpo do laudo | o vazamento acontece **fora do conteúdo** que os controles de conteúdo inspecionam; só some ao *sanitizar* o arquivo | *Author information in metadata* / *Geo-tagged photos* / *Whistleblower* (`linddunexamples` §2.3; `lindduncomplexexamples` §10, §8) |
+| **Divulgação de informação** — payload da notificação (`DD.4.2`) | o **texto** do e-mail/SMS/push dizer *"seu resultado de sorologia HIV está pronto"* — o dado sensível vaza para o provedor da mensagem e para a **tela de bloqueio**, mesmo com o link protegido | distinto do link sem autenticação (já coberto em F-18): aqui a sobre-exposição está no **corpo da mensagem**, sem nenhuma falha "técnica" | *Push notification payloads* (`lindduncomplexexamples` §23) |
+| **Vinculação (Linking)** — enumeração por IDs sequenciais (`L.1.1`) | IDs sequenciais e previsíveis (`101, 102, 103…`) permitirem **percorrer e correlacionar** todos os exames de um mesmo titular; combina com o oráculo de existência acima para "colher" a base | STRIDE vê o acesso **individual** (IDOR), não a **correlação em massa** habilitada pela previsibilidade do identificador | *Facebook data leak* — número de telefone como identificador (`lindduncomplexexamples` §2) |
+| **Não-repúdio** — auditoria que atribui demais ao titular (`Nr.2`) | a trilha de auditoria (F-05) registrar *"paciente X acessou o próprio resultado de HIV às 22h"* de forma amplamente legível — o **controle de segurança** vira ameaça de privacidade **contra o próprio titular** | inverte a intuição do STRIDE (onde não-repúdio é sempre desejável): aqui a **super-atribuição** fere a privacidade | *Whistleblower* / *E-vote* / *Logging actions* (`lindduncomplexexamples` §8, §9, §20) |
+
+> **Por que registrar aqui.** As três primeiras (`D.3`, `L.2.2.3`, `I.1.2`) são as mais
+> demonstráveis e cobrem categorias LINDDUN hoje **órfãs** no VidaPlus (Detectabilidade,
+> inferência, metadados). Todas reforçam a tese central do projeto — *parametrizar a query ou
+> devolver 403 não é o fim; a privacidade tem falhas que o STRIDE não vê* (ver a distinção
+> F-13 em `docs/03` e as árvores de ameaça da Aula 4).
