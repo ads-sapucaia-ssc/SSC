@@ -89,7 +89,7 @@ pergunta-se quais das 7 categorias de ameaça se aplicam:
 > de SQL da busca (parametrizar a query) **não corrige** o problema acima: mesmo
 > parametrizada, uma busca que aceita nome+CPF e devolve o registro completo ainda
 > torna o titular **distinguível**. São ameaças distintas (uma é injeção de código;
-> a outra é desenho da consulta) — cada uma com seu próprio requisito e teste.
+> a outra é design da consulta) — cada uma com seu próprio requisito e teste.
 
 ### Casos reais para citar em aula
 
