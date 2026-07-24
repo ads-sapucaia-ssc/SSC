@@ -168,3 +168,56 @@ valor porque **alguém verifica** — por isso o `deploy-prod` recusa o não-ass
 > ⚠️ A verificação amarra a identidade ao **seu** repositório
 > (`--certificate-identity-regexp "https://github.com/<owner>/<repo>/.*"`) — **nunca** `.*`,
 > que aceitaria qualquer signatário e esvaziaria a proveniência.
+
+### Por que a identidade na verificação é o que importa
+
+O ponto que costuma confundir: **assinar não vale nada se, ao verificar, você não checar
+quem assinou.** O `--certificate-identity-regexp` é justamente o filtro de "quem"; pôr
+`.*` ali é o mesmo que não checar nada.
+
+**Assinatura *keyless* (por identidade).** O `release-sign` não assina com uma chave
+guardada em segredo — assina por **identidade** (OIDC). Quando o job roda, o Sigstore emite
+um certificado de curta duração que carimba na assinatura **quem assinou** — a identidade do
+próprio workflow, algo como
+`https://github.com/<owner>/<repo>/.github/workflows/ssdlc-pipeline.yml@refs/heads/main`.
+A assinatura não diz só "isto foi assinado"; diz "isto foi assinado **por este workflow,
+neste repositório**".
+
+**Qualquer um consegue uma assinatura válida.** Um atacante abre o repositório dele, roda um
+workflow e o Sigstore emite um certificado perfeitamente válido com a identidade *dele*,
+registrado no Rekor. Por isso a pergunta certa na verificação **não** é "existe uma
+assinatura válida?" — é "existe uma assinatura válida feita pela **identidade em que eu
+confio**?".
+
+| Valor de `--certificate-identity-regexp` | O que o `cosign verify` aceita |
+|------------------------------------------|--------------------------------|
+| `https://github.com/<owner>/<repo>/.*`   | **só** assinaturas feitas por um workflow **deste** repositório |
+| `.*`                                     | **qualquer** identidade — de qualquer repositório, de qualquer pessoa |
+
+**O ataque que o `.*` abriria.** Suponha o `deploy-prod` verificando com `.*`:
+
+1. O atacante builda uma imagem maliciosa (`vidaplus-backend` com backdoor).
+2. Assina com o **próprio** GitHub Actions, no **próprio** repositório — assinatura Sigstore
+   legítima, identidade `https://github.com/atacante/malware/...`.
+3. Consegue empurrar essa imagem/tag para o seu GHCR (ou você a puxa por engano).
+4. O `deploy-prod` roda `cosign verify` → com `.*`, a identidade do atacante **casa** com o
+   filtro → **verificação passa** → a imagem com backdoor vai para produção.
+
+Com o regexp preso ao seu repositório, o passo 4 **falha**:
+`https://github.com/atacante/malware/...` não casa com
+`https://github.com/<owner>/<repo>/.*`, o `cosign verify` retorna erro e o *admission gate*
+**recusa** a imagem.
+
+**A analogia.** É o segurança conferindo documento na porta:
+- **assinatura válida** = "o passaporte é autêntico" — todo mundo tem um, não filtra ninguém;
+- **`--certificate-identity-regexp <seu repo>`** = "o nome está na lista de convidados" — *aí* filtra;
+- **`.*`** = "deixe entrar qualquer um com passaporte autêntico" — é jogar a lista fora.
+
+Por isso `.*` **esvazia a proveniência**: proveniência é saber *de onde* o artefato veio;
+aceitar qualquer signatário destrói exatamente essa garantia — a verificação continua
+existindo, mas não prova mais nada.
+
+> O `--certificate-oidc-issuer "https://token.actions.githubusercontent.com"` é o **segundo
+> cadeado**: exige que a identidade tenha sido emitida pelo OIDC **do GitHub Actions**. Os
+> dois juntos dizem: "assinado por um workflow do GitHub Actions **E** desse workflow ser do
+> meu repositório".
