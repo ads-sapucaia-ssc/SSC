@@ -38,6 +38,38 @@ conceito** do grupo faz o(s) gate(s) da classe corrigida transitar **🔴 → �
 
 ---
 
+## 1.1 Onde cada ferramenta vive — a pasta `security/`
+
+A pasta [`security/`](../security/) **não guarda as ferramentas** do pipeline — guarda
+apenas os **arquivos de configuração customizada** das ferramentas que precisam de ajuste
+específico do projeto. As ferramentas em si **não ficam versionadas no repositório**: o
+GitHub Actions **baixa cada uma em tempo de execução** (via `uses:` de uma *action* pronta,
+ou `container:`/`run:` com uma imagem Docker).
+
+Por isso `security/` tem só **4 arquivos** — são exatamente as 4 ferramentas que exigem
+config própria. As demais rodam com **configuração padrão** (nada a versionar) ou têm a sua
+config **junto do código** (`pom.xml`, `package.json`).
+
+| Ferramenta | Como o pipeline a obtém | Config no repositório? |
+|-----------|--------------------------|------------------------|
+| **Gitleaks** | `gitleaks/gitleaks-action@v2` | ✅ [security/gitleaks/gitleaks.toml](../security/gitleaks/gitleaks.toml) |
+| **Semgrep** | `container: returntocorp/semgrep` + conjuntos públicos `p/owasp-top-ten`, `p/java` | ✅ [security/semgrep/vidaplus.yml](../security/semgrep/vidaplus.yml) (regras próprias) |
+| **Dependency-Check** | `dependency-check/Dependency-Check_Action@main` | ✅ [security/dependency-check/suppression.xml](../security/dependency-check/suppression.xml) |
+| **OWASP ZAP** | `zaproxy/action-baseline@v0.12.0` | ✅ [security/zap/rules.tsv](../security/zap/rules.tsv) |
+| **CodeQL** | `github/codeql-action/{init,analyze}@v3` | ❌ usa as *queries* padrão |
+| **Trivy** (fs + imagem) | `aquasecurity/trivy-action@master` | ❌ config padrão |
+| **Syft** (SBOM) | `anchore/sbom-action@v0` | ❌ config padrão |
+| **cosign / Sigstore** | `sigstore/cosign-installer@v3` | ❌ *keyless* via OIDC (sem segredo) |
+| **Maven / JUnit** | `actions/setup-java@v4` + `mvn` | ✅ em [legacy-app/backend/pom.xml](../legacy-app/backend/pom.xml) |
+| **React / Vite** | `actions/setup-node@v4` + build | ✅ em [legacy-app/frontend/](../legacy-app/frontend/) |
+
+> A quantidade de arquivos em `security/` **não** deveria bater com a quantidade de
+> ferramentas do pipeline: ela reflete só **quantas precisam de configuração customizada**.
+> Maven/JUnit e React/Vite são ferramentas de **build**, não de segurança — por isso a
+> config delas vive junto do código, não em `security/`.
+
+---
+
 ## 2. Informativo → bloqueante
 
 No legado, os gates usam `continue-on-error: true` (**informativo**): reportam vermelho
