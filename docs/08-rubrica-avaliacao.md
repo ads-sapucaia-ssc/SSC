@@ -58,17 +58,38 @@ Cada integrante recebe um conceito, pelo elo que conduziu **e** pelas respostas:
 - **Parcial (× 0,8)** — conduz o seu, mas hesita fora dele;
 - **Insuficiente (× 0,5)** — não sustenta nem o próprio elo.
 
+> ⚠️ **A defesa é eliminatória, não só ponderada.** Como os artefatos podem ser produzidos
+> com ajuda de IA, a defesa é a **prova individual** de que o aluno domina o que o grupo
+> entregou. Por isso ela é **condição de aprovação**: **domínio individual "Insuficiente"
+> reprova** — a nota final fica **limitada a 5,9**, qualquer que seja a nota de artefatos.
+> Quem não sustenta nem o próprio elo do fio **não** é aprovado, ainda que o dossiê do grupo
+> seja nota 10.
+
 ### Como fecha a nota (0–10)
 
-Artefatos e Defesa são **cada um 0–10**. A nota final é individual:
+Artefatos e Defesa são **cada um 0–10**. A nota final é **individual** e o fator de domínio
+multiplica o **conjunto** (não só a defesa) — assim quem não domina **não** é carregado pelos
+artefatos do grupo:
 
 ```
-Nota final (individual) = 0,8 × Artefatos(grupo) + 0,2 × Defesa(grupo) × fator individual
+Nota final (individual) = (0,8 × Artefatos(grupo) + 0,2 × Defesa(grupo)) × fator individual
 ```
 
-Assim o grupo pode ir bem, mas **quem não domina não leva a nota cheia** (combate o
-"caroneiro"). Se quiser que o domínio individual pese mais, aplique o fator ao total:
-`(0,8 × Artefatos + 0,2 × Defesa) × fator`.
+**Barreira (regra de aprovação):** se o domínio individual for **"Insuficiente"**, a nota
+final é **reprovada** (≤ 5,9), independentemente da nota de artefatos.
+
+**Por que as duas coisas juntas.** O fator sobre o conjunto já faz "Insuficiente ×0,5" ter
+**teto de 5,0** (mesmo com tudo 10); a barreira torna a regra **explícita** para o aluno e
+cobre arredondamentos. Exemplos:
+
+| Cenário | Cálculo | Resultado |
+|---|---|---|
+| **Grupo só usou IA, ninguém defende** (Artef. 10 · Defesa 0 · Insuficiente) | `(0,8×10 + 0,2×0) × 0,5 = 4,0` **+ barreira** | **Reprova** |
+| Domina bem (Pleno · Artef. 10 · Defesa 8) | `(0,8×10 + 0,2×8) × 1,0 = 9,6` | Aprova |
+| Defende só o seu elo (Parcial · Artef. 9 · Defesa 6) | `(0,8×9 + 0,2×6) × 0,8 = 6,72` | Aprova |
+
+> **Combate ao "caroneiro" e à entrega feita só por IA:** o grupo pode ir bem nos artefatos,
+> mas a nota **só se realiza** para quem **defende** o que foi entregue.
 
 ---
 
