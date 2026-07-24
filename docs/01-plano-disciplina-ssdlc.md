@@ -23,7 +23,7 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 | 3 | 2 · DFD + STRIDE | 1h | 2h | DFD + STRIDE-per-element 🟠 |
 | 4 | 2 · LINDDUN + PbD + RIPD | 1h | 2h | LINDDUN + esboço de RIPD/DPIA 🔵 |
 | 5 | 3 · Projeto seguro + DoD | 1h | 2h | Especificação + priorização + DoD |
-| 6 | 4 · Remediação (escolha + design do controle) | 1h | 2h | Controle P0 escolhido + plano |
+| 6 | 4 · Remediação (design do controle) | 1h | 2h | Design do P0 do pacote + plano |
 | 7–8 | 4 · Remediação (implementação PoC) | 0,5h/sem | 2,5h/sem | 1–2 controles ponta-a-ponta |
 | 9 | 4 · Remediação (fechamento) + plano do restante | 0,5h | 2,5h | Plano de remediação das demais falhas |
 | 10 | 5 · Testes de segurança | 1h | 2h | Testes que exercitam o(s) controle(s) |
@@ -77,10 +77,12 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 ## Fase 4 — Remediação (PROVA DE CONCEITO) · Semanas 6–9
 - **Teoria:** OWASP Top 10 e secure coding **da classe do controle escolhido** (só o
   necessário para a PoC).
-- **Prática:** cada grupo escolhe **1 P0 + 1 P1** e o corrige
-  **ponta-a-ponta** (código → teste → evidência) num PR. Para as demais falhas do seu
-  pacote, produz um **plano de remediação** (o quê, como, esforço, prioridade) — **sem
-  precisar codar**.
+- **Prática:** cada grupo corrige, **ponta-a-ponta** (código → teste → evidência) num PR, o
+  **P0 de correção já atribuído ao seu pacote** ([05](05-pacotes-trabalho-estudantes.md)) —
+  e, se optar por fazer os dois, também a **funcionalidade de criação** (✨) do pacote. Não
+  há escolha de *qual* funcionalidade corrigir: isso já está balanceado entre os grupos.
+  Para as demais falhas do seu pacote, produz um **plano de remediação** (o quê, como,
+  esforço, prioridade) — **sem precisar codar**.
 - **Artefatos:** 1–2 controles corrigidos + testes + evidência; **plano de remediação** do
   restante; módulo LGPD atribuído ao grupo (quando aplicável — consentimento/exportação/
   eliminação/auditoria) 🟢🔵.

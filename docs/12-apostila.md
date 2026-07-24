@@ -279,7 +279,9 @@ atualizado, SAST/SCA sem críticos, testes de authn/authz passando, sem segredos
 ASVS verificado. É o que impede a segurança de "cair" na pressa do release.
 
 **Entregável (Fase 3):** catálogo consolidado (RFS+RGS) + priorização (P0/P1/P2) + DoD; aqui
-o grupo escolhe qual controle será a prova de conceito da Fase 4.
+o grupo decide se a prova de conceito da Fase 4 será só o **P0 já atribuído ao seu pacote**
+([05](05-pacotes-trabalho-estudantes.md)) ou também a **funcionalidade de criação** (✨) — o
+*qual* corrigir já vem balanceado, não é escolha do grupo.
 
 ---
 
