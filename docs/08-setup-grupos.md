@@ -1,4 +1,4 @@
-# 09 · Setup dos grupos — passo a passo
+# 08 · Setup dos grupos — passo a passo
 
 Guia para cada grupo **começar** o projeto: gerar o repositório, subir o VidaPlus, rodar o
 pipeline pela primeira vez e entender por que ele nasce **vermelho**.

@@ -1,4 +1,4 @@
-# 08 · Rubrica de avaliação (alinhada às fases)
+# 07 · Rubrica de avaliação (alinhada às fases)
 
 A avaliação é **contínua e por fase** — não há prova única. O foco da disciplina é
 **SSDLC + LGPD + privacidade**, então o peso está nos **artefatos do processo**; a

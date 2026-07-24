@@ -1,4 +1,4 @@
-# 12 · Apostila — material de estudo
+# 11 · Apostila — material de estudo
 
 Texto de leitura que **acompanha os slides** ([aulas/](../aulas/)). Cada seção corresponde
 a uma aula; leia antes ou depois da aula para fixar. O conteúdo é o mesmo das **notas de

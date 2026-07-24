@@ -1,4 +1,4 @@
-# 11 · Glossário
+# 10 · Glossário
 
 Consulta rápida dos termos usados na disciplina. Para o detalhe, veja o documento indicado.
 
