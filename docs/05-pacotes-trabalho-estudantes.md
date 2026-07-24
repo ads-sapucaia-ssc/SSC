@@ -155,4 +155,4 @@ fechado** — não se espera o módulo completo:
 > pacotes** — ou das suas que ficaram só **analisadas** — é **esperado** e **não** derruba o
 > build nem a nota (nota = dossiê + defesa; pipeline = evidência). Nenhum grupo precisa
 > corrigir teste de outro pacote. Detalhe de como fazer isso com o job de testes de
-> segurança: [09-setup-grupos.md](09-setup-grupos.md) §5.
+> segurança: [08-setup-grupos.md](08-setup-grupos.md) §5.

@@ -70,11 +70,11 @@ projeto-vidaplus/
 │   ├── 04-catalogo-funcionalidades.md   funcionalidades por criticidade
 │   ├── 05-pacotes-trabalho-estudantes.md pacotes de trabalho por grupo
 │   ├── 06-pipeline-cicd.md          gates de segurança ↔ fases do SSDLC
-│   ├── 08-rubrica-avaliacao.md      avaliação alinhada às fases
-│   ├── 09-setup-grupos.md           passo a passo para os grupos começarem
-│   ├── 10-dossie-template.md        TEMPLATE do entregável (copiar p/ DOSSIE.md)
-│   ├── 11-glossario.md              consulta rápida dos termos da disciplina
-│   └── 12-apostila.md               material de estudo em texto (acompanha os slides)
+│   ├── 07-rubrica-avaliacao.md      avaliação alinhada às fases
+│   ├── 08-setup-grupos.md           passo a passo para os grupos começarem
+│   ├── 09-dossie-template.md        TEMPLATE do entregável (copiar p/ DOSSIE.md)
+│   ├── 10-glossario.md              consulta rápida dos termos da disciplina
+│   └── 11-apostila.md               material de estudo em texto (acompanha os slides)
 ├── aulas/                          ← slides .pptx (template IFSul), um por aula
 │   └── README.md                    índice deck ↔ semana ↔ fase
 ├── legacy-app/                      ← o software a ser corrigido

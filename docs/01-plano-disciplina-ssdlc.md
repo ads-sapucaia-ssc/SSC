@@ -120,7 +120,7 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 ---
 
 > **Avaliação contínua e por artefato** — não há prova única. O peso está nos **artefatos
-> de SSDLC/LGPD/privacidade** (ver [08-rubrica-avaliacao.md](08-rubrica-avaliacao.md)); a
+> de SSDLC/LGPD/privacidade** (ver [07-rubrica-avaliacao.md](07-rubrica-avaliacao.md)); a
 > remediação entra como **prova de conceito**, e o pipeline como **evidência**, não como a
 > nota em si.
 

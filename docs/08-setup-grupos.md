@@ -87,7 +87,7 @@ para vocês aprenderem a removê-los. Por isso:
 3. correção:    implemente o controle (deny-by-default, parametrizado, etc.)
 4. teste:       escreva o teste que prova a correção (ex.: A pede exame de B -> 403)
 5. PR:          abra o Pull Request; o pipeline roda os gates
-6. review:      revisão intra-grupo, autor != revisor (checklist em docs/08); aprovar
+6. review:      revisão intra-grupo, autor != revisor (checklist em docs/07); aprovar
 7. merge:       só com o gate da classe corrigida verde E a revisão aprovada
 8. matriz:      atualize a rastreabilidade (requisito -> teste -> evidência -> status)
 ```

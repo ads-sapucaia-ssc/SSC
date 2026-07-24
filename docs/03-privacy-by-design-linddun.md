@@ -68,7 +68,7 @@ pergunta-se quais das 7 categorias de ameaça se aplicam:
 ## 3. Exemplo resolvido (modelo de qualidade)
 
 > O **entregável avaliado** é a tabela LINDDUN-per-element do
-> [`DOSSIE.md` §4.1](10-dossie-template.md) (cada grupo preenche a sua, sobre o próprio
+> [`DOSSIE.md` §4.1](09-dossie-template.md) (cada grupo preenche a sua, sobre o próprio
 > DFD). A tabela abaixo não é para preencher de novo — é o **padrão de qualidade** que a
 > tabela do dossiê deve seguir: um exemplo já resolvido, por elemento, mostrando o nível de
 > concretude esperado (ameaça específica, não "vazamento genérico"; controle/PET nomeado;

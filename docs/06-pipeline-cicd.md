@@ -7,7 +7,7 @@ conceito** do grupo faz o(s) gate(s) da classe corrigida transitar **🔴 → �
 
 > ⚠️ **O pipeline é gerador de EVIDÊNCIA e FEEDBACK — não é a nota.** Como o foco é o
 > processo (SSDLC + LGPD + privacidade), a avaliação vem dos **artefatos** e da **defesa**
-> (ver [08-rubrica-avaliacao.md](08-rubrica-avaliacao.md)). Um gate verde **sustenta** a
+> (ver [07-rubrica-avaliacao.md](07-rubrica-avaliacao.md)). Um gate verde **sustenta** a
 > evidência de um controle; ele não substitui o requisito, o threat model, o RIPD e a
 > rastreabilidade por trás. Nem todos os gates precisam ficar verdes — só os das PoCs
 > escolhidas; os demais sustentam o **plano de remediação**.
@@ -102,7 +102,7 @@ tornou bloqueantes e mantém verdes?".
 2. Implementa a correção + teste de segurança.
 3. Abre PR; o pipeline roda todos os gates.
 4. **Revisão por pares intra-grupo** (regra dos "4 olhos"): **outro membro do grupo — não
-   o autor do PR** — revisa com o [checklist de secure code review](08-rubrica-avaliacao.md#L55)
+   o autor do PR** — revisa com o [checklist de secure code review](07-rubrica-avaliacao.md#L113)
    e **aprova**.
 5. Merge só com o gate da classe corrigida **verde** **e** a revisão **aprovada**.
 6. Atualiza a **matriz de rastreabilidade** (requisito → teste → evidência → status).
@@ -114,7 +114,7 @@ tornou bloqueantes e mantém verdes?".
 > *branch protection* na `main` — exigir os **status checks verdes** dos gates das PoCs **e
 > 1 aprovação** antes do merge. É a prática **PS.1 do NIST SSDF** (proteger o código-fonte
 > contra adulteração/bypass). Passo a passo para o aluno configurar em
-> [09-setup-grupos.md §5.2](09-setup-grupos.md).
+> [08-setup-grupos.md §5.2](08-setup-grupos.md).
 
 ---
 
@@ -163,7 +163,7 @@ valor porque **alguém verifica** — por isso o `deploy-prod` recusa o não-ass
   **Packages**; `cosign verify`/`verify-attestation` passando; a **pausa de aprovação** do
   `production`).
 - **Único passo de setup** (é política do repo, não ferramenta): criar o **Environment
-  `production` com *required reviewer*** — ver [09-setup-grupos.md §5.3](09-setup-grupos.md).
+  `production` com *required reviewer*** — ver [08-setup-grupos.md §5.3](08-setup-grupos.md).
 
 > ⚠️ A verificação amarra a identidade ao **seu** repositório
 > (`--certificate-identity-regexp "https://github.com/<owner>/<repo>/.*"`) — **nunca** `.*`,

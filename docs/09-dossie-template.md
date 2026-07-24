@@ -4,7 +4,7 @@
 > preencha ao longo das fases. Ele **é o entregável avaliado** (com a defesa). As linhas
 > _em itálico_ são exemplos — **apague-as** e coloque o conteúdo do seu grupo. Cada seção
 > mapeia uma fase do [plano](01-plano-disciplina-ssdlc.md) e um critério da
-> [rubrica](08-rubrica-avaliacao.md).
+> [rubrica](07-rubrica-avaliacao.md).
 >
 > Lembre: **todas** as funcionalidades do pacote são **analisadas**; só **1–2** são
 > **implementadas** (prova de conceito). O resto vira **plano de remediação**.
@@ -219,7 +219,7 @@ Para cada controle implementado:
 ao menos um elo do fio e responde sobre qualquer parte** do projeto — o professor pode
 perguntar a qualquer um sobre qualquer etapa. Prepare-se para defender o **todo**, não só a
 sua parte. *(Como a defesa é pontuada — nota da defesa 0–10 e fator individual — em
-[08-rubrica-avaliacao.md](08-rubrica-avaliacao.md), seção "Defesa — como pontuar".)*
+[07-rubrica-avaliacao.md](07-rubrica-avaliacao.md), seção "Defesa — como pontuar".)*
 
 Prepare-se para **fechar o fio ao vivo** partindo de **um** ativo:
 

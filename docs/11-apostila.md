@@ -373,7 +373,7 @@ importante, não urgente; um CVSS 7 no KEV é urgente (explorado agora). Combine
 configura ferramenta**): na `main`, `release-sign` (build+push+**assina**+**atesta o SBOM** →
 SLSA L2) → `deploy-staging` (smoke/DAST) → `deploy-prod` (**verifica a assinatura** e exige
 **aprovação manual**). Seu trabalho: tornar os gates bloqueantes, e **explicar o fluxo + a
-evidência** no dossiê. Único setup: criar o *environment* `production` com revisor (docs/09 §5.3).
+evidência** no dossiê. Único setup: criar o *environment* `production` com revisor (docs/08 §5.3).
 
 ---
 
