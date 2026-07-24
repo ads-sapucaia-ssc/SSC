@@ -80,7 +80,7 @@ Ao final do semestre, o estudante será capaz de:
 ## Papéis na equipe (sugestão dentro de cada grupo)
 
 Para dar responsabilidade individual dentro do trabalho em grupo, sugere-se rotacionar
-estes chapéus a cada fase:
+estes papéis a cada fase:
 
 - **Security Champion** — conduz threat modeling e revisão de requisitos.
 - **Dev de aplicação** — implementa correções (frontend/backend).
