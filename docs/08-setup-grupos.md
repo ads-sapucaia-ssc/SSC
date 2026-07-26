@@ -88,10 +88,12 @@ para vocês aprenderem a removê-los. Por isso:
   detecção **genérica** (recurso mais novo, e apenas se habilitada no repo) *poderia*. Quem
   **garante** acusar é o gate **Gitleaks** (acima). **Se** o push for bloqueado:
   - **não** apague o histórico às cegas;
-  - como são segredos **de exemplo** (não credenciais reais), você pode **permitir o push**
-    pela própria mensagem de erro do GitHub (link "allow secret") **ou** já iniciar a
-    correção (mover os segredos para variável de ambiente) antes de reenviar;
-  - documente essa decisão — ela é o começo da funcionalidade **F-10 (gestão de segredos)**.
+  - como são segredos **de exemplo** (não credenciais reais), **permita o push** pela própria
+    mensagem de erro do GitHub (link "allow secret") — é o esperado no primeiro push;
+  - **não corrija agora.** Mover os segredos para variável de ambiente é a **remediação de
+    F-10**, que acontece na **Fase 4/6** (com requisito, ameaça e teste **antes**) — não na
+    semana 1. Por ora, apenas **documente** a decisão: ela é o **começo** de F-10 (gestão de
+    segredos).
 
 ---
 
