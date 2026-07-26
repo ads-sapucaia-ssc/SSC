@@ -92,6 +92,9 @@ projeto-vidaplus/
 
 ## 4. Como rodar o legado
 
+Já **dentro da pasta do repositório do grupo** (depois de cloná-lo — passo a passo, com clone
+e autenticação, em [docs/08 §1](docs/08-setup-grupos.md)) e com o **Docker** instalado:
+
 ```bash
 cd legacy-app
 docker compose up --build
