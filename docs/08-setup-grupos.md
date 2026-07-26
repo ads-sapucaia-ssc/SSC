@@ -54,6 +54,14 @@ Ao fazer o primeiro `push`, o **GitHub Actions** executa o
 > propósito**. O vermelho é o seu **ponto de partida**; a meta do semestre é transformar
 > cada gate em verde, corrigindo as falhas de verdade.
 
+> **Por que "quase" e não "tudo"?** Alguns gates **já nascem verdes**: o **build** do backend e
+> do frontend (o código **compila e roda**), o **SBOM** (apenas inventaria) e o teste de
+> sanidade **`login_valido`** (a app sobe e conecta no MySQL). O **SCA** não tem falha plantada
+> — a stack é atual, nada de "dependência velha" de propósito —, então nasce verde e deve se
+> **manter** verde. Vermelho **de propósito**: **Secret Scanning, SAST, DAST** e os **testes**
+> de IDOR/RBAC/SQLi. (O **Container Scanning** pode acusar CVE da **imagem base** — higiene, não
+> falha plantada.)
+
 ### Como ler o placar
 
 | Gate | O que um vermelho significa | Você conserta em… |
