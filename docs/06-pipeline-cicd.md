@@ -91,6 +91,14 @@ secret-scan:
 > **permanece**. A meta é tornar o gate **bloqueante**, não excluí-lo — apagar o bloco
 > inteiro removeria o próprio gate (o Gitleaks deixaria de rodar).
 
+> **Onde e como fazer:** o arquivo é
+> [`.github/workflows/ssdlc-pipeline.yml`](../.github/workflows/ssdlc-pipeline.yml). Altere-o
+> pelo mesmo **fluxo de Pull Request** do [`docs/08` §5](08-setup-grupos.md) (branch → editar →
+> `git add` / `commit` / `push` → abrir o PR). Para uma mudança de **uma linha**, dá para
+> editar direto no GitHub: abra o arquivo na página do repositório, clique no **lápis
+> (✏️ *Edit this file*)**, apague a linha e confirme em **`Commit changes`** — o GitHub cria o
+> commit por você.
+
 Essa transição é, ela própria, um **entregável avaliável** (Fase 6): "quais gates o grupo
 tornou bloqueantes e mantém verdes?".
 
