@@ -92,8 +92,9 @@ para vocês aprenderem a removê-los. Por isso:
     mensagem de erro do GitHub (link "allow secret") — é o esperado no primeiro push;
   - **não corrija agora.** Mover os segredos para variável de ambiente é a **remediação de
     F-10**, que acontece na **Fase 4/6** (com requisito, ameaça e teste **antes**) — não na
-    semana 1. Por ora, apenas **documente** a decisão: ela é o **começo** de F-10 (gestão de
-    segredos).
+    semana 1. Por ora, apenas **documente** a decisão **no `DOSSIE.md`** do grupo (o entregável
+    — cópia do modelo em [docs/09](09-dossie-template.md)): é o **primeiro registro** de F-10,
+    que vira o **plano de remediação** de F-10 na Fase 4.
 
 ---
 
