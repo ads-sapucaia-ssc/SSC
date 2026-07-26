@@ -173,7 +173,7 @@ Vale reconhecê-los pelo nome — são a base atemporal de todo o SSDLC.
 - **VEX** (*Vulnerability Exploitability eXchange*) — documento que afirma se uma CVE
   presente no produto é (ou não) explorável naquele contexto.
 - **Priorização moderna** — não basta CVSS: combine **CVSS × EPSS × KEV** (ver a matriz
-  em [09-dossie-template.md](09-dossie-template.md), Fase 3).
+  em [`DOSSIE.md`](../entregaveis/DOSSIE.md), Fase 3).
 - **SLA de remediação** — prazo para corrigir por severidade (ex.: críticas em < 14 dias).
 
 ## Frameworks de controle e maturidade

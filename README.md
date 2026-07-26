@@ -72,11 +72,12 @@ projeto-vidaplus/
 │   ├── 06-pipeline-cicd.md          gates de segurança ↔ fases do SSDLC
 │   ├── 07-rubrica-avaliacao.md      avaliação alinhada às fases
 │   ├── 08-setup-grupos.md           passo a passo para os grupos começarem
-│   ├── 09-dossie-template.md        TEMPLATE do entregável (copiar p/ DOSSIE.md)
+│   ├── 09-dossie-template.md        visão geral do dossiê (arquivo a preencher em entregaveis/)
 │   ├── 10-glossario.md              consulta rápida dos termos da disciplina
 │   └── 11-apostila.md               material de estudo em texto (acompanha os slides)
+├── entregaveis/                    ← o que o grupo preenche e entrega
+│   └── DOSSIE.md                    dossiê de segurança e privacidade (preencher nas fases)
 ├── aulas/                          ← slides .pptx (template IFSul), um por aula
-│   └── README.md                    índice deck ↔ semana ↔ fase
 ├── legacy-app/                      ← o software a ser corrigido
 │   ├── docker-compose.yml
 │   ├── db/         schema.sql + seed.sql (MySQL)
