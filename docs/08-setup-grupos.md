@@ -81,8 +81,12 @@ O repositório contém **segredos falsos plantados** (senha do banco, segredo do
 para vocês aprenderem a removê-los. Por isso:
 
 - o gate **Gitleaks** vai **acusar** — isso é **esperado e correto**;
-- o **push protection** do GitHub **pode bloquear** o primeiro push ao detectar um padrão
-  de segredo. Se isso acontecer:
+- o **push protection** do GitHub **pode** — mas, para estes segredos, **provavelmente não
+  vai** — bloquear o primeiro push. Ele barra com alta confiança **tokens de provedores**
+  (formato reconhecível: `ghp_…`, `AKIA…`, `sk_live_…`); aqui os segredos são **genéricos** (a
+  senha do banco e uma string inventada), que o push protection **clássico não pega** — só a
+  detecção **genérica** (recurso mais novo, e apenas se habilitada no repo) *poderia*. Quem
+  **garante** acusar é o gate **Gitleaks** (acima). **Se** o push for bloqueado:
   - **não** apague o histórico às cegas;
   - como são segredos **de exemplo** (não credenciais reais), você pode **permitir o push**
     pela própria mensagem de erro do GitHub (link "allow secret") **ou** já iniciar a
