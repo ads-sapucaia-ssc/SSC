@@ -87,7 +87,11 @@ para vocês aprenderem a removê-los. Por isso:
   senha do banco e uma string inventada), que o push protection **clássico não pega** — só a
   detecção **genérica** (recurso mais novo, e apenas se habilitada no repo) *poderia*. Quem
   **garante** acusar é o gate **Gitleaks** (acima). **Se** o push for bloqueado:
-  - **não** apague o histórico às cegas;
+  - **não reescreva nem apague o histórico do git** em pânico (nada de `git filter-branch`,
+    `reset --hard` ou *force push* para "sumir" com o segredo): aqui os segredos são **falsos**,
+    não há o que proteger, e reescrever o histórico **destrói a trilha append-only** que o
+    projeto usa como evidência (é o mesmo motivo do *Block force pushes* na
+    [§5.2](#52-proteger-a-main-branch-protection));
   - como são segredos **de exemplo** (não credenciais reais), **permita o push** pela própria
     mensagem de erro do GitHub (link "allow secret") — é o esperado no primeiro push;
   - **não corrija agora.** Mover os segredos para variável de ambiente é a **remediação de
