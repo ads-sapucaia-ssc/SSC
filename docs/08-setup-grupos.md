@@ -7,18 +7,18 @@ pipeline pela primeira vez e entender por que ele nasce **vermelho**.
 
 ## 1. Gerar o repositório do grupo
 
-**Via Classroom 50 (recomendado):** o professor compartilha um **link de convite** do
-assignment; ao aceitar, você **cria/entra num time** e o Classroom 50 gera automaticamente
-o repositório **privado** do grupo a partir do template, já com acesso **admin** do grupo.
+**Você (aluno) tem um caminho só:** o professor compartilha um **link de convite** do
+assignment (Classroom 50); ao aceitar, você **cria/entra num time** e o repositório
+**privado** do grupo é criado **automaticamente sob a organização**, a partir do template e já
+com acesso **admin**. **Não crie o repositório manualmente** — o convite garante que ele nasça
+no lugar certo (sob a org), com o time e as permissões corretas.
 
-**Ou manualmente** (sem Classroom 50): na página do template na org, clique em **"Use this
-template" → "Create a new repository"**, marque **Private** e dê um nome (ex.: `ssc-grupo-1`).
-
-> ⚠️ **O repositório do grupo tem de ficar sob a organização** (`ads-sapucaia-ssc`), **não na
-> sua conta pessoal.** É a **org** que tem o **GitHub Education** — e é ele que habilita a
-> **pausa de aprovação** e as regras de proteção do ambiente. O Classroom 50 já cria sob a org;
-> se usarem "Use this template", confirmem o campo **Owner** = a **organização** (não o seu
-> usuário) antes de criar.
+> **Por que não "Use this template" na mão?** Esse é o mecanismo que o **professor** usa para
+> montar os repositórios. Se um aluno o fizesse, o repo tenderia a nascer na **conta pessoal**
+> (não sob a org), sem o time nem as permissões — e a **pausa de aprovação**
+> (*Required reviewers*, [§5.3](#53-ambiente-production-com-aprovação-1-passo)) **não
+> apareceria**. Se, em algum caso, o professor optar por **não** usar o Classroom 50, **ele**
+> dará as instruções — sempre criando o repo **sob a organização** (`ads-sapucaia-ssc`).
 
 > O **GitHub Classroom** oficial foi **descontinuado** (2026). Usamos o **Classroom 50**
 > (alternativa open-source endossada pelo GitHub, roda sobre GitHub Actions).
@@ -189,8 +189,8 @@ e a atestação** da imagem **passarem** na verificação (admission gate). *(O 
 > **"Required reviewers" não aparece?** O plano que habilita isso é o da **organização**, que
 > **já** tem o **GitHub Education** — logo, num repositório criado **sob a org**, a opção
 > aparece. Se ela some, quase sempre o repo foi criado na **sua conta pessoal**, não sob a
-> organização: recriem sob a org (ver [§1](#1-gerar-o-repositório-do-grupo)). **Não deixem o
-repo público** para contornar —
+> organização: **refaçam pelo convite** ([§1](#1-gerar-o-repositório-do-grupo)) ou avisem o
+professor. **Não deixem o repo público** para contornar —
 > exporia o código do grupo. Mesmo sem a pausa, a **verificação da assinatura continua
 > valendo**: o `deploy-prod` só deixa de *pausar para aprovação*, mas ainda recusa imagem não
 > assinada.
