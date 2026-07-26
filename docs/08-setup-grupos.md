@@ -163,7 +163,7 @@ proteção da `main` cresce junto com as correções.
 O pipeline **já** builda, assina, atesta e promove a imagem (jobs `release-sign` →
 `deploy-staging` → `deploy-prod`) — você **não configura ferramenta**. Só a **aprovação
 manual** de produção exige criar o *environment* (é política do repo, não vem no arquivo).
-> **Não confunda com a revisão do PR (§5.2).** São **dois portões diferentes**: a **§5.2** é a
+> **Não confunda com a revisão do PR ([§5.2](#52-proteger-a-main-branch-protection)).** São **dois portões diferentes**: a **§5.2** é a
 > **revisão de código** (um colega aprova o *merge* na `main`); esta **§5.3** é a **aprovação do
 > deploy para produção** (um colega aprova a *promoção* da imagem já assinada). Nos dois vale o
 > mesmo princípio: **quem faz não aprova o próprio** — separação de funções, **sem depender do
@@ -179,7 +179,7 @@ Faça **uma vez**, por um integrante com **admin**:
    workflow já limita o CD à `main` (o job `release-sign` roda só com
    `if: github.ref == 'refs/heads/main'`, e o `deploy-prod` depende dele), então a pausa
    funciona sem este passo. Travar aqui é a **salvaguarda no nível da plataforma**: mesmo que o workflow
-   seja alterado — e vocês **vão** editá-lo (§5.2/§6) — o GitHub segue recusando promover à
+   seja alterado — e vocês **vão** editá-lo ([§5.2](#52-proteger-a-main-branch-protection)/[§6](#6-autograding-como-sua-nota-parcial-é-calculada)) — o GitHub segue recusando promover à
    produção qualquer branch que não seja a `main`.
 
 A partir daí, o job `deploy-prod` **pausa aguardando aprovação** e só roda se a **assinatura
@@ -189,7 +189,8 @@ e a atestação** da imagem **passarem** na verificação (admission gate). *(O 
 > **"Required reviewers" não aparece?** O plano que habilita isso é o da **organização**, que
 > **já** tem o **GitHub Education** — logo, num repositório criado **sob a org**, a opção
 > aparece. Se ela some, quase sempre o repo foi criado na **sua conta pessoal**, não sob a
-> organização: recriem sob a org (ver §1). **Não deixem o repo público** para contornar —
+> organização: recriem sob a org (ver [§1](#1-gerar-o-repositório-do-grupo)). **Não deixem o
+repo público** para contornar —
 > exporia o código do grupo. Mesmo sem a pausa, a **verificação da assinatura continua
 > valendo**: o `deploy-prod` só deixa de *pausar para aprovação*, mas ainda recusa imagem não
 > assinada.
