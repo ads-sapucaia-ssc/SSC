@@ -13,6 +13,14 @@ assignment (Classroom 50); ao aceitar, você **cria/entra num time** e o reposit
 com acesso **admin**. **Não crie o repositório manualmente** — o convite garante que ele nasça
 no lugar certo (sob a org), com o time e as permissões corretas.
 
+> **Todos do grupo clicam no mesmo link — mas o repositório é um só.** O **primeiro** a aceitar
+> **cria o time** (escolhe o nome); os **demais** abrem o **mesmo link** e **entram no time já
+> existente** — ninguém cria um repositório novo. O grupo fica com **um único repositório
+> compartilhado** (não um por pessoa). A configuração do repo
+> ([§5.2](#52-proteger-a-main-branch-protection),
+> [§5.3](#53-ambiente-production-com-aprovação-1-passo)) é feita **uma vez**, por um integrante
+> com admin; cada um que for programar **clona** esse mesmo repositório.
+
 > **Por que não "Use this template" na mão?** Esse é o mecanismo que o **professor** usa para
 > montar os repositórios. Se um aluno o fizesse, o repo tenderia a nascer na **conta pessoal**
 > (não sob a org), sem o time nem as permissões — e a **pausa de aprovação**
