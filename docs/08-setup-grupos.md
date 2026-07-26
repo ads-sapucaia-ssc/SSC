@@ -14,13 +14,19 @@ o repositório **privado** do grupo a partir do template, já com acesso **admin
 **Ou manualmente** (sem Classroom 50): na página do template na org, clique em **"Use this
 template" → "Create a new repository"**, marque **Private** e dê um nome (ex.: `ssc-grupo-1`).
 
+> ⚠️ **O repositório do grupo tem de ficar sob a organização** (`ads-sapucaia-ssc`), **não na
+> sua conta pessoal.** É a **org** que tem o **GitHub Education** — e é ele que habilita a
+> **pausa de aprovação** e as regras de proteção do ambiente. O Classroom 50 já cria sob a org;
+> se usarem "Use this template", confirmem o campo **Owner** = a **organização** (não o seu
+> usuário) antes de criar.
+
 > O **GitHub Classroom** oficial foi **descontinuado** (2026). Usamos o **Classroom 50**
 > (alternativa open-source endossada pelo GitHub, roda sobre GitHub Actions).
 
 Depois, clone:
 
 ```bash
-git clone git@github.com:<sua-conta-ou-org>/ssc-grupo-A.git
+git clone git@github.com:<org>/ssc-grupo-A.git
 cd ssc-grupo-A
 ```
 
@@ -180,12 +186,13 @@ A partir daí, o job `deploy-prod` **pausa aguardando aprovação** e só roda s
 e a atestação** da imagem **passarem** na verificação (admission gate). *(O environment
 `staging` é criado automaticamente, sem revisor.)*
 
-> ⚠️ **"Required reviewers" não aparece?** As regras de proteção de *environment* só existem
-> em repositório **público** ou **privado** com plano **Pro/Team/Enterprise/Education**. Num
-> repo **privado gratuito** a opção fica oculta — nesse caso o `deploy-prod` **roda sem
-> pausar** (a verificação da assinatura **continua** valendo). Para ter a pausa em repo
-> privado, a **organização** precisa do plano **Team** — **grátis via GitHub Education** para
-> docente verificado (o IFSul se qualifica). Alternativa: deixar o repo **público**.
+> **"Required reviewers" não aparece?** O plano que habilita isso é o da **organização**, que
+> **já** tem o **GitHub Education** — logo, num repositório criado **sob a org**, a opção
+> aparece. Se ela some, quase sempre o repo foi criado na **sua conta pessoal**, não sob a
+> organização: recriem sob a org (ver §1). **Não deixem o repo público** para contornar —
+> exporia o código do grupo. Mesmo sem a pausa, a **verificação da assinatura continua
+> valendo**: o `deploy-prod` só deixa de *pausar para aprovação*, mas ainda recusa imagem não
+> assinada.
 
 ## 6. Autograding (como sua nota parcial é calculada)
 
