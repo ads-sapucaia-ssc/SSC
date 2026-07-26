@@ -21,12 +21,23 @@ vocês precisarem criar nada à mão.
 > [§5.3](#53-ambiente-production-com-aprovação-1-passo)) é feita **uma vez**, por um integrante
 > com admin; cada um que for programar **clona** esse mesmo repositório.
 
-Depois, clone:
+Depois, **clone** o repositório do grupo — isso baixa uma cópia para a sua máquina, onde você
+vai trabalhar. Na página do repositório no GitHub, clique no botão verde **`Code` → aba
+`HTTPS`** e copie a URL; ela tem o formato abaixo. No terminal, na pasta onde quer guardar o
+projeto:
 
 ```bash
-git clone git@github.com:<org>/ssc-grupo-A.git
+git clone https://github.com/<org>/ssc-grupo-A.git
 cd ssc-grupo-A
 ```
+
+- `<org>` é `ads-sapucaia-ssc`; `ssc-grupo-A` é o nome do repositório do seu grupo.
+- **Vai pedir para entrar** (o repositório é **privado**). No **Windows/Mac**, o Git abre uma
+  janela do navegador — basta logar na sua conta do GitHub e autorizar. No **Linux** (ou se o
+  terminal pedir usuário **e senha**), a "senha" **não** é a do site: gere um **token** em
+  **GitHub → sua foto (canto superior direito) → `Settings` → `Developer settings` →
+  `Personal access tokens` → `Tokens (classic)` → `Generate new token (classic)`**, marque o
+  escopo **`repo`**, clique em **Generate**, **copie** o token e **cole no lugar da senha**.
 
 > **Seu entregável já vem no repo:** [`entregaveis/DOSSIE.md`](../entregaveis/DOSSIE.md) — o
 > **dossiê**, que vocês **preenchem ao longo das fases** (não precisa criar nada; cada seção
@@ -50,9 +61,12 @@ baixar o exame de outro paciente trocando o id (IDOR) — é isso que vão corri
 
 ## 3. Rodar o pipeline pela primeira vez
 
-Ao fazer o primeiro `push`, o **GitHub Actions** executa o
-[`.github/workflows/ssdlc-pipeline.yml`](../.github/workflows/ssdlc-pipeline.yml). Veja em
-**Actions** e, ao final, o **"Placar de gates SSDLC"** no _summary_ da execução.
+O **GitHub Actions** é o serviço do GitHub que roda tarefas automáticas a cada `push`. A cada
+envio de código, ele executa o
+[`.github/workflows/ssdlc-pipeline.yml`](../.github/workflows/ssdlc-pipeline.yml) (o
+*pipeline*). Para ver o resultado, na página do repositório no GitHub abra a aba **`Actions`**
+(no topo), clique na **execução mais recente** e role até o **"Placar de gates SSDLC"** no fim
+do _summary_ (o resumo da execução).
 
 > ⚠️ **É esperado que quase tudo apareça vermelho.** O VidaPlus é legado e inseguro **de
 > propósito**. O vermelho é o seu **ponto de partida**; a meta do semestre é transformar
@@ -108,20 +122,47 @@ para vocês aprenderem a removê-los. Por isso:
 
 ## 5. Fluxo de trabalho (por funcionalidade)
 
-```
-1. branch:      git checkout -b fix/F-02-idor
-2. requisito:   registre RFS+RGS + ameaça (STRIDE/LINDDUN) + base legal
-3. correção:    implemente o controle (deny-by-default, parametrizado, etc.)
-4. teste:       escreva o teste que prova a correção (ex.: A pede exame de B -> 403)
-5. PR:          abra o Pull Request; o pipeline roda os gates
-6. review:      revisão intra-grupo, autor != revisor (checklist em docs/07); aprovar
-7. merge:       só com o gate da classe corrigida verde E a revisão aprovada
-8. matriz:      atualize a rastreabilidade (requisito -> teste -> evidência -> status)
+Cada funcionalidade que você corrige segue o ciclo abaixo. Os comandos são digitados no
+**terminal, dentro da pasta do repositório** que você clonou.
+
+**1. Crie a branch da correção** — uma linha de trabalho separada, para não mexer direto na
+`main`:
+
+```bash
+git checkout -b fix/F-02-idor
 ```
 
-> **`fix/F-02-idor` é o nome (único) da branch** — a barra faz parte do nome, uma **convenção**
-> para agrupar branches por tipo (`fix/…`, `feature/…`). **Não** existe uma branch `fix` à
-> parte: o `git checkout -b` cria essa branch nova a partir da `main` atual.
+`fix/F-02-idor` é o **nome inteiro** da branch: a barra faz parte do nome (convenção `fix/…`,
+`feature/…`); **não** existe uma branch `fix` à parte, e o `-b` cria a branch a partir da `main`.
+
+**2. Registre o requisito** no `DOSSIE.md`: RFS+RGS + ameaça (STRIDE/LINDDUN) + base legal.
+
+**3. Implemente o controle** (deny-by-default, query parametrizada, etc.).
+
+**4. Escreva o teste** que prova a correção (ex.: A pede o exame de B → deve dar **403**).
+
+**5. Grave o trabalho no histórico e envie ao GitHub:**
+
+```bash
+git add -A                                                   # marca tudo o que você alterou
+git commit -m "fix(F-02): valida dono do laudo (anti-IDOR)"  # grava um ponto no histórico
+git push -u origin fix/F-02-idor                             # envia a sua branch para o GitHub
+```
+
+**6. Abra o Pull Request (PR)** — é o pedido, revisável, para juntar a sua branch na `main`.
+Logo após o `push`, abra o repositório no GitHub: aparece uma faixa **`Compare & pull
+request`** → clique nela → confira título e descrição → **`Create pull request`**. O pipeline
+(aba **`Actions`** do repositório) roda os gates sozinho, dentro do PR.
+
+**7. Revisão por um colega do grupo** (autor ≠ revisor): **outro** integrante abre o PR no
+GitHub, vai na aba **`Files changed`**, confere pelo
+[checklist de revisão](07-rubrica-avaliacao.md#L113) e clica em **`Review changes → Approve`**.
+
+**8. Faça o merge** — só com o **gate da classe corrigida verde** **e** a **revisão aprovada**:
+na página do PR, clique em **`Merge pull request`** → **`Confirm merge`**.
+
+**9. Atualize a matriz** de rastreabilidade no `DOSSIE.md` (requisito → teste → evidência →
+status).
 
 Quando terminar de corrigir uma classe de falha, **torne o gate bloqueante** removendo o
 `continue-on-error: true` daquele job no workflow (ver [06-pipeline-cicd.md](06-pipeline-cicd.md)).
