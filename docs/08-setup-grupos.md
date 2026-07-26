@@ -102,8 +102,7 @@ para vocês aprenderem a removê-los. Por isso:
     F-10**, que acontece na **Fase 4/6** (com requisito, ameaça e teste **antes**) — não na
     semana 1. Por ora, apenas **documente** a decisão **no `DOSSIE.md`** do grupo (o entregável,
     já no repo em [`entregaveis/DOSSIE.md`](../entregaveis/DOSSIE.md)): é o **primeiro registro**
-    de F-10,
-    que vira o **plano de remediação** de F-10 na Fase 4.
+    de F-10, que vira o seu **plano de remediação** na Fase 4.
 
 ---
 
@@ -119,6 +118,10 @@ para vocês aprenderem a removê-los. Por isso:
 7. merge:       só com o gate da classe corrigida verde E a revisão aprovada
 8. matriz:      atualize a rastreabilidade (requisito -> teste -> evidência -> status)
 ```
+
+> **`fix/F-02-idor` é o nome (único) da branch** — a barra faz parte do nome, uma **convenção**
+> para agrupar branches por tipo (`fix/…`, `feature/…`). **Não** existe uma branch `fix` à
+> parte: o `git checkout -b` cria essa branch nova a partir da `main` atual.
 
 Quando terminar de corrigir uma classe de falha, **torne o gate bloqueante** removendo o
 `continue-on-error: true` daquele job no workflow (ver [06-pipeline-cicd.md](06-pipeline-cicd.md)).
