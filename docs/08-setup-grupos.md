@@ -157,10 +157,18 @@ proteção da `main` cresce junto com as correções.
 O pipeline **já** builda, assina, atesta e promove a imagem (jobs `release-sign` →
 `deploy-staging` → `deploy-prod`) — você **não configura ferramenta**. Só a **aprovação
 manual** de produção exige criar o *environment* (é política do repo, não vem no arquivo).
+> **Não confunda com a revisão do PR (§5.2).** São **dois portões diferentes**: a **§5.2** é a
+> **revisão de código** (um colega aprova o *merge* na `main`); esta **§5.3** é a **aprovação do
+> deploy para produção** (um colega aprova a *promoção* da imagem já assinada). Nos dois vale o
+> mesmo princípio: **quem faz não aprova o próprio** — separação de funções, **sem depender do
+> professor** a cada deploy.
+
 Faça **uma vez**, por um integrante com **admin**:
 
 1. **Settings → Environments → New environment → `production`**.
-2. Marque **Required reviewers** e adicione **1 revisor** (um integrante ou o professor).
+2. Marque **Required reviewers** e adicione **1 revisor — um colega do grupo**, de preferência
+   **quem não costuma dar o `push`/`merge` na `main`** (para não aprovar o próprio deploy). Se
+   a opção **"Prevent self-review"** aparecer, marque-a.
 3. (opcional) **Deployment branches → Selected → `main`**.
 
 A partir daí, o job `deploy-prod` **pausa aguardando aprovação** e só roda se a **assinatura
