@@ -169,7 +169,12 @@ Faça **uma vez**, por um integrante com **admin**:
 2. Marque **Required reviewers** e adicione **1 revisor — um colega do grupo**, de preferência
    **quem não costuma dar o `push`/`merge` na `main`** (para não aprovar o próprio deploy). Se
    a opção **"Prevent self-review"** aparecer, marque-a.
-3. (opcional) **Deployment branches → Selected → `main`**.
+3. **Deployment branches → Selected → `main`** — **recomendado (defesa em profundidade).** O
+   workflow já limita o CD à `main` (o job `release-sign` roda só com
+   `if: github.ref == 'refs/heads/main'`, e o `deploy-prod` depende dele), então a pausa
+   funciona sem este passo. Travar aqui é o **backstop de plataforma**: mesmo que o workflow
+   seja alterado — e vocês **vão** editá-lo (§5.2/§6) — o GitHub segue recusando promover à
+   produção qualquer branch que não seja a `main`.
 
 A partir daí, o job `deploy-prod` **pausa aguardando aprovação** e só roda se a **assinatura
 e a atestação** da imagem **passarem** na verificação (admission gate). *(O environment
