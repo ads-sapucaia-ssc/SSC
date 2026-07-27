@@ -1,6 +1,6 @@
 # 01 · Plano da disciplina — SSDLC guiando a teoria (16 semanas)
 
-Disciplina de **16 semanas × 3h** de projeto (48h; ~40–44h efetivas) — parte das **20 semanas** do calendário: as **4 restantes** ficam de **reserva** (feriados, ajustes, reforço), fora do plano abaixo. **Teoria e prática
+Disciplina de **16 semanas × 3h** de projeto (48h; ~40–44h efetivas) — parte das **17 semanas** do calendário: a **semana restante** fica de **reserva para emergências**, fora do plano abaixo. **Teoria e prática
 acontecem na mesma aula.** O foco é **SSDLC + LGPD + privacidade** — o VidaPlus é o
 **cenário de simulação** onde os alunos aplicam a teoria. Cada fase gera uma **demanda de
 conhecimento**; a aula teórica correspondente é dada **quando o grupo precisa aplicá-la**
@@ -116,7 +116,7 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 ## Defesas · Semana 16
 - **Defesa final** (10–15 min): fechar o fio completo ao vivo, partindo de **um ativo →
   uma ameaça (STRIDE/LINDDUN) → o requisito → o controle → o teste → a evidência**.
-> As **4 semanas de reserva** do calendário (feriados, ajustes, reforço) ficam **fora** deste plano de 16 (ver a nota no topo).
+> A **semana de reserva** do calendário (emergências) fica **fora** deste plano de 16 (ver a nota no topo).
 
 ---
 
