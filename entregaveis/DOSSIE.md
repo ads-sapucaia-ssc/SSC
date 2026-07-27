@@ -14,7 +14,10 @@
 ## 0. Identificação
 
 - **Grupo:** _A / B / C / D_
-- **Integrantes e papéis:** _Fulano (Security Champion), … (Dev), … (DevSecOps), … (DPO)_
+- **Integrantes:** _Fulano, Beltrano, Cicrano, Fulana_
+- **Liderança por fase (rodízio):** _a cada fase, um integrante **lidera** aquela entrega (os
+  demais atuam junto) — ver o quadro de papéis × fase em
+  [docs/00](../docs/00-visao-geral.md); registrem aqui quem liderou cada fase._
 - **Pacote de funcionalidades:** _F-01, F-11, F-12, F-03…_
 - **Controle(s) escolhido(s) para prova de conceito:** _F-02 (P0) + F-01 (P1)_
 
@@ -59,7 +62,8 @@ Para cada funcionalidade do pacote: RFS (mecanismo) + RGS (garantia) + **base le
 **Representações aceitas (use ≥2 por requisito P0):** declaração *shall* · notação **EARS**
 (*SE … ENTÃO …*) · **BDD/Gherkin** · item de **catálogo ASVS** · **policy-as-code**
 (ex.: OPA/Rego — `deny[msg] { input.owner != input.user_id }`). Combine uma forma para
-**especificar** e uma para **verificar**.
+**especificar** e uma para **verificar**. **Onde registrar:** as duas formas vão na própria
+linha do requisito (colunas **RFS**/**RGS**) ou logo **abaixo desta tabela**.
 
 ---
 
@@ -169,7 +173,9 @@ Para cada controle implementado:
 
 ## 9. Fase 7 — Operação & resposta a incidente
 
-- **Trilha de auditoria:** _append-only? sem PII? integridade verificável (hash-chain)?_
+- **Trilha de auditoria:** _descreva a sua trilha e como cada garantia é (ou será) atendida:
+  é **append-only**? está **sem PII** em texto claro? tem **integridade verificável**
+  (ex.: hash-chain)?_
 
 ### 9.1 Runbook de incidente — vazamento de laudo
 
