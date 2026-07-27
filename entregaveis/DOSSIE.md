@@ -26,14 +26,20 @@
 
 | Ativo / Dado | Fluxo/Funcionalidade | Nível | Atributo prioritário | Base legal | Observação |
 |--------------|----------------------|:-----:|----------------------|-----------|-----------|
-| _Laudo (PDF)_ | _download (F-02)_ | _Crítico_ | _Confidentiality+Integrity_ | _(Fase 1)_ | _saúde = sensível_ |
+| _Laudo (PDF)_ | _download (F-02)_ | _Crítico_ | _Confidencialidade+Integridade_ | _(Fase 1)_ | _saúde = sensível_ |
 |  |  |  |  |  |  |
 
 > **Preencha agora (Fase 0):** Nível e Atributo — por **sensibilidade/impacto**. A coluna
 > **Base legal** é preenchida na **Fase 1** (após a aula de LGPD); aqui basta marcar o que é
 > dado sensível/PII.
 
-**Stakeholders e o que cada um define:** _negócio, jurídico/DPO, AppSec, dev, operações, titulares._
+**Stakeholders — quem define o quê** (breve, ~1 linha por parte interessada): identifique, no
+VidaPlus, quem **define ou exige** cada tipo de requisito — assim, nas próximas fases, você
+sabe **de quem** vem cada um. Guia: **negócio** → finalidade e prioridade · **jurídico/DPO** →
+base legal e limites (LGPD) · **segurança (AppSec)** → controles e nível ASVS · **dev** →
+viabilidade técnica · **operações** → disponibilidade e monitoração · **titular** → seus
+direitos (acesso, correção, eliminação). Não é item de nota da Fase 0 (o que conta é o
+inventário + a classificação acima), mas orienta os requisitos da Fase 1.
 
 ---
 
@@ -198,7 +204,7 @@ Para cada controle implementado:
 
 | ID | Requisito | Atributo | Origem (LGPD/ASVS) | Ameaça (STRIDE/LINDDUN) | Controle | Teste | Evidência | Status |
 |----|-----------|----------|--------------------|--------------------------|----------|-------|-----------|--------|
-| _REQ-AC-01_ | _ownership_ | _Authz_ | _art.11; ASVS V4_ | _EoP/Disclosure_ | _server-side_ | _TC-IDOR-01_ | _ci-idor.txt_ | _Verificado_ |
+| _REQ-AC-01_ | _ownership_ | _Autz._ | _art.11; ASVS V4_ | _EoP/Disclosure_ | _server-side_ | _TC-IDOR-01_ | _ci-idor.txt_ | _Verificado_ |
 |  |  |  |  |  |  |  |  |  |
 
 ### 10.2 Métricas do processo
