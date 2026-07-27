@@ -178,11 +178,15 @@ Quando terminar de corrigir uma classe de falha, **torne o gate bloqueante** rem
 > tem **dono(s)**: `sqli_no_login` → **G1 e G5** (F-01); `idor…403` → **G2 e G4** (F-02);
 > `rbac…403` → **G3** (F-03; toca também F-07, de G2). **Todo grupo tem um teste-semente no
 > seu P0 de correção** — é o seu 🔴→🟢 objetivo. A funcionalidade de **criação** (✨) do
-> pacote **não** tem teste-semente: o grupo escreve o **teste próprio** (Fase 5) e usa o
-> dossiê. Para tornar bloqueante **só o seu** teste
-> sem depender de outro pacote, restrinja a execução aos seus testes (ex.: uma `@Tag` mais
-> específica ou `-Dtest=...`); ou mantenha o gate informativo e use o **teste específico verde
-> no log** + a **matriz de rastreabilidade** como evidência.
+> pacote **não** tem teste-semente: o grupo escreve o **teste próprio** (Fase 5)
+> **no mesmo modelo dos prontos** — um método `@Test` com `@Tag("security")` (em
+> `SegurancaAceiteTest` ou numa classe nova) —, que entra **no mesmo gate** `Testes de seguranca`.
+>
+> Como esse gate roda **todos** os `@security` juntos e o repositório do grupo ainda contém as
+> **outras** falhas (dos pacotes que o grupo não corrige), ele **não** fica verde só porque o
+> seu teste passou. Por isso **não** o torne bloqueante: mantenha-o **informativo** e use como
+> evidência o **seu teste específico verde no log do gate** + a **linha na matriz** (nota =
+> dossiê + defesa; o pipeline é evidência).
 
 ---
 
