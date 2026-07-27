@@ -217,16 +217,20 @@ Isto é o que transforma "merge só com gate verde **e** revisão aprovada" (pas
    - **Require a pull request before merging** → **Required approvals: `1`** (a revisão
      intra-grupo; o **autor não aprova o próprio PR**).
    - **Require status checks to pass** → **Add checks** e selecione **apenas os gates que o
-     grupo já tornou bloqueantes** (ex.: `Gate - Testes de seguranca`,
-     `Gate - Secret Scanning (Gitleaks)`). ⚠️ **Não** selecione todos: os gates ainda
-     informativos nascem vermelhos e **travariam** a `main` com o legado.
+     grupo realmente deixou 100% verdes** — o que, num repo que **ainda tem todas as falhas**,
+     é **raro**: a maioria dos gates roda o repositório inteiro (ex.: `Gate - Testes de
+     seguranca` cobre IDOR/RBAC/SQLi de **todos** os pacotes) e segue vermelho mesmo depois que
+     você corrige o **seu** P0. ⚠️ **Não** adicione um gate que ainda nasce vermelho — ele
+     **travaria** a `main`. Na prática essa lista costuma ficar **pequena ou vazia**, e tudo
+     bem: o núcleo da proteção são os outros itens (PR + 1 aprovação + block force pushes).
    - **Block force pushes** — mantém o histórico da `main` **append-only**: ninguém
      reescreve/apaga commits (protege a trilha e as evidências, mesmo de quem tem admin).
 5. **Create**.
 
-**Regra de ouro:** à medida que o grupo torna um gate bloqueante (removendo o
-`continue-on-error`), **adicione esse gate** à lista de status checks obrigatórios. Assim a
-proteção da `main` cresce junto com as correções.
+**Regra de ouro:** só adicione um gate à lista de status checks obrigatórios **quando ele
+ficar de fato verde** no seu repo — não basta remover o `continue-on-error`; o que aquele gate
+cobre precisa estar corrigido. Assim a proteção da `main` cresce junto com as correções **sem**
+travar o merge por falhas que não são do seu pacote.
 
 ## 5.3 Ambiente `production` com aprovação (1 passo)
 
