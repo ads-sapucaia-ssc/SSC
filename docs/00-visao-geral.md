@@ -93,24 +93,25 @@ diferentes):
 - **DevSecOps** — pipeline, gates de CI, scanners, SBOM, segredos.
 - **Encarregado de dados (DPO)** — LGPD, base legal, LINDDUN, consentimento, retenção, ANPD.
 
-**O que cada responsável faz, fase a fase** (a última coluna indica a seção do `DOSSIE.md` que
-a entrega alimenta):
+**O que cada papel faz em cada fase** — todos têm uma ação em **toda** fase; **★ = quem lidera**
+aquela fase, os demais **apoiam**. Cada fase alimenta a seção correspondente do `DOSSIE.md` (o
+cabeçalho de cada seção do arquivo indica a fase):
 
-| Fase | Quem lidera | Ações concretas |
-|------|-------------|-----------------|
-| **0** Inventário | Segurança + DPO | mapear ativos, endpoints e fluxos críticos; classificar cada dado por **sensibilidade/impacto** (`DOSSIE §1`) |
-| **1** Requisitos + LGPD | Segurança + DPO | escrever **RFS+RGS** por funcionalidade e o nível ASVS (Segurança); atribuir a **base legal** LGPD a cada dado (DPO) — `DOSSIE §2` |
-| **2** Threat modeling | Segurança + DPO | **DFD** + **STRIDE-per-element** + árvore de ataque (Segurança); **LINDDUN-per-element** + esboço do **RIPD** (DPO) — `DOSSIE §3–4` |
-| **3** Projeto seguro | Segurança (Dev apoia) | especificar cada controle (mecanismo/BDD/ASVS); **priorizar** P0/P1/P2 (CVSS/DREAD × EPSS/KEV); escrever a **Definition of Done** — `DOSSIE §5` |
-| **4** Remediação (PoC) | **os quatro** | **Dev**: corrige 1 P0 + 1 P1 ponta-a-ponta num **PR**; **DevSecOps**: acompanha os gates no PR; **Segurança**: revisa o PR (checklist) + escreve o plano de remediação; **DPO**: faz o módulo LGPD do pacote — `DOSSIE §6` |
-| **5** Verificação | Dev + DevSecOps | **Dev**: escreve o teste que prova o controle (`@Tag("security")`); **DevSecOps**: lê os scanners e torna bloqueante o gate da classe corrigida — `DOSSIE §7` |
-| **6** Release/DevSecOps | DevSecOps | conferir o **SBOM**; **remover os segredos** do repo (F-10); explicar **assinatura/atestação/promoção** no dossiê — `DOSSIE §8` |
-| **7** Operação/incidente | DPO + Segurança | **DPO**: escreve a **notificação à ANPD/titular** (art. 48); **Segurança**: escreve o **runbook** do incidente; **DevSecOps**: valida a **trilha de auditoria** (append-only, sem PII) — `DOSSIE §9` |
-| **8** Rastreabilidade | Segurança (todos) | montar a **matriz** ativo→ameaça→requisito→controle→teste→evidência; calcular **métricas** e **risco residual** — `DOSSIE §10` |
+| Fase | 🛡️ Segurança | 💻 Dev | ⚙️ DevSecOps | 📋 DPO |
+|------|--------------|--------|-------------|--------|
+| **0** Inventário | ★ mapeia ativos, endpoints e fluxos críticos | explora a app e reproduz o IDOR | faz o 1º push; confirma o pipeline; registra o placar | ★ classifica cada dado por sensibilidade/impacto |
+| **1** Requisitos + LGPD | ★ escreve RFS+RGS e o nível ASVS | revisa a viabilidade técnica de cada RFS | liga cada requisito ao gate do CI que o prova | ★ atribui a base legal LGPD a cada dado |
+| **2** Threat modeling | ★ DFD + STRIDE-per-element + árvore de ataque | ajuda no DFD (quem chama o quê no código) | marca no DFD onde cada scanner/gate atua | ★ LINDDUN-per-element + esboço do RIPD |
+| **3** Projeto seguro | ★ especifica controles, prioriza P0/P1/P2 e escreve a DoD | estima o esforço e como implementar cada controle | indica qual gate provará cada controle | garante os controles de privacidade no catálogo |
+| **4** Remediação (PoC) | revisa o PR (checklist) + plano de remediação | ★ corrige 1 P0 + 1 P1 ponta-a-ponta num PR | ★ acompanha os gates dentro do PR | faz o módulo LGPD do pacote |
+| **5** Verificação | confere que a evidência é real (CI verde) | ★ escreve o teste do controle (`@Tag("security")`) | ★ lê os scanners e torna o gate bloqueante | confere que o requisito de privacidade tem teste |
+| **6** Release/DevSecOps | confere o placar e o que virou bloqueante | garante que o build da imagem passa | ★ SBOM; remove os segredos (F-10); explica assinatura/atestação | confirma que não há PII/segredo nos artefatos |
+| **7** Operação/incidente | ★ escreve o runbook do incidente | instrumenta o app para gravar o evento auditado | valida a trilha de auditoria (append-only, sem PII) | ★ escreve a notificação à ANPD/titular (art. 48) |
+| **8** Rastreabilidade | ★ monta a matriz ativo→ameaça→…→evidência | confirma que cada controle tem teste ligado na matriz | extrai as métricas do pipeline | calcula métricas de privacidade + risco residual |
 
-> A carga é **desigual de propósito** — como num time real, cada especialidade lidera nas fases
-> em que é mais exigida (a Fase 4 é a única que ativa os quatro ao mesmo tempo). Por isso o
-> rodízio: garanta que, no total, **cada integrante lidere ao menos uma fase**.
+> A carga é **desigual de propósito** — como num time real, cada especialidade **lidera** (★)
+> nas fases em que é mais exigida (só a Fase 4 exige os quatro no auge), e **apoia** nas demais.
+> Por isso o **rodízio**: garanta que, no total, cada integrante **lidere ao menos uma fase**.
 
 ## Princípios inegociáveis do projeto
 
