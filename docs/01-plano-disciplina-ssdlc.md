@@ -37,7 +37,7 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 > **Regra das 3h:** ~1/3 teoria, ~2/3 prática. Para caber, **LGPD e LINDDUN têm leitura/
 > vídeo prévio** ([02-lgpd.md](02-lgpd.md), [03-privacy-by-design-linddun.md](03-privacy-by-design-linddun.md))
 > e o **ambiente já vem pronto** (pipeline + devcontainer) — não se gasta aula montando
-> toolchain.
+> o ferramental.
 
 ---
 
