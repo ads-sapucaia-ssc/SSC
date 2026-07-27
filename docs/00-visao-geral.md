@@ -109,6 +109,13 @@ cabeçalho de cada seção do arquivo indica a fase):
 | **7** Operação/incidente | ★ escreve o runbook do incidente | instrumenta o app para gravar o evento auditado | valida a trilha de auditoria (append-only, sem PII) | ★ escreve a notificação à ANPD/titular (art. 48) |
 | **8** Rastreabilidade | ★ monta a matriz ativo→ameaça→…→evidência | confirma que cada controle tem teste ligado na matriz | extrai as métricas do pipeline | calcula métricas de privacidade + risco residual |
 
+> **Liderar não é fazer sozinho.** O ★ apenas **coordena e responde** por aquela entrega — os
+> **demais integrantes atuam junto** em toda fase (é o que cada coluna descreve). Isso importa
+> porque a **avaliação é individual**: na defesa, o professor pergunta a **qualquer** integrante
+> sobre **qualquer** parte, e o **fator individual** ([rubrica](07-rubrica-avaliacao.md))
+> rebaixa quem domina só o próprio pedaço. Ninguém se isola na sua fase — todos precisam
+> entender e saber defender o **fio inteiro**.
+
 > A carga é **desigual de propósito** — como num time real, cada especialidade **lidera** (★)
 > nas fases em que é mais exigida (só a Fase 4 exige os quatro no auge), e **apoia** nas demais.
 > Por isso o **rodízio**: garanta que, no total, cada integrante **lidere ao menos uma fase**.
