@@ -14,7 +14,7 @@ para os alunos **vivenciarem, na prática, a aplicação da teoria**. Consequên
   o restante das falhas é **analisado e planejado** (plano de remediação), não codado.
 - O **pipeline e o autograding** são **geradores de evidência e feedback**, não a nota.
 
-## Contexto narrativo (para dar aos estudantes)
+## Contexto narrativo
 
 > A **Clínica VidaPlus** opera desde 2015 com um sistema web próprio, o **VidaPlus**,
 > desenvolvido por uma equipe que já não está mais na empresa. O sistema "funciona":
@@ -77,15 +77,40 @@ Ao final do semestre, o estudante será capaz de:
 | Logs de acesso e auditoria | Confidencial | LGPD; PCI-DSS 10 |
 | Registro de consentimento | Confidencial | LGPD art. 8 |
 
-## Papéis na equipe (sugestão dentro de cada grupo)
+## Papéis na equipe (responsabilidade individual, definida por fase)
 
-Para dar responsabilidade individual dentro do trabalho em grupo, sugere-se rotacionar
-estes papéis a cada fase:
+Para dar **responsabilidade individual**, cada fase tem um(ns) **responsável(is)** — quem
+lidera e responde por aquela entrega. Como a teoria é **just-in-time** (cada conceito é
+ensinado na fase em que se usa), **os papéis não são travados na semana 1**: a cada fase,
+quando o conceito dela é apresentado, o grupo define **quem lidera** — e **revezam** ao longo
+do semestre, para cada integrante conduzir fases diferentes.
 
-- **Security Champion** — conduz threat modeling e revisão de requisitos.
-- **Dev de aplicação** — implementa correções (frontend/backend).
-- **DevSecOps** — mantém o pipeline e os gates de CI.
-- **Encarregado de dados (DPO)** — cuida da LGPD, consentimento, LINDDUN e retenção.
+Há quatro **tipos de contribuição** (um mesmo aluno pode assumir tipos diferentes em fases
+diferentes):
+
+- **Security Champion (Segurança)** — requisitos, threat modeling (STRIDE), priorização, matriz.
+- **Dev de aplicação (Dev)** — implementa as correções (frontend/backend) e escreve os testes.
+- **DevSecOps** — pipeline, gates de CI, scanners, SBOM, segredos.
+- **Encarregado de dados (DPO)** — LGPD, base legal, LINDDUN, consentimento, retenção, ANPD.
+
+**O que cada responsável faz, fase a fase** (a última coluna indica a seção do `DOSSIE.md` que
+a entrega alimenta):
+
+| Fase | Quem lidera | Ações concretas |
+|------|-------------|-----------------|
+| **0** Inventário | Segurança + DPO | mapear ativos, endpoints e fluxos críticos; classificar cada dado por **sensibilidade/impacto** (`DOSSIE §1`) |
+| **1** Requisitos + LGPD | Segurança + DPO | escrever **RFS+RGS** por funcionalidade e o nível ASVS (Segurança); atribuir a **base legal** LGPD a cada dado (DPO) — `DOSSIE §2` |
+| **2** Threat modeling | Segurança + DPO | **DFD** + **STRIDE-per-element** + árvore de ataque (Segurança); **LINDDUN-per-element** + esboço do **RIPD** (DPO) — `DOSSIE §3–4` |
+| **3** Projeto seguro | Segurança (Dev apoia) | especificar cada controle (mecanismo/BDD/ASVS); **priorizar** P0/P1/P2 (CVSS/DREAD × EPSS/KEV); escrever a **Definition of Done** — `DOSSIE §5` |
+| **4** Remediação (PoC) | **os quatro** | **Dev**: corrige 1 P0 + 1 P1 ponta-a-ponta num **PR**; **DevSecOps**: acompanha os gates no PR; **Segurança**: revisa o PR (checklist) + escreve o plano de remediação; **DPO**: faz o módulo LGPD do pacote — `DOSSIE §6` |
+| **5** Verificação | Dev + DevSecOps | **Dev**: escreve o teste que prova o controle (`@Tag("security")`); **DevSecOps**: lê os scanners e torna bloqueante o gate da classe corrigida — `DOSSIE §7` |
+| **6** Release/DevSecOps | DevSecOps | conferir o **SBOM**; **remover os segredos** do repo (F-10); explicar **assinatura/atestação/promoção** no dossiê — `DOSSIE §8` |
+| **7** Operação/incidente | DPO + Segurança | **DPO**: escreve a **notificação à ANPD/titular** (art. 48); **Segurança**: escreve o **runbook** do incidente; **DevSecOps**: valida a **trilha de auditoria** (append-only, sem PII) — `DOSSIE §9` |
+| **8** Rastreabilidade | Segurança (todos) | montar a **matriz** ativo→ameaça→requisito→controle→teste→evidência; calcular **métricas** e **risco residual** — `DOSSIE §10` |
+
+> A carga é **desigual de propósito** — como num time real, cada especialidade lidera nas fases
+> em que é mais exigida (a Fase 4 é a única que ativa os quatro ao mesmo tempo). Por isso o
+> rodízio: garanta que, no total, **cada integrante lidere ao menos uma fase**.
 
 ## Princípios inegociáveis do projeto
 

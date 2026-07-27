@@ -284,5 +284,6 @@ vulnerável desaparece** (sem MD5, sem SQL concatenado, JWT com expiração, sem
 - [ ] Repositório do grupo criado a partir do template.
 - [ ] `docker compose up` funcionando; app explorada.
 - [ ] Primeiro push feito; pipeline executou; placar vermelho registrado (print).
-- [ ] Papéis do grupo definidos (Security Champion, Dev, DevSecOps, DPO).
+- [ ] Combinado que a **liderança de cada fase** é definida quando a fase começa (revezando
+  entre os integrantes) — ações por papel × fase em [docs/00](00-visao-geral.md).
 - [ ] Inventário de ativos e classificação de dados iniciados (entregável da Fase 0).
