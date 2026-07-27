@@ -43,27 +43,64 @@
 
 ## 2. Fase 1 — Requisitos de segurança & LGPD
 
-Para cada funcionalidade do pacote: RFS (mecanismo) + RGS (garantia) + **base legal**.
+Cada requisito de segurança do pacote é especificado em **duas formas
+complementares**, propositalmente em níveis diferentes:
 
-> **RFS × RGS ≈ SFR × SAR (Common Criteria / ISO 15408).** O **RFS** é o *mecanismo* que
-> protege (equivale ao **SFR** — *Security Functional Requirement*: "o que o produto faz
-> para se proteger"); o **RGS** é a *evidência* de que funciona (equivale ao **SAR** —
-> *Security Assurance Requirement*: "como provo que protege"). O rigor da garantia é
-> proporcional à criticidade — a mesma ideia dos níveis **EAL** do Common Criteria.
+1. **Declaração *shall*** — **tecnologicamente agnóstica**, escrita **aqui no
+   dossiê** (tabela abaixo). Diz *o que* o sistema deve garantir, em linguagem
+   natural estruturada, **sem citar** framework, endpoint ou status HTTP. É a
+   forma legível para negócio/DPO e que **sobrevive a uma troca de tecnologia**.
+2. **Cenário Gherkin** — **vinculado à tecnologia**, escrito em um arquivo
+   **`.feature`** versionado em
+   `legacy-app/backend/src/test/resources/br/ifsul/vidaplus/features/`. É a
+   *mesma* exigência de forma **executável e verificável** (rota, status HTTP,
+   corpo sem o dado sensível), que o **pipeline roda**.
 
-| ID | Funcionalidade | RFS (mecanismo testável) | RGS (garantia) | Ameaça | Base legal (LGPD/ASVS) | Prioridade |
-|----|----------------|--------------------------|----------------|--------|------------------------|:---------:|
-| _REQ-AC-01_ | _F-02 download_ | _validar ownership no servidor; senão 403 sem metadados_ | _teste anti-IDOR no CI_ | _EoP/IDOR_ | _art. 11/46; ASVS V4_ | _P0_ |
-| _REQ-AC-02_ | _F-08 armazenamento_ | _download de PDF exige autorização, independente de F-07 (`publicado`)_ | _teste com exame **não publicado**: baixa sem token deve dar 401/403_ | _Info Disclosure_ | _art. 11/46; ASVS V4_ | _P1_ |
-|  |  |  |  |  |  |  |
+A *shall* declara (agnóstica); o Gherkin prova (concreto). Um requisito só existe
+quando tem as **duas** formas — a declaração no dossiê **e** o seu `.feature`.
+
+> **shall × Cenário ≈ SFR × SAR (Common Criteria / ISO 15408).** A *shall*
+> (agnóstica) é o **SFR** — o que o produto faz para se proteger; o `Cenário`
+> (tecnológico) é o **SAR** — como se prova. O rigor do cenário é proporcional à
+> criticidade — a mesma ideia dos níveis **EAL**.
+
+### Forma 1 — Declarações *shall* (agnósticas, aqui no dossiê)
+
+| Requisito | Declaração *shall* | Prioridade | Base legal / ASVS | Ameaça |
+|-----------|--------------------|:----------:|-------------------|--------|
+| _REQ-AUTH-SQLI-01_ | _O sistema **deve** rejeitar tentativas de login com conteúdo de injeção, sem autenticar e sem emitir credencial de sessão._ | _P0_ | _art. 46 · ASVS V5_ | _Injeção_ |
+| _REQ-AC-IDOR-01_ | _O sistema **deve** validar a titularidade do recurso no servidor e negar o acesso ao laudo — sem revelar metadados — quando o solicitante não for o dono._ | _P0_ | _art. 11/46 · ASVS V4_ | _EoP/IDOR_ |
+| _REQ-AC-RBAC-01_ | _O sistema **deve** permitir publicar laudo apenas a quem tem o papel autorizado; qualquer outro papel **deve** ser negado (deny-by-default)._ | _P0_ | _art. 46 · ASVS V4_ | _EoP_ |
+| _REQ-SESS-01_ | _O sistema **deve** expirar a sessão e rejeitar a credencial após logout ou troca de senha._ | _P1_ | _art. 46 · ASVS V3_ | _Spoofing_ |
+|  |  |  |  |  |
 
 **Nível ASVS alvo:** _L2_ — **justificativa:** _dados sensíveis de saúde…_
 
-**Representações aceitas (use ≥2 por requisito P0):** declaração *shall* · notação **EARS**
-(*SE … ENTÃO …*) · **BDD/Gherkin** · item de **catálogo ASVS** · **policy-as-code**
-(ex.: OPA/Rego — `deny[msg] { input.owner != input.user_id }`). Combine uma forma para
-**especificar** e uma para **verificar**. **Onde registrar:** as duas formas vão na própria
-linha do requisito (colunas **RFS**/**RGS**) ou logo **abaixo desta tabela**.
+### Forma 2 — Cenários Gherkin (`.feature`, vinculados à tecnologia)
+
+Cada `.feature` (uma funcionalidade por arquivo) carrega as dimensões em **tags**
+(`@REQ-…` liga de volta à declaração *shall*, `@P0`, `@lgpd-art11`, `@asvs-V4`,
+`@stride-EoP`…), o `Cenário` como prova executável, e **uma** tag de estado:
+
+- `@security` — requisito **implementado** na PoC: entra no gate
+  `mvn test -Dgroups=security`, reusando os passos prontos (o *glue* em
+  `src/test/java/br/ifsul/vidaplus/cucumber/`). Nasce 🔴 no legado e fecha 🟢
+  após a correção (ver Fase 4);
+- `@analise` — requisito **apenas analisado**: fica como spec executável de
+  referência, **fora do gate** (o runner filtra `not @analise`), então **não
+  quebra o CI** mesmo com passos ainda sem implementação.
+
+| Requisito | Arquivo `.feature` | Estado |
+|-----------|--------------------|--------|
+| _REQ-AUTH-SQLI-01_ | _sqli.feature_ | _`@security` (implementado)_ |
+| _REQ-AC-IDOR-01_ | _idor.feature_ | _`@security` (implementado)_ |
+| _REQ-AC-RBAC-01_ | _rbac.feature_ | _`@security` (implementado)_ |
+| _REQ-SESS-01_ | _sessao-analise.feature_ | _`@analise` (só especificado)_ |
+|  |  |  |
+
+> **Como rodar:** gate de segurança `mvn test -Dgroups=security` (roda os
+> `@security`, ignora os `@analise`); build normal `mvn test -DexcludedGroups=security`
+> (não roda requisito de segurança — os `@analise` continuam fora, sem quebrar).
 
 ---
 
@@ -73,7 +110,7 @@ linha do requisito (colunas **RFS**/**RGS**) ou logo **abaixo desta tabela**.
 
 | Elemento (tipo) | S | T | R | I | D | E | Ameaça concreta | Requisito de mitigação |
 |-----------------|:-:|:-:|:-:|:-:|:-:|:-:|-----------------|------------------------|
-| _API REST (processo)_ | X |  |  | X |  | X | _bypass de authz…_ | _REQ-AC-01…_ |
+| _API REST (processo)_ | X |  |  | X |  | X | _bypass de authz…_ | _REQ-AC-IDOR-01…_ |
 |  |  |  |  |  |  |  |  |  |
 
 **Árvore de ataque (ativo mais crítico):** _(inserir — folhas, custo/esforço, defesa-requisito)_
@@ -117,7 +154,7 @@ exploradas?). Regra: **item no KEV sobe um nível** de prioridade.
 
 | ID | Ameaça | Prob. | Impacto | Método | Pontuação | EPSS | KEV? | Risco | Prioridade |
 |----|--------|:-----:|:-------:|:------:|:---------:|:----:|:----:|:-----:|:----------:|
-| _REQ-AC-01_ | _IDOR_ | _Alta_ | _Alto_ | _CVSS 4.0_ | _8.7_ | _n/a*_ | _—_ | _Alto_ | _P0_ |
+| _REQ-AC-IDOR-01_ | _IDOR_ | _Alta_ | _Alto_ | _CVSS 4.0_ | _8.7_ | _n/a*_ | _—_ | _Alto_ | _P0_ |
 |  |  |  |  |  |  |  |  |  |  |
 
 _\* EPSS/KEV aplicam-se a **CVEs de dependências** (via SCA). Para falhas do próprio
@@ -132,11 +169,11 @@ código (IDOR, SQLi), use CVSS/DREAD; para as CVEs das libs, use CVSS + EPSS + K
 ### 6.1 Prova de conceito (1–2 controles implementados)
 
 Para cada controle implementado:
-- **Controle:** _F-02 / REQ-AC-01_
+- **Controle:** _F-02 / REQ-AC-IDOR-01_
 - **Problema (antes):** _`GET /api/exames/{id}` não checa dono → IDOR_
 - **Correção (depois):** _validação de ownership server-side + deny-by-default_
 - **PR:** _link_
-- **Teste:** _TC-IDOR-01 (A pede exame de B → 403 sem metadados)_
+- **Teste:** _`idor.feature` (@security) — A pede exame de B → 403 sem metadados; nasce 🔴, fecha 🟢_
 - **Evidência:** _log do CI / print / relatório_
 
 ### 6.2 Plano de remediação (demais falhas do pacote — NÃO implementadas)
@@ -152,7 +189,7 @@ Para cada controle implementado:
 
 | Requisito | Teste (ID/tipo) | Ferramenta | Resultado | Evidência |
 |-----------|-----------------|-----------|-----------|-----------|
-| _REQ-AC-01_ | _TC-IDOR-01 / integração_ | _pytest/JUnit + ZAP_ | _Pass_ | _ci-idor.txt_ |
+| _REQ-AC-IDOR-01_ | _`idor.feature` (@security) / integração_ | _JUnit + Cucumber + ZAP_ | _Pass_ | _ci-idor.txt_ |
 |  |  |  |  |  |
 
 **Scanners como evidência:** _SAST (…), SCA (…), Secret scanning (…), DAST (…)._
@@ -205,7 +242,7 @@ Para cada controle implementado:
 
 | ID | Requisito | Atributo | Origem (LGPD/ASVS) | Ameaça (STRIDE/LINDDUN) | Controle | Teste | Evidência | Status |
 |----|-----------|----------|--------------------|--------------------------|----------|-------|-----------|--------|
-| _REQ-AC-01_ | _ownership_ | _Autz._ | _art.11; ASVS V4_ | _EoP/Disclosure_ | _server-side_ | _TC-IDOR-01_ | _ci-idor.txt_ | _Verificado_ |
+| _REQ-AC-IDOR-01_ | _ownership_ | _Autz._ | _art.11; ASVS V4_ | _EoP/Disclosure_ | _server-side_ | _`idor.feature` (@security)_ | _ci-idor.txt_ | _Verificado_ |
 |  |  |  |  |  |  |  |  |  |
 
 ### 10.2 Métricas do processo
@@ -232,8 +269,8 @@ Prepare-se para **fechar o fio ao vivo** partindo de **um** ativo:
 
 ```
 Ativo (ex.: laudo) → Ameaça (STRIDE: Disclosure / LINDDUN: Disclosure)
-   → Requisito (REQ-AC-01) → Controle (ownership server-side)
-   → Teste (TC-IDOR-01) → Evidência (HTTP 403, sem metadados, log do CI)
+   → Requisito (REQ-AC-IDOR-01) → Controle (ownership server-side)
+   → Teste (idor.feature @security) → Evidência (HTTP 403, sem metadados, log do CI)
 ```
 
 E saber responder: _qual dado é sensível e por quê (LGPD)? qual base legal? que ameaça de
