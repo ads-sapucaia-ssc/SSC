@@ -115,14 +115,14 @@ Usuários de teste, endpoints e as falhas exploráveis estão em
 | Fase do SSDLC | Semanas | Teoria puxada pela demanda | Entrega do grupo (artefato) |
 |---------------|:-------:|----------------------------|------------------|
 | 0 · Kickoff & inventário do legado | 1 | SSDLC, cenário de ameaças, risco de legado | Inventário de ativos + classificação de dados |
-| 1 · Requisitos & conformidade | 2 | Eng. de requisitos de segurança, **LGPD**, ASVS | Requisitos de segurança + base legal |
-| 2 · Privacidade & threat modeling | 3–4 | **Privacy by Design, LINDDUN**, STRIDE, DFD | DFD + LINDDUN + STRIDE + árvore de ataque + RIPD |
-| 3 · Projeto seguro | 5 | Arquitetura segura, cripto, authn/authz, DoD | Especificação + Definition of Done |
-| 4 · Remediação (prova de conceito) | 6–9 | OWASP Top 10, secure coding do controle escolhido | **1–2 controles corrigidos ponta-a-ponta** + plano de remediação do restante |
-| 5 · Verificação | 10–11 | SAST/DAST/SCA, testes de segurança | Testes + evidências no CI |
-| 6 · Release & DevSecOps | 12 | Pipeline, supply chain, gestão de segredos | Pipeline como **gerador de evidência** |
-| 7 · Operação & resposta | 13 | Logging, monitoração, resposta a incidentes, ANPD | Trilha de auditoria + plano de resposta (art. 48) |
-| 8 · Retro & auditoria | 14 | Métricas, risco residual, melhoria contínua | Matriz de rastreabilidade + métricas |
-| — · Defesas + buffer | 15–16 | — | Defesa final (fecha o fio ao vivo) |
+| 1 · Requisitos & conformidade | 2–3 | Eng. de requisitos de segurança, **LGPD**, ASVS | Requisitos de segurança + base legal |
+| 2 · Privacidade & threat modeling | 4–5 | **Privacy by Design, LINDDUN**, STRIDE, DFD | DFD + LINDDUN + STRIDE + árvore de ataque + RIPD |
+| 3 · Projeto seguro | 6 | Arquitetura segura, cripto, authn/authz, DoD | Especificação + Definition of Done |
+| 4 · Remediação (prova de conceito) | 7–10 | OWASP Top 10, secure coding do controle escolhido | **1–2 controles corrigidos ponta-a-ponta** + plano de remediação do restante |
+| 5 · Verificação | 11–12 | SAST/DAST/SCA, testes de segurança | Testes + evidências no CI |
+| 6 · Release & DevSecOps | 13 | Pipeline, supply chain, gestão de segredos | Pipeline como **gerador de evidência** |
+| 7 · Operação & resposta | 14 | Logging, monitoração, resposta a incidentes, ANPD | Trilha de auditoria + plano de resposta (art. 48) |
+| 8 · Retro & auditoria | 15 | Métricas, risco residual, melhoria contínua | Matriz de rastreabilidade + métricas |
+| — · Defesas | 16 | — | Defesa final (fecha o fio ao vivo) |
 
 Detalhe completo em [docs/01-plano-disciplina-ssdlc.md](docs/01-plano-disciplina-ssdlc.md).
