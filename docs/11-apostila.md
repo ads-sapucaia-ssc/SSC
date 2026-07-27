@@ -29,11 +29,11 @@ trabalho é em **grupos de 3–4**, cada um com um pacote de funcionalidades. A 
 **processo** (SSDLC + LGPD + privacidade), não codar muito: você **analisa** tudo, faz a
 **prova de conceito** de 1–2 controles e entrega um **plano de remediação** do restante.
 
-**Cronograma (16 semanas).** Fase 0 (sem. 1) kickoff+classificação · Fase 1 (sem. 2)
-requisitos+LGPD · Fase 2 (sem. 3–4) STRIDE+LINDDUN+RIPD · Fase 3 (sem. 5) projeto
-seguro+priorização+DoD · Fase 4 (sem. 6–9) remediação · Fase 5 (sem. 10–11)
-verificação · Fases 6–7 (sem. 12–13) DevSecOps+operação · Fase 8 (sem. 14)
-rastreabilidade · sem. 15–16 defesas. Detalhe em [01-plano-disciplina-ssdlc.md](01-plano-disciplina-ssdlc.md).
+**Cronograma (16 semanas).** Fase 0 (sem. 1) kickoff+classificação · Fase 1 (sem. 2–3)
+requisitos+LGPD · Fase 2 (sem. 4–5) STRIDE+LINDDUN+RIPD · Fase 3 (sem. 6) projeto
+seguro+priorização+DoD · Fase 4 (sem. 7–10) remediação · Fase 5 (sem. 11–12)
+verificação · Fases 6–7 (sem. 13–14) DevSecOps+operação · Fase 8 (sem. 15)
+rastreabilidade · sem. 16 defesas. Detalhe em [01-plano-disciplina-ssdlc.md](01-plano-disciplina-ssdlc.md).
 
 **Assuntos abordados.** SSDLC & fundamentos (shift-left, CIA+AAN, princípios de design) ·
 requisitos & LGPD (RFS/RGS, 4 fontes, ASVS) · threat modeling (DFD, STRIDE, árvore de
@@ -70,7 +70,7 @@ basta marcar o que é sensível.
 
 ---
 
-## Aula 2 — Requisitos & LGPD · Semana 2 · Fase 1
+## Aula 2 — Requisitos & LGPD · Semanas 2–3 · Fase 1
 
 **Objetivo:** transformar "quero segurança" em requisitos específicos e testáveis, usando a
 LGPD como fonte formal.
@@ -177,7 +177,7 @@ dado, nível ASVS alvo (L2) justificado.
 
 ---
 
-## Aula 3 — DFD & STRIDE · Semana 3 · Fase 2a
+## Aula 3 — DFD & STRIDE · Semana 4 · Fase 2a
 
 **Objetivo:** descobrir, de forma sistemática, como o sistema pode ser atacado — e derivar
 requisitos de cada ameaça.
@@ -216,7 +216,7 @@ exercício: o **IDOR** no download (paciente A baixa o exame de B).
 
 ---
 
-## Aula 4 — Privacidade (LINDDUN) · Semana 4 · Fase 2b
+## Aula 4 — Privacidade (LINDDUN) · Semana 5 · Fase 2b
 
 **Objetivo:** modelar ameaças de **privacidade** (não só de segurança) e produzir o RIPD.
 
@@ -248,7 +248,7 @@ avaliação.
 
 ---
 
-## Aula 5 — Projeto Seguro · Semana 5 · Fase 3
+## Aula 5 — Projeto Seguro · Semana 6 · Fase 3
 
 **Objetivo:** decidir *como* os controles serão construídos, antes de codar.
 
@@ -285,7 +285,7 @@ o grupo decide se a prova de conceito da Fase 4 será só o **P0 já atribuído 
 
 ---
 
-## Aula 6 — Implementação Segura · Semanas 6–9 · Fase 4
+## Aula 6 — Implementação Segura · Semanas 7–10 · Fase 4
 
 **Objetivo:** corrigir o código — as classes de falha do OWASP Top 10 e como remediá-las.
 
@@ -316,7 +316,7 @@ remediação**. O objetivo é fechar o fio completo, não corrigir tudo.
 
 ---
 
-## Aula 7 — Verificação · Semanas 10–11 · Fase 5
+## Aula 7 — Verificação · Semanas 11–12 · Fase 5
 
 **Objetivo:** provar que a correção funciona e não regride.
 
@@ -348,7 +348,7 @@ conclui **verde** desde o 1º push. A nota **não** exige o pipeline 100% verde 
 
 ---
 
-## Aula 8 — DevSecOps & Supply Chain · Semana 12 · Fase 6
+## Aula 8 — DevSecOps & Supply Chain · Semana 13 · Fase 6
 
 **Objetivo:** transformar segurança em processo automatizado e proteger a cadeia de
 suprimentos.
@@ -377,7 +377,7 @@ evidência** no dossiê. Único setup: criar o *environment* `production` com re
 
 ---
 
-## Aula 9 — Operação & Incidentes · Semana 13 · Fase 7
+## Aula 9 — Operação & Incidentes · Semana 14 · Fase 7
 
 **Objetivo:** operar com segurança e responder a incidentes.
 
@@ -424,7 +424,7 @@ runbook de resposta; adulterar uma entrada do log deve ser detectável.
 
 ---
 
-## Aula 10 — Rastreabilidade & Métricas · Semana 14 · Fase 8
+## Aula 10 — Rastreabilidade & Métricas · Semana 15 · Fase 8
 
 **Objetivo:** fechar o ciclo — provar que cada controle existe por uma razão e foi testado.
 
@@ -456,5 +456,5 @@ o grupo escolhe um ativo e percorre o **fio completo ao vivo**: *laudo → IDOR 
 
 ---
 
-> **Semanas 15–16:** defesas e buffer. Sem conteúdo novo — recapitule os conceitos-chave e
+> **Semana 16:** defesas. Sem conteúdo novo — recapitule os conceitos-chave e
 > ensaie o fechamento do fio completo.
