@@ -24,22 +24,17 @@
 
 **Fluxos críticos identificados:** _1) …  2) …  3) …_
 
-| Ativo / Dado | Fluxo/Funcionalidade | Nível | Atributo prioritário | Base legal | Observação |
-|--------------|----------------------|:-----:|----------------------|-----------|-----------|
-| _Laudo (PDF)_ | _download (F-02)_ | _Crítico_ | _Confidencialidade+Integridade_ | _(Fase 1)_ | _saúde = sensível_ |
-|  |  |  |  |  |  |
+| Ativo / Dado | Fluxo/Funcionalidade | Nível | Atributo prioritário | Quem demanda/define | Base legal | Observação |
+|--------------|----------------------|:-----:|----------------------|---------------------|-----------|-----------|
+| _Laudo (PDF)_ | _download (F-02)_ | _Crítico_ | _Confidencialidade+Integridade_ | _negócio, DPO, titular_ | _(Fase 1)_ | _saúde = sensível_ |
+|  |  |  |  |  |  |  |
 
-> **Preencha agora (Fase 0):** Nível e Atributo — por **sensibilidade/impacto**. A coluna
-> **Base legal** é preenchida na **Fase 1** (após a aula de LGPD); aqui basta marcar o que é
-> dado sensível/PII.
-
-**Stakeholders — quem define o quê** (breve, ~1 linha por parte interessada): identifique, no
-VidaPlus, quem **define ou exige** cada tipo de requisito — assim, nas próximas fases, você
-sabe **de quem** vem cada um. Guia: **negócio** → finalidade e prioridade · **jurídico/DPO** →
-base legal e limites (LGPD) · **segurança (AppSec)** → controles e nível ASVS · **dev** →
-viabilidade técnica · **operações** → disponibilidade e monitoração · **titular** → seus
-direitos (acesso, correção, eliminação). Não é item de nota da Fase 0 (o que conta é o
-inventário + a classificação acima), mas orienta os requisitos da Fase 1.
+> **Preencha agora (Fase 0):** **Nível** e **Atributo** por **sensibilidade/impacto**; e, em
+> **Quem demanda/define**, quem **exige ou define** aquele dado/fluxo — **negócio** (finalidade),
+> **jurídico/DPO** (base legal), **segurança** (controles), **operações** (disponibilidade) ou o
+> **titular** (direitos). A coluna **Base legal** fica para a **Fase 1** (após a aula de LGPD);
+> aqui basta marcar o que é sensível/PII. *(A coluna "Quem demanda/define" não é item de nota —
+> só orienta os requisitos da Fase 1.)*
 
 ---
 
