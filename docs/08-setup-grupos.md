@@ -8,18 +8,37 @@ pipeline pela primeira vez e entender por que ele nasce **vermelho**.
 ## 1. Gerar o repositório do grupo
 
 **Você (aluno) tem um caminho só:** o professor compartilha um **link de convite** do
-assignment (Classroom 50); ao aceitar, você **cria/entra num time** e o repositório
-**privado** do grupo é criado **automaticamente sob a organização**, a partir do template e já
-com acesso **admin** — no lugar certo (sob a org), com o time e as permissões corretas, sem
-vocês precisarem criar nada à mão.
+assignment (Classroom 50); ao aceitar, o repositório **privado** do grupo é criado
+**automaticamente sob a organização**, a partir do template e já com acesso **admin** — no
+lugar certo (sob a org), com as permissões corretas, sem vocês precisarem criar nada à mão.
 
-> **Todos do grupo clicam no mesmo link — mas o repositório é um só.** O **primeiro** a aceitar
-> **cria o time** (escolhe o nome); os **demais** abrem o **mesmo link** e **entram no time já
-> existente** — ninguém cria um repositório novo. O grupo fica com **um único repositório
-> compartilhado** (não um por pessoa). A configuração do repo
+O repositório do grupo é **um só, compartilhado** (não um por pessoa). Para formá-lo:
+
+1. **Só o líder** do grupo abre o link de convite e **aceita** — isso **cria o repositório
+   compartilhado** e o deixa como **owner** (dono). Os **demais não** clicam no link de aceite
+   (senão tentariam criar outro repo); eles entram como colaboradores (passos 2–5).
+2. O **owner** **adiciona os demais** como **colaboradores**. Na página do assignment do grupo,
+   clique no **lápis de edição**
+   (canto superior direito) para abrir **Edit Assignment**:
+
+   ![Editar o assignment do grupo no Classroom 50](img/web_assignment_edit_student.png)
+
+3. Clique em **Manage collaborators** (gerenciar colaboradores):
+
+   ![Janela Manage collaborators do Classroom 50](img/web_assignment_manage_collaborators_student.png)
+
+4. Na janela **Group members**, o owner digita o **usuário do GitHub** de cada colega no campo
+   *Add a GitHub username* e clica **+ Add**; ao terminar, clica **Save collaborators**.
+   (Este assignment permite até **4** estudantes além do owner.)
+5. Cada colega adicionado **aceita o convite da organização** da turma que chega do GitHub
+   (e-mail ou `github.com/settings/organizations`) — só então ganha acesso ao repositório. Se o
+   colega "não for encontrado" ao ser adicionado, ele ainda não está na organização: peça para
+   aceitar o convite e autorizar o **Classroom 50** em `github.com/settings/applications`.
+
+> Pronto: todos passam a ter acesso ao **mesmo** repositório. A configuração do repo
 > ([§5.2](#52-proteger-a-main-branch-protection),
 > [§5.3](#53-ambiente-production-com-aprovação-1-passo)) é feita **uma vez**, por um integrante
-> com admin; cada um que for programar **clona** esse mesmo repositório.
+> com admin; cada um que for programar **clona** esse mesmo repositório (abaixo).
 
 Depois, **clone** o repositório do grupo — isso baixa uma cópia para a sua máquina, onde você
 vai trabalhar. Na página do repositório no GitHub, clique no botão verde **`Code` → aba
