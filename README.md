@@ -90,7 +90,35 @@ projeto-vidaplus/
 
 ---
 
-## 4. Como rodar o legado
+## 4. Formar o grupo no Classroom 50
+
+O professor compartilha um **link de convite** (Classroom 50). O repositório do grupo é
+**um só, compartilhado** — não um por pessoa. Para formá-lo:
+
+1. **Só o líder** do grupo aceita o convite e **cria o repositório compartilhado** — fica como
+   **owner** (dono). Os demais **não** clicam no link de aceite (senão criariam outro repo).
+2. O **owner** adiciona os demais como **colaboradores**: na página do assignment clique no
+   **lápis de edição** (canto superior direito) para abrir **Edit Assignment**:
+
+   ![Editar o assignment do grupo no Classroom 50](docs/img/web_assignment_edit_student.png)
+
+3. Clique em **Manage collaborators**:
+
+   ![Janela Manage collaborators do Classroom 50](docs/img/web_assignment_manage_collaborators_student.png)
+
+4. Na janela **Group members**, o owner digita o **usuário do GitHub** de cada colega em
+   *Add a GitHub username*, clica **+ Add** e, ao terminar, **Save collaborators**. (Este
+   assignment permite até **4** estudantes além do owner.)
+5. Cada colega adicionado **aceita o convite da organização** da turma (e-mail do GitHub ou
+   `github.com/settings/organizations`) — só então ganha acesso ao repositório. Se ao adicionar
+   o usuário "não for encontrado", é porque o colega ainda não está na organização.
+
+Depois, **cada integrante clona** o mesmo repositório para trabalhar — passo a passo (com clone
+e autenticação) em [docs/08 §1](docs/08-setup-grupos.md).
+
+---
+
+## 5. Como rodar o legado
 
 Já **dentro da pasta do repositório do grupo** (depois de cloná-lo — passo a passo, com clone
 e autenticação, em [docs/08 §1](docs/08-setup-grupos.md)) e com o **Docker** instalado:
@@ -108,7 +136,7 @@ Usuários de teste, endpoints e as falhas exploráveis estão em
 
 ---
 
-## 5. O fio condutor (SSDLC → teoria → entrega)
+## 6. O fio condutor (SSDLC → teoria → entrega)
 
 *(Disciplina de 16 semanas, 3h/aula — teoria e prática dentro da mesma aula.)*
 
