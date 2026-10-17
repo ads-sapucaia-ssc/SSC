@@ -100,7 +100,7 @@ secret-scan:
 2. Implementa a correção + teste de segurança.
 3. Abre PR; o pipeline roda todos os gates.
 4. **Revisão por pares intra-grupo** (regra dos "4 olhos"): **outro membro do grupo — não
-   o autor do PR** — revisa com o [checklist de secure code review](07-rubrica-avaliacao.md#L113)
+   o autor do PR** — revisa com o [checklist de secure code review](07-rubrica-avaliacao.md#checklist-de-secure-code-review-para-os-prs-da-poc)
    e **aprova**.
 5. Merge só com o gate da classe corrigida **verde** **e** a revisão **aprovada**.
 6. Atualiza a **matriz de rastreabilidade** (requisito → teste → evidência → status).

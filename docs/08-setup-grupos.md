@@ -175,7 +175,7 @@ request`** → clique nela → confira título e descrição → **`Create pull 
 
 **7. Revisão por um colega do grupo** (autor ≠ revisor): **outro** integrante abre o PR no
 GitHub, vai na aba **`Files changed`**, confere pelo
-[checklist de revisão](07-rubrica-avaliacao.md#L113) e clica em **`Review changes → Approve`**.
+[checklist de revisão](07-rubrica-avaliacao.md#checklist-de-secure-code-review-para-os-prs-da-poc) e clica em **`Review changes → Approve`**.
 
 **8. Faça o merge** — só com o **gate da classe corrigida verde** **e** a **revisão aprovada**:
 na página do PR, clique em **`Merge pull request`** → **`Confirm merge`**.
