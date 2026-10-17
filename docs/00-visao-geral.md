@@ -103,10 +103,10 @@ cabeçalho de cada seção do arquivo indica a fase):
 | **1** Requisitos + LGPD | ★ escreve RFS+RGS e o nível ASVS | revisa a viabilidade técnica de cada RFS | liga cada requisito ao gate do CI que o prova | ★ atribui a base legal LGPD a cada dado |
 | **2** Threat modeling | ★ DFD + STRIDE-per-element + árvore de ataque | ajuda no DFD (quem chama o quê no código) | marca no DFD onde cada scanner/gate atua | ★ LINDDUN-per-element + esboço do RIPD |
 | **3** Projeto seguro | ★ especifica controles, prioriza P0/P1/P2 e escreve a DoD | estima o esforço e como implementar cada controle | indica qual gate provará cada controle | garante os controles de privacidade no catálogo |
-| **4** Remediação (PoC) | revisa o PR (checklist) + plano de remediação | ★ corrige 1 P0 + 1 P1 ponta-a-ponta num PR | ★ acompanha os gates dentro do PR | faz o módulo LGPD do pacote |
-| **5** Verificação | confere que a evidência é real (CI verde) | ★ escreve o teste do controle (`@Tag("security")`) | ★ lê os scanners e torna o gate bloqueante | confere que o requisito de privacidade tem teste |
-| **6** Release/DevSecOps | confere o placar e o que virou bloqueante | garante que o build da imagem passa | ★ SBOM; remove os segredos (F-10); explica assinatura/atestação | confirma que não há PII/segredo nos artefatos |
-| **7** Operação/incidente | ★ escreve o runbook do incidente | instrumenta o app para gravar o evento auditado | valida a trilha de auditoria (append-only, sem PII) | ★ escreve a notificação à ANPD/titular (art. 48) |
+| **4** Remediação (PoC) | revisa o PR (checklist) + plano de remediação | ★ corrige o P0 do pacote (e, se o grupo optar, a criação ✨) ponta-a-ponta num PR | ★ acompanha os gates dentro do PR | faz o módulo LGPD do pacote |
+| **5** Verificação | confere que a evidência é real (CI verde) | ★ escreve o teste do controle (`@Tag("security")`) | ★ lê os relatórios dos scanners e mostra o teste do P0 passando | confere que o requisito de privacidade tem teste |
+| **6** Release/DevSecOps | confere o placar de gates | garante que o build da imagem passa | ★ explica os gates, o SBOM e a assinatura/atestação; identifica os segredos no código (F-10) e escreve o plano | confirma que não há PII/segredo nos artefatos |
+| **7** Operação/incidente | ★ escreve o runbook do incidente | instrumenta o app para gravar o evento auditado | valida os registros de operação (sem PII; trilha append-only, se o pacote tem o F-05) | ★ escreve a notificação à ANPD/titular (art. 48) |
 | **8** Rastreabilidade | ★ monta a matriz ativo→ameaça→…→evidência | confirma que cada controle tem teste ligado na matriz | extrai as métricas do pipeline | calcula métricas de privacidade + risco residual |
 
 > **Liderar não é fazer sozinho.** O ★ apenas **coordena e responde** por aquela entrega — os

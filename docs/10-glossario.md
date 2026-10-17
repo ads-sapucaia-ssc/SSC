@@ -157,8 +157,8 @@ Vale reconhecê-los pelo nome — são a base atemporal de todo o SSDLC.
 - **Sigstore / cosign** — assinatura de artefatos por **identidade OIDC** (*keyless*, sem
   gerenciar chaves), registrada no log público **Rekor**. É como se atinge a proveniência
   assinada (SLSA L2). → [06](06-pipeline-cicd.md)
-- **Gate** — verificação no CI que pode **bloquear** o merge; no projeto, começa
-  informativo e vira bloqueante conforme o grupo corrige. → [06](06-pipeline-cicd.md)
+- **Gate** — verificação no CI que pode **bloquear** o merge. No projeto, os gates ficam
+  **informativos**: mostram o problema, mas não travam o merge. → [06](06-pipeline-cicd.md)
 - **CVSS / DREAD** — métodos de pontuação de risco para priorização (P0/P1/P2).
 
 ## Gestão de vulnerabilidades

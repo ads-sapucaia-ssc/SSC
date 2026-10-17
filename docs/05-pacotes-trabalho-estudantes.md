@@ -15,7 +15,7 @@ requisito → LINDDUN/STRIDE → design → correção (PR) → teste → evidê
 > **Pacotes independentes — mesmo quando compartilham uma funcionalidade.** Algumas
 > funcionalidades aparecem em **dois pacotes**, de propósito, para equilibrar o esforço
 > (há 3 P0 de correção e 4 de criação para 5 grupos). Quando isso ocorre, cada grupo tem um
-> **recorte (lente) diferente e explícito**, e faz a análise e a PoC **no próprio
+> **recorte diferente e explícito**, e faz a análise e a PoC **no próprio
 > repositório**: não há dependência nem espera entre grupos. Comparar as duas soluções na
 > defesa é parte do valor.
 >
@@ -29,7 +29,7 @@ requisito → LINDDUN/STRIDE → design → correção (PR) → teste → evidê
 
 | Func. | Criticidade | Ação | Recorte do grupo |
 |-------|:-----------:|:----:|------------------|
-| F-01 Autenticação (login) | 🔴 P0 | 🛠️ | *compartilhada com G5* — aqui a lente é o **fluxo de autenticação**: credencial (MD5→Argon2id), rate limit, enumeração |
+| F-01 Autenticação (login) | 🔴 P0 | 🛠️ | *compartilhada com G5* — aqui o recorte é o **fluxo de autenticação**: credencial (MD5→Argon2id), rate limit, enumeração |
 | F-05 Trilha de auditoria | 🔴 P0 | ✨ | criar, com foco nos **eventos de autenticação e acesso** |
 | F-11 Sessão / token | 🟠 P1 | 🛠️ | |
 | F-12 Recuperação de senha | 🟠 P1 | 🛠️ | |
@@ -45,7 +45,7 @@ enumeração, CORS com credenciais, CSP/HSTS; **não-repúdio** e trilha append-
 
 | Func. | Criticidade | Ação | Recorte do grupo |
 |-------|:-----------:|:----:|------------------|
-| F-02 Visualização/download de laudo (IDOR) | 🔴 P0 | 🛠️ | *compartilhada com G4* — aqui a lente é **autorização/ownership**: deny-by-default no acesso ao laudo |
+| F-02 Visualização/download de laudo (IDOR) | 🔴 P0 | 🛠️ | *compartilhada com G4* — aqui o recorte é **autorização/ownership**: deny-by-default no acesso ao laudo |
 | F-09 Exportação do titular (portabilidade) | 🟠 P1 | ✨⚖️ | criar — é o **espelho** do IDOR: negar o alheio, entregar o próprio |
 | F-07 Publicação de laudo | 🟠 P1 | 🛠️ | |
 | F-08 Armazenamento de PDFs | 🟠 P1 | 🛠️⚖️ | teste com um exame **não publicado** — ver nota em `docs/04` |
@@ -76,8 +76,8 @@ minimização, pseudonimização, consentimento versionado/revogável; RIPD/DPIA
 
 | Func. | Criticidade | Ação | Recorte do grupo |
 |-------|:-----------:|:----:|------------------|
-| F-02 Visualização/download de laudo (IDOR) | 🔴 P0 | 🛠️ | *compartilhada com G2* — aqui a lente é **canal de vazamento**: por onde o laudo escapa (link, arquivo direto, mensagem de erro) |
-| F-06 Eliminação / anonimização | 🔴 P0 | ✨⚖️ | criar — lente **retenção → eliminação**: ciclo de vida e prazo legal |
+| F-02 Visualização/download de laudo (IDOR) | 🔴 P0 | 🛠️ | *compartilhada com G2* — aqui o recorte é **canal de vazamento**: por onde o laudo escapa (link, arquivo direto, mensagem de erro) |
+| F-06 Eliminação / anonimização | 🔴 P0 | ✨⚖️ | criar — recorte **retenção → eliminação**: ciclo de vida e prazo legal |
 | F-16 Tratamento de erros | 🟡 P2 | 🛠️ | |
 | F-18 Notificação (e-mail/SMS) com link | 🟠 P1 | 🛠️⚖️ | |
 | F-20 Conteúdo institucional (site) | 🟢 P2 | 🛠️ | |
@@ -92,8 +92,8 @@ autenticados/expiráveis, hardening/anti-defacement; retenção legal × elimina
 
 | Func. | Criticidade | Ação | Recorte do grupo |
 |-------|:-----------:|:----:|------------------|
-| F-01 Autenticação (login) | 🔴 P0 | 🛠️ | *compartilhada com G1* — aqui a lente é a **classe de injeção**: a mesma parametrização vale para login e busca |
-| F-06 Eliminação / anonimização | 🔴 P0 | ✨⚖️ | criar — lente **anonimização/pseudonimização**: a transformação técnica do dado |
+| F-01 Autenticação (login) | 🔴 P0 | 🛠️ | *compartilhada com G1* — aqui o recorte é a **classe de injeção**: a mesma parametrização vale para login e busca |
+| F-06 Eliminação / anonimização | 🔴 P0 | ✨⚖️ | criar — recorte **anonimização/pseudonimização**: a transformação técnica do dado |
 | F-13 Busca de pacientes (SQLi) | 🟡 P1 | 🛠️ | |
 | F-14 Notas clínicas (XSS) | 🟡 P1 | 🛠️ | |
 
@@ -110,7 +110,7 @@ dependência entre equipes.
 
 | Func. | Criticidade | Quem faz |
 |-------|:-----------:|----------|
-| F-10 Gestão de segredos e configuração | 🟠 P1 | cada grupo, no seu módulo (nada de segredo em código) |
+| F-10 Gestão de segredos e configuração | 🟠 P1 | cada grupo **analisa**: identifica os segredos gravados no código e escreve o **plano de remediação** (sem mexer no código) |
 | F-21 Gestão de dependências (SCA/SBOM) | 🟢 P2 | cada grupo, nas dependências que introduz/toca |
 
 ---
@@ -149,10 +149,10 @@ fechado** — não se espera o módulo completo:
 > sabe fechar o ciclo** de engenharia de segurança/privacidade — do ativo à evidência — e
 > **planejar** a adequação do restante como faria num projeto real.
 
-> **E os gates dos outros pacotes?** Cada grupo trabalha no **seu próprio repositório** e
-> torna bloqueante **apenas o gate da classe que corrigiu**. O pipeline **já conclui verde**
+> **E os gates dos outros pacotes?** Cada grupo trabalha no **seu próprio repositório**. Os
+> gates são **informativos** (o professor configura a proteção da `main`). O pipeline **já conclui verde**
 > desde o 1º push (gates informativos); o placar vermelho das funcionalidades de **outros
 > pacotes** — ou das suas que ficaram só **analisadas** — é **esperado** e **não** derruba o
 > build nem a nota (nota = dossiê + defesa; pipeline = evidência). Nenhum grupo precisa
-> corrigir teste de outro pacote. Detalhe de como fazer isso com o job de testes de
+> corrigir teste de outro pacote. Como ler o resultado do seu teste no job de testes de
 > segurança: [08-setup-grupos.md](08-setup-grupos.md) §5.

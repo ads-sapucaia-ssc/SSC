@@ -74,7 +74,9 @@ projeto-vidaplus/
 │   ├── 08-setup-grupos.md           passo a passo para os grupos começarem
 │   ├── 09-dossie-template.md        visão geral do dossiê (arquivo a preencher em entregaveis/)
 │   ├── 10-glossario.md              consulta rápida dos termos da disciplina
-│   └── 11-apostila.md               material de estudo em texto (acompanha os slides)
+│   ├── 11-apostila.md               material de estudo em texto (acompanha os slides)
+│   ├── 12-exemplo-dossie-preenchido.md  dossiê completo de exemplo (pacote 5) — o nível esperado
+│   └── 13-gate-bloqueante-do-grupo.md   (opcional) como tornar bloqueante o gate do seu grupo
 ├── entregaveis/                    ← o que o grupo preenche e entrega
 │   └── DOSSIE.md                    dossiê de segurança e privacidade (preencher nas fases)
 ├── aulas/                          ← slides .pptx (template IFSul), um por aula

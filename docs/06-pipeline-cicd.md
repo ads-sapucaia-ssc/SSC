@@ -70,37 +70,27 @@ config **junto do código** (`pom.xml`, `package.json`).
 
 ---
 
-## 2. Informativo → bloqueante
+## 2. Informativo × bloqueante
 
-No legado, os gates usam `continue-on-error: true` (**informativo**): reportam vermelho
-mas não travam o merge, senão nada avança. Conforme um grupo corrige uma classe de falha,
-ele **remove o `continue-on-error`** daquele gate — que passa a ser **bloqueante**:
-a partir dali, qualquer regressão volta a barrar o merge.
+Os gates usam `continue-on-error: true` (**informativo**): reportam vermelho, mas não travam o
+merge — senão nada avançaria, porque o repositório de cada grupo ainda tem as falhas dos outros
+pacotes. Um gate **bloqueante** seria o contrário: sem essa linha, e exigido na proteção da
+`main`, qualquer regressão barraria o merge.
 
 ```yaml
 secret-scan:
   name: "Gate - Secret Scanning (Gitleaks)"
   runs-on: ubuntu-latest
-  continue-on-error: true      # <-- legado (informativo). REMOVA só esta linha => gate bloqueante
+  continue-on-error: true      # <-- informativo: reporta, mas não trava o merge
   steps:
     - uses: actions/checkout@v4
-    # ... (o resto do job permanece inalterado)
+    # ...
 ```
 
-> Remova **apenas** a linha `continue-on-error: true`; o job (`name`/`runs-on`/`steps`)
-> **permanece**. A meta é tornar o gate **bloqueante**, não excluí-lo — apagar o bloco
-> inteiro removeria o próprio gate (o Gitleaks deixaria de rodar).
-
-> **Onde e como fazer:** o arquivo é
-> [`.github/workflows/ssdlc-pipeline.yml`](../.github/workflows/ssdlc-pipeline.yml). Altere-o
-> pelo mesmo **fluxo de Pull Request** do [`docs/08` §5](08-setup-grupos.md) (branch → editar →
-> `git add` / `commit` / `push` → abrir o PR). Para uma mudança de **uma linha**, dá para
-> editar direto no GitHub: abra o arquivo na página do repositório, clique no **lápis
-> (✏️ *Edit this file*)**, apague a linha e confirme em **`Commit changes`** — o GitHub cria o
-> commit por você.
-
-Essa transição é, ela própria, um **entregável avaliável** (Fase 6): "quais gates o grupo
-tornou bloqueantes e mantém verdes?".
+> **Neste projeto, os gates ficam informativos** e o grupo **não** precisa torná-los
+> bloqueantes. O que se espera é **entender** a diferença e **explicar** no dossiê (§8) por que,
+> num projeto real, o gate da classe corrigida deveria virar bloqueante. *(Material opcional
+> para quem quiser fazer na prática: [docs/13](13-gate-bloqueante-do-grupo.md).)*
 
 ---
 
@@ -121,8 +111,8 @@ tornou bloqueantes e mantém verdes?".
 > **Torne "verde + aprovação" uma regra:** os passos 4–5 devem ser **impostos** por
 > *branch protection* na `main` — exigir os **status checks verdes** dos gates das PoCs **e
 > 1 aprovação** antes do merge. É a prática **PS.1 do NIST SSDF** (proteger o código-fonte
-> contra adulteração/bypass). Passo a passo para o aluno configurar em
-> [08-setup-grupos.md §5.2](08-setup-grupos.md).
+> contra adulteração/bypass). Nesta turma, o **professor** configura essa proteção em cada
+> repositório ([08-setup-grupos.md §5.2](08-setup-grupos.md)); o grupo explica no dossiê.
 
 ---
 
@@ -165,13 +155,13 @@ assinada); **Sigstore/cosign** assina por **identidade** (não por chave); e ass
 valor porque **alguém verifica** — por isso o `deploy-prod` recusa o não-assinado.
 
 ### O que você faz (não é configurar ferramenta)
-- **Rodar** na `main` e **ler** os jobs `release-sign` / `deploy-staging` / `deploy-prod`.
-- **Tornar bloqueantes** os gates de segurança das suas PoCs (Seção 2).
+- **Ler** os jobs `release-sign` / `deploy-staging` / `deploy-prod` numa execução na `main`
+  (aba **Actions**).
 - **Explicar no dossiê (§8)**: o fluxo acima + a **evidência** (imagem assinada em
   **Packages**; `cosign verify`/`verify-attestation` passando; a **pausa de aprovação** do
   `production`).
-- **Único passo de setup** (é política do repo, não ferramenta): criar o **Environment
-  `production` com *required reviewer*** — ver [08-setup-grupos.md §5.3](08-setup-grupos.md).
+- **Nenhuma configuração:** o Environment `production` com revisor e a proteção da `main` são
+  feitos pelo professor ([08-setup-grupos.md §5.2 e §5.3](08-setup-grupos.md)).
 
 > ⚠️ A verificação amarra a identidade ao **seu** repositório
 > (`--certificate-identity-regexp "https://github.com/<owner>/<repo>/.*"`) — **nunca** `.*`,

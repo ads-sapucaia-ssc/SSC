@@ -339,12 +339,11 @@ risco real; há ameaça sem requisito?). As duas são necessárias.
 prova algo se **falha quando a proteção some** ("quebrar para ver vermelho"): no legado ele
 falha (200); após a correção, passa (403).
 
-**Entregável (Fase 5):** teste que exercita o controle + evidências reais do CI; torne
-**bloqueante** o gate da classe corrigida. Requisito só está pronto com teste **E** evidência.
-Cada grupo torna bloqueante **só o gate do seu pacote** — os gates de funcionalidades de
-outros pacotes (ou das suas apenas *analisadas*) seguem **informativos**, e o workflow já
-conclui **verde** desde o 1º push. A nota **não** exige o pipeline 100% verde (nota = dossiê
-+ defesa; pipeline = evidência).
+**Entregável (Fase 5):** o teste do seu P0 (que já vem pronto) mostrado **vermelho** antes e
+**verde** depois da correção, com a evidência real do CI, e a leitura dos relatórios dos scanners.
+Requisito só está pronto com teste **E** evidência. Os gates ficam **informativos** — o workflow
+já conclui **verde** desde o 1º push, e o vermelho dos testes de outros pacotes é esperado. A
+nota **não** exige o pipeline 100% verde (nota = dossiê + defesa; pipeline = evidência).
 
 ---
 
@@ -369,11 +368,12 @@ importante, não urgente; um CVSS 7 no KEV é urgente (explorado agora). Combine
 × KEV**. O **VEX** documenta quando sua aplicação não é afetada por uma CVE.
 
 **Entregável (Fase 6):** pipeline como **evidência** (não é a nota) — placar de gates
-(vermelho→verde), SBOM, sem segredos. A **entrega segura já vem pré-fiada** (você **não
-configura ferramenta**): na `main`, `release-sign` (build+push+**assina**+**atesta o SBOM** →
-SLSA L2) → `deploy-staging` (smoke/DAST) → `deploy-prod` (**verifica a assinatura** e exige
-**aprovação manual**). Seu trabalho: tornar os gates bloqueantes, e **explicar o fluxo + a
-evidência** no dossiê. Único setup: criar o *environment* `production` com revisor (docs/08 §5.3).
+(vermelho→verde), SBOM e os segredos no código **identificados**, com plano de remediação
+(F-10). A **entrega segura já vem pré-fiada** (você **não configura ferramenta**): na `main`,
+`release-sign` (build+push+**assina**+**atesta o SBOM** → SLSA L2) → `deploy-staging`
+(smoke/DAST) → `deploy-prod` (**verifica a assinatura** e exige **aprovação manual**). Seu
+trabalho: **ler e explicar** o fluxo e a evidência no dossiê. A proteção da `main` e o
+*environment* `production` são configurados pelo professor.
 
 ---
 
@@ -419,8 +419,10 @@ auditoria detecta que o paciente A baixou o laudo do paciente B (IDOR, V-03).
    gere **novos requisitos** (ex.: teste anti-IDOR obrigatório no CI + **alerta** de acesso
    *cross-owner*) e atualize a **matriz de rastreabilidade**. O incidente vira requisito.
 
-**Entregável (Fase 7):** trilha de auditoria funcional (com verificação de integridade) +
-runbook de resposta; adulterar uma entrada do log deve ser detectável.
+**Entregável (Fase 7):** operação das funcionalidades do pacote (o que monitorar, que eventos
+registrar, sem PII) + runbook de resposta a um incidente do pacote, com o vazamento de laudo acima
+como modelo. Para quem tem o F-05: trilha de auditoria funcional, em que adulterar uma entrada do
+log seja detectável.
 
 ---
 

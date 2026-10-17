@@ -83,28 +83,32 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
   e, se optar por fazer os dois, também a **funcionalidade de criação** (✨) do pacote. Não
   há escolha de *qual* funcionalidade corrigir: isso já está balanceado entre os grupos.
   Para as demais falhas do seu pacote, produz um **plano de remediação** (o quê, como,
-  esforço, prioridade) — **sem precisar codar**.
+  esforço, prioridade) — **sem precisar codar**. A correção do P0 é feita em **aula de
+  laboratório guiada**, com o professor: são poucas linhas de código por grupo.
 - **Artefatos:** 1–2 controles corrigidos + testes + evidência; **plano de remediação** do
   restante; módulo LGPD atribuído ao grupo (quando aplicável — consentimento/exportação/
   eliminação/auditoria) 🟢🔵.
 
 ## Fase 5 — Verificação · Semanas 11–12
 - **Teoria:** testes de segurança; **SAST/DAST/SCA** e secret scanning como **evidência**.
-- **Prática:** escrever teste que prova o controle da PoC; ler os relatórios dos scanners;
-  tornar **bloqueante** o gate da classe corrigida.
+- **Prática:** mostrar que o teste do P0 (que já vem pronto) estava vermelho e ficou verde
+  depois da correção; ler os relatórios dos scanners com o roteiro da aula.
 - **Artefatos:** teste + **evidências reais** do CI ⚙️.
 
 ## Fase 6 — Release & DevSecOps · Semana 13
 - **Teoria:** DevSecOps; supply chain (SBOM); gestão de segredos.
-- **Prática:** interpretar o pipeline como **gerador de evidência**; SBOM; sem segredos no
-  repo.
+- **Prática:** interpretar o pipeline como **gerador de evidência** e **explicar** no dossiê o
+  que cada gate verifica, o SBOM e a entrega assinada. Os segredos no código (F-10) são
+  **analisados** e entram no **plano de remediação** — sem mexer no código nem no pipeline. A
+  configuração do repositório (proteção da `main`, aprovação de produção) é feita pelo professor.
 - **Artefato:** pipeline evidenciando a PoC + placar de gates ⚙️.
 
 ## Fase 7 — Operação & resposta a incidentes · Semana 14
 - **Teoria:** logging/monitoração; **resposta a incidentes**; dever de **comunicação à
   ANPD** e ao titular (LGPD art. 48) 🟢.
-- **Prática:** validar a trilha de auditoria (append-only, sem PII); escrever o *runbook*
-  de um vazamento de laudo.
+- **Prática:** descrever a operação das funcionalidades do pacote (o que monitorar, que eventos
+  registrar, sem PII — e, para quem tem o F-05, validar a trilha: append-only, íntegra); escrever o
+  *runbook* de um incidente das funcionalidades do pacote (o vazamento de laudo da aula é o modelo).
 - **Artefatos:** trilha de auditoria + **plano de resposta a incidente**.
 
 ## Fase 8 — Retro, métricas & auditoria · Semana 15

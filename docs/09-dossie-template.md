@@ -27,3 +27,11 @@ cabeçalho de cada seção do arquivo indica a fase correspondente. Preencha
 
 > A **estrutura completa** (todas as seções, tabelas e exemplos de qualidade) está no próprio
 > [`entregaveis/DOSSIE.md`](../entregaveis/DOSSIE.md) — este documento é só a **visão geral**.
+
+## Exemplo completo
+
+Para ver **um dossiê inteiro preenchido** — com o nível de detalhe esperado em cada fase, os
+`.feature`, os PRs e a evidência do CI —, leia
+[12-exemplo-dossie-preenchido.md](12-exemplo-dossie-preenchido.md). Ele trata do **pacote 5**,
+que não foi atribuído a nenhum grupo nesta turma: serve de **modelo de qualidade**, não de
+resposta para o seu pacote.

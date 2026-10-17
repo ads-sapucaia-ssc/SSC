@@ -131,11 +131,11 @@ para vocês aprenderem a removê-los. Por isso:
     [§5.2](#52-proteger-a-main-branch-protection));
   - como são segredos **de exemplo** (não credenciais reais), **permita o push** pela própria
     mensagem de erro do GitHub (link "allow secret") — é o esperado no primeiro push;
-  - **não corrija agora.** Mover os segredos para variável de ambiente é a **remediação de
-    F-10**, que acontece na **Fase 4/6** (com requisito, ameaça e teste **antes**) — não na
-    semana 1. Por ora, apenas **documente** a decisão **no `DOSSIE.md`** do grupo (o entregável,
-    já no repo em [`entregaveis/DOSSIE.md`](../entregaveis/DOSSIE.md)): é o **primeiro registro**
-    de F-10, que vira o seu **plano de remediação** na Fase 4.
+  - **não corrija.** Os segredos no código são o **F-10**, que neste projeto é **analisado**,
+    não implementado: o grupo identifica os segredos, explica o risco e escreve o **plano de
+    remediação** (Fase 4) — sem mexer no código nem no pipeline. Por ora, apenas **documente** a
+    decisão **no `DOSSIE.md`** do grupo (o entregável, já no repo em
+    [`entregaveis/DOSSIE.md`](../entregaveis/DOSSIE.md)): é o **primeiro registro** de F-10.
 
 ---
 
@@ -183,29 +183,24 @@ na página do PR, clique em **`Merge pull request`** → **`Confirm merge`**.
 **9. Atualize a matriz** de rastreabilidade no `DOSSIE.md` (requisito → teste → evidência →
 status).
 
-Quando terminar de corrigir uma classe de falha, **torne o gate bloqueante** removendo o
-`continue-on-error: true` daquele job no workflow (ver [06-pipeline-cicd.md](06-pipeline-cicd.md)).
-
-> **Cada grupo só torna bloqueante o gate do seu pacote.** O workflow **já nasce verde**
-> (conclui com sucesso — os gates são informativos por `continue-on-error`); o que fica
-> vermelho é o **placar de gates**, não o build. A nota **não exige** o pipeline 100% verde
-> — nota = dossiê + defesa; o pipeline é **evidência**. Os gates das funcionalidades de
-> **outros pacotes** (ou apenas *analisadas*, não implementadas) **permanecem informativos**,
-> e isso é o esperado.
+> **Os gates ficam informativos.** O workflow **já nasce verde** (conclui com sucesso — os gates
+> são informativos por `continue-on-error`); o que fica vermelho é o **placar de gates**, não o
+> build. A nota **não exige** o pipeline 100% verde — nota = dossiê + defesa; o pipeline é
+> **evidência**. A proteção da `main` é configurada pelo professor (§5.2); o grupo **não**
+> precisa tornar nenhum gate bloqueante.
 >
-> **Testes de segurança são um job só** (roda os `@security` juntos), mas cada teste-semente
-> tem **dono(s)**: `sqli_no_login` → **G1 e G5** (F-01); `idor…403` → **G2 e G4** (F-02);
-> `rbac…403` → **G3** (F-03; toca também F-07, de G2). **Todo grupo tem um teste-semente no
-> seu P0 de correção** — é o seu 🔴→🟢 objetivo. A funcionalidade de **criação** (✨) do
-> pacote **não** tem teste-semente: o grupo escreve o **teste próprio** (Fase 5)
-> **no mesmo modelo dos prontos** — um método `@Test` com `@Tag("security")` (em
-> `SegurancaAceiteTest` ou numa classe nova) —, que entra **no mesmo gate** `Testes de seguranca`.
+> **Testes de segurança são um job só** (roda os `@security` de todos os pacotes juntos), mas cada
+> teste-semente tem **dono(s)**: o de SQLi no login → **G1** (F-01); o de IDOR → **G2 e G4**
+> (F-02); o de RBAC → **G3** (F-03). **Todo grupo tem um teste-semente pronto no seu P0** — é o seu
+> 🔴→🟢 objetivo.
 >
-> Como esse gate roda **todos** os `@security` juntos e o repositório do grupo ainda contém as
-> **outras** falhas (dos pacotes que o grupo não corrige), ele **não** fica verde só porque o
-> seu teste passou. Por isso **não** o torne bloqueante: mantenha-o **informativo** e use como
-> evidência o **seu teste específico verde no log do gate** + a **linha na matriz** (nota =
-> dossiê + defesa; o pipeline é evidência).
+> Como esse job roda os testes de **todos** os pacotes, ele **continua vermelho** por causa das
+> falhas dos outros grupos, mesmo depois que o seu P0 é corrigido. Por isso, a sua evidência é o
+> **seu teste específico verde no log do job** (abra o job na aba **Actions** e procure o nome do
+> seu cenário) + a **linha na matriz** do dossiê.
+>
+> *(Material opcional: o [docs/13](13-gate-bloqueante-do-grupo.md) mostra como criar um job
+> só com os testes do seu pacote e torná-lo bloqueante. Não é exigido.)*
 
 ---
 
@@ -215,10 +210,14 @@ O professor já incluiu **testes de aceite mínimos** em
 `legacy-app/backend/src/test/.../security/SegurancaAceiteTest.java` (`@Tag("security")`),
 cobrindo IDOR, RBAC e SQLi no login. Eles **nascem vermelhos** no legado — são o **alvo**
 do "pronto". O gate `Gate - Testes de seguranca` do pipeline os executa (com um MySQL de
-serviço). **Você deve expandir** a cobertura com testes próprios na Fase 5; estes são só o
-mínimo.
+serviço). Se quiser, o grupo pode **ampliar** a cobertura com testes próprios na Fase 5
+(opcional); o mínimo é o teste do seu P0.
 
 ## 5.2 Proteger a `main` (branch protection)
+
+> **Nesta turma, o professor faz esta configuração** em cada repositório. O grupo **não** precisa
+> executar os passos abaixo: leia para **entender** o que foi configurado e **explicar** no
+> dossiê (§8, Fase 6).
 
 Isto é o que transforma "merge só com gate verde **e** revisão aprovada" (passos 6–7) em
 **regra** — não dá para pular. Configure **uma vez**, por um integrante com permissão de
@@ -252,6 +251,9 @@ cobre precisa estar corrigido. Assim a proteção da `main` cresce junto com as 
 travar o merge por falhas que não são do seu pacote.
 
 ## 5.3 Ambiente `production` com aprovação (1 passo)
+
+> **Nesta turma, o professor também faz esta configuração.** Leia para entender e explicar no
+> dossiê (§8, Fase 6).
 
 O pipeline **já** builda, assina, atesta e promove a imagem (jobs `release-sign` →
 `deploy-staging` → `deploy-prod`) — você **não configura ferramenta**. Só a **aprovação
