@@ -158,7 +158,9 @@ a diferença é um ótimo argumento na defesa.
 examina **o histórico inteiro do Git**, commit por commit — não só os arquivos de hoje.
 
 **As regras do projeto:** `security/gitleaks/gitleaks.toml` (ele usa as regras padrão **mais**
-duas do VidaPlus: a chave do JWT e a senha do banco).
+três do VidaPlus: a chave do JWT e a senha do banco nos arquivos de configuração, e senhas ou
+chaves escritas como constante no código Java — como a do `JwtUtil.java`, que as regras padrão
+não reconhecem por ser um texto legível).
 
 **Como rodar** (na raiz do repositório):
 

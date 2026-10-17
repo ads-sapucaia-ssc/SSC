@@ -21,6 +21,15 @@ regex = '''(?i)(?:datasource[._]password|mysql_(?:root_)?password)\s*[:=]\s*([^\
 secretGroup = 1
 tags = ["secret", "db", "V-05"]
 
+[[rules]]
+id = "vidaplus-hardcoded-secret-java"
+description = "Segredo/senha em constante no codigo Java (V-05)"
+# as regras padrao nao reconhecem a chave atual do JwtUtil (texto legivel, "baixa entropia")
+regex = '''(?i)\b\w*(?:secret|password|senha|chave)\w*\s*=\s*"([^"]{6,})"'''
+secretGroup = 1
+path = '''\.java$'''
+tags = ["secret", "V-05"]
+
 # Quando os grupos migrarem os segredos para variaveis de ambiente/cofre,
 # estas regras deixam de encontrar ocorrencias e o gate fica verde.
 
