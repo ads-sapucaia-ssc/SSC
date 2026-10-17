@@ -164,16 +164,19 @@ duas do VidaPlus: a chave do JWT e a senha do banco).
 
 ```bash
 docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.21.2 \
-  detect --source /repo --config /repo/security/gitleaks/gitleaks.toml --no-banner -v
+  detect --source /repo --config /repo/security/gitleaks/gitleaks.toml \
+  --log-opts="--all -- legacy-app" --no-banner --redact -v
 ```
 
-(`detect` = procurar; `--source /repo` = onde; `-v` = mostrar cada achado em detalhe.)
+(`detect` = procurar; `--source /repo` = onde; `--log-opts="--all -- legacy-app"` = só o
+histórico da pasta `legacy-app`, que é o sistema — `docs/` e `roteiros/` são material da
+disciplina; `--redact` = esconder o valor do segredo; `-v` = mostrar cada achado em detalhe.)
 
 **Como ler a saída.** Um bloco por achado:
 
 ```
-Finding:     vidaplus.jwt.secret=teste-ci-secret
-Secret:      vidaplus.jwt.secret=teste-ci-secret
+Finding:     vidaplus.jwt.secret=REDACTED
+Secret:      REDACTED
 RuleID:      vidaplus-jwt-secret
 Entropy:     3.761446
 Tags:        [secret jwt V-05]
@@ -187,14 +190,20 @@ Date:        2026-07-10T17:39:37Z
 
 | Campo | Significado |
 |---|---|
-| `Finding` | o trecho onde o segredo aparece |
-| `Secret` | o segredo em si |
+| `Finding` | o trecho onde o segredo aparece (com o valor escondido) |
+| `Secret` | o segredo em si — `REDACTED` por causa do `--redact`; o valor de verdade está no arquivo e na linha indicados |
 | `RuleID` | a regra que o reconheceu |
 | `Entropy` | o quanto o texto "parece aleatório" (senhas e chaves costumam ser) |
 | `File`, `Line` | arquivo e linha |
 | `Commit`, `Author`, `Date` | **em que momento da história** o segredo entrou, e por quem |
 
-No fim: `leaks found: N`.
+No fim: `leaks found: N`. No VidaPlus de hoje, **8**: a senha do banco e a chave do token em
+`application.properties` (o de produção e o de teste), a chave no `JwtUtil.java` e três senhas no
+`docker-compose.yml`.
+
+> **Por que `--redact`?** Sem ele, o Gitleaks imprime o segredo na tela — e, se você grava a
+> saída como evidência, o segredo vai **de novo** para o Git, num arquivo novo. Quem procura
+> segredos não pode espalhá-los.
 
 **A lição do `Commit`:** o Gitleaks pode acusar um arquivo que **já foi apagado** — porque ele
 continua no histórico. Por isso, quando um segredo vaza no Git, apagar o arquivo **não basta**: o

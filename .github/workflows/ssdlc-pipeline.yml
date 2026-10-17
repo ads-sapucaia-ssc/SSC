@@ -54,10 +54,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
+      # CLI em Docker (o mesmo comando dos roteiros). A gitleaks-action@v2 exige licenca paga
+      # em repositorios de organizacao e, sem ela, sai sem varrer nada.
+      # Varre so o historico da pasta legacy-app (o sistema); --redact esconde os valores no log.
       - name: Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITLEAKS_CONFIG: security/gitleaks/gitleaks.toml
+        run: |
+          docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.21.2 \
+            detect --source /repo --config /repo/security/gitleaks/gitleaks.toml \
+            --log-opts="--all -- legacy-app" --no-banner --redact -v
 
   # ---------- Gate: SAST (V-01,V-02,V-07,V-10) ----------
   sast-semgrep:

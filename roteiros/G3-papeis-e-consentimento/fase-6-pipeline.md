@@ -157,9 +157,14 @@ com esse exemplo **para que serve** o SBOM.
 
    ```bash
    docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.21.2 \
-     detect --source /repo --config /repo/security/gitleaks/gitleaks.toml --no-banner -v \
+     detect --source /repo --config /repo/security/gitleaks/gitleaks.toml \
+     --log-opts="--all -- legacy-app" --no-banner --redact -v \
      | tee entregaveis/evidencias/fase6-gitleaks.txt
    ```
+
+   O `--redact` é **obrigatório** aqui: sem ele, os valores dos segredos iriam para o arquivo de
+   evidência e, com o commit, de novo para o Git. A última linha deve dizer `leaks found: 8`
+   (se o grupo não tiver mexido nesses arquivos).
 2. Para cada achado: arquivo, linha, **o que é** o segredo.
 3. **Para o G3, a chave do token é o segredo que derruba o controle de vocês** — vocês
    **provaram** isso na Fase 5 com o token fabricado. Escrevam o risco com essa evidência.

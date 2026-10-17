@@ -52,7 +52,7 @@ config **junto do código** (`pom.xml`, `package.json`).
 
 | Ferramenta | Como o pipeline a obtém | Config no repositório? |
 |-----------|--------------------------|------------------------|
-| **Gitleaks** | `gitleaks/gitleaks-action@v2` | ✅ [security/gitleaks/gitleaks.toml](../security/gitleaks/gitleaks.toml) |
+| **Gitleaks** | CLI em Docker (`zricethezav/gitleaks:v8.21.2`), só no histórico de `legacy-app/`, com `--redact` (a `gitleaks-action@v2` exige licença paga em organizações) | ✅ [security/gitleaks/gitleaks.toml](../security/gitleaks/gitleaks.toml) |
 | **Semgrep** | `container: returntocorp/semgrep` + conjuntos públicos `p/owasp-top-ten`, `p/java` | ✅ [security/semgrep/vidaplus.yml](../security/semgrep/vidaplus.yml) (regras próprias) |
 | **Dependency-Check** | `dependency-check/Dependency-Check_Action@main` | ✅ [security/dependency-check/suppression.xml](../security/dependency-check/suppression.xml) |
 | **OWASP ZAP** | `zaproxy/action-baseline@v0.12.0` | ✅ [security/zap/rules.tsv](../security/zap/rules.tsv) |

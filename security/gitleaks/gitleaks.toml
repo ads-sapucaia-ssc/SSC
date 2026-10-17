@@ -8,14 +8,21 @@ useDefault = true
 [[rules]]
 id = "vidaplus-jwt-secret"
 description = "Segredo de JWT hardcoded (V-05)"
-regex = '''vidaplus\.jwt\.secret\s*=\s*.+'''
+# so o VALOR e o segredo (secretGroup); "${JWT_SECRET}" (variavel de ambiente) nao conta
+regex = '''vidaplus\.jwt\.secret\s*=\s*([^\s$][^\s]*)'''
+secretGroup = 1
 tags = ["secret", "jwt", "V-05"]
 
 [[rules]]
 id = "vidaplus-db-password"
 description = "Senha do banco em texto claro (V-05)"
-regex = '''(datasource\.password|MYSQL_PASSWORD)\s*[:=]\s*\S+'''
+# application.properties, docker-compose e workflows; "${...}" (variavel de ambiente) nao conta
+regex = '''(?i)(?:datasource[._]password|mysql_(?:root_)?password)\s*[:=]\s*([^\s$#'"][^\s#]*)'''
+secretGroup = 1
 tags = ["secret", "db", "V-05"]
 
 # Quando os grupos migrarem os segredos para variaveis de ambiente/cofre,
 # estas regras deixam de encontrar ocorrencias e o gate fica verde.
+
+# O recorte (so o historico da pasta legacy-app, o sistema) fica no comando, em
+# --log-opts="--all -- legacy-app": docs/, roteiros/ e aulas/ sao material da disciplina.

@@ -207,10 +207,14 @@ arquivo, a linha e o nome da regra (`vidaplus-sql-concat`, `vidaplus-weak-hash-m
 
 ```bash
 docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.21.2 \
-  detect --source /repo --config /repo/security/gitleaks/gitleaks.toml --no-banner -v
+  detect --source /repo --config /repo/security/gitleaks/gitleaks.toml \
+  --log-opts="--all -- legacy-app" --no-banner --redact -v
 ```
 
-O `-v` mostra cada achado: arquivo, linha, regra e o **commit** onde o segredo apareceu.
+O `-v` mostra cada achado: arquivo, linha, regra e o **commit** onde o segredo apareceu. O
+`--log-opts="--all -- legacy-app"` limita a busca à pasta do **sistema** (`docs/` e `roteiros/`
+são material da disciplina), e o `--redact` troca o valor do segredo por `REDACTED`, para que ele
+não apareça na tela nem nas evidências. Hoje são **8 achados** (`leaks found: 8`).
 
 > Repare: o Gitleaks varre **o histórico inteiro** do Git, não só os arquivos de hoje. Ele pode
 > acusar um arquivo que **já foi apagado**. É a prova de que apagar o segredo do arquivo não basta

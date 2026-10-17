@@ -566,7 +566,7 @@ de outros pacotes.
 |---|---|:-:|:-:|---|
 | Testes de segurança | os testes `@security` de todos os pacotes | 🔴 6 de 7 falhando | 🔴 4 falhando (IDOR e RBAC, de outros pacotes); os nossos 🟢 | sim, quando todas as falhas estiverem corrigidas. Hoje travaria o merge pelas falhas dos outros pacotes |
 | SAST (Semgrep) | padrões inseguros no código | 🔴 11 achados das regras do projeto | 🟡 4 (nenhum de injeção de SQL) | a regra de SQL concatenado, sim: no nosso repositório ela já está em zero, e bloquear impediria a falha de voltar. O SAST inteiro ainda não: tem achados de outros pacotes |
-| Secret Scanning (Gitleaks) | senhas e chaves gravadas no código | 🔴 5 achados | 🔴 5 (F-10 está no plano) | sim, depois que os segredos saírem do código — é o tipo de falha que não pode voltar |
+| Secret Scanning (Gitleaks) | senhas e chaves gravadas no código | 🔴 8 achados | 🔴 8 (F-10 está no plano) | sim, depois que os segredos saírem do código — é o tipo de falha que não pode voltar |
 | DAST / SCA / Container / SBOM | aplicação rodando, dependências, imagem, inventário | — | sem mudança | SCA e Container, sim: CVE crítica nova numa dependência deveria barrar a entrega |
 
 - **SBOM:** é a lista de componentes do software (bibliotecas e versões) que o pipeline gera a cada
@@ -592,8 +592,8 @@ de outros pacotes.
   |---|---|---|---|
   | `legacy-app/backend/src/main/java/br/ifsul/vidaplus/security/JwtUtil.java` | chave que assina os tokens de login | quem tem o código cria token válido de qualquer usuário, inclusive admin | ler de variável de ambiente; a aplicação não sobe sem ela; trocar o valor |
   | `legacy-app/backend/src/main/resources/application.properties` | senha do banco; uma cópia (não usada) da chave do JWT | acesso direto ao banco por quem tem o código | apagar as linhas; o Spring lê a senha do ambiente |
-  | `legacy-app/docker-compose.yml` | senhas do banco (`root` e da aplicação) | idem — e a porta do banco (3306) fica aberta na máquina: com a senha do repositório, qualquer um na mesma rede entra no banco | passar as senhas para um arquivo `.env`, fora do Git, com um `.env.example` de modelo; não publicar a porta 3306 fora do ambiente de desenvolvimento |
-  | arquivos de teste e do pipeline | senha do banco descartável do CI | baixo: o banco só existe durante a execução, sem dado real | **risco aceito**, registrado com justificativa |
+  | `legacy-app/docker-compose.yml` | senhas do banco (`root` e da aplicação, repetida na configuração do backend) | idem — e a porta do banco (3306) fica aberta na máquina: com a senha do repositório, qualquer um na mesma rede entra no banco | passar as senhas para um arquivo `.env`, fora do Git, com um `.env.example` de modelo; não publicar a porta 3306 fora do ambiente de desenvolvimento |
+  | `legacy-app/backend/src/test/resources/application.properties` (e o banco de teste do pipeline) | senha do banco descartável do CI e uma chave de JWT só de teste | baixo: o banco só existe durante a execução, sem dado real | **risco aceito**, registrado com justificativa |
 
   Como os segredos já estão no histórico do Git, removê-los dos arquivos não basta: **os valores
   precisam ser trocados**.

@@ -160,9 +160,14 @@ afetada?
 
    ```bash
    docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.21.2 \
-     detect --source /repo --config /repo/security/gitleaks/gitleaks.toml --no-banner -v \
+     detect --source /repo --config /repo/security/gitleaks/gitleaks.toml \
+     --log-opts="--all -- legacy-app" --no-banner --redact -v \
      | tee entregaveis/evidencias/fase6-gitleaks.txt
    ```
+
+   O `--redact` é **obrigatório** aqui: sem ele, os valores dos segredos iriam para o arquivo de
+   evidência e, com o commit, de novo para o Git. A última linha deve dizer `leaks found: 8`
+   (se o grupo não tiver mexido nesses arquivos).
 2. Para cada achado, anote arquivo e linha, e diga **o que é** aquele segredo.
 3. **Para o G1, a chave que assina os tokens (`JwtUtil.java`) é o segredo mais grave do sistema:**
    ela é a "chave mestra" da F-11. Escreva o risco **concreto**: quem tem o código pode fabricar um

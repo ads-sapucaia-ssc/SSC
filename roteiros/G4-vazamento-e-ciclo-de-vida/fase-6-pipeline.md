@@ -172,9 +172,14 @@ descobre se está afetada?
 
    ```bash
    docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.21.2 \
-     detect --source /repo --config /repo/security/gitleaks/gitleaks.toml --no-banner -v \
+     detect --source /repo --config /repo/security/gitleaks/gitleaks.toml \
+     --log-opts="--all -- legacy-app" --no-banner --redact -v \
      | tee entregaveis/evidencias/fase6-gitleaks.txt
    ```
+
+   O `--redact` é **obrigatório** aqui: sem ele, os valores dos segredos iriam para o arquivo de
+   evidência e, com o commit, de novo para o Git. A última linha deve dizer `leaks found: 8`
+   (se o grupo não tiver mexido nesses arquivos).
 2. Para cada achado: arquivo, linha, **o que é** o segredo.
 3. **Para o G4, o repositório é um canal de vazamento:** a senha do banco no `docker-compose.yml`
    dá acesso a **todos** os laudos, sem passar por nenhum controle da API. E a porta 3306 está
