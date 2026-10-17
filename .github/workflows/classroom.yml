@@ -50,20 +50,25 @@ jobs:
           mysql -h127.0.0.1 -uroot -proot123 vidaplus < legacy-app/db/seed.sql
 
       # ---------------- Estatico (proxy de remediacao) ----------------
-      - name: "V-02 sem hash MD5"
+      - name: "V-02 hash forte configurado"
         id: v02
         uses: classroom-resources/autograding-command-grader@v1
         with:
-          test-name: "V-02 sem hash MD5"
-          command: "! grep -rqF '\"MD5\"' legacy-app/backend/src/main"
+          test-name: "V-02 PasswordEncoder Argon2id/bcrypt (fora de comentario)"
+          # MD5 pode continuar existindo SO para conferir hash legado durante a migracao.
+          command: >-
+            grep -rhE 'Argon2PasswordEncoder\.defaults|new (Argon2|BCrypt)PasswordEncoder' legacy-app/backend/src/main
+            | grep -qvE '^[[:space:]]*(\*|//)'
           max-score: 10
 
       - name: "V-01 sem concatenacao SQL"
         id: v01
         uses: classroom-resources/autograding-command-grader@v1
         with:
-          test-name: "V-01 sem concatenacao SQL em executeQuery"
-          command: "! grep -rqE 'executeQuery\\(.*\\+' legacy-app/backend/src/main"
+          test-name: "V-01 sem SQL concatenado com entrada do usuario"
+          # acusa trecho SQL ("... WHERE x = '" + var); SQL constante quebrado em linhas nao conta
+          command: >-
+            ! grep -rqE '"[^"]*\b(WHERE|AND|OR|SET|LIKE|VALUES)\b[^"]*"[[:space:]]*\+[[:space:]]*[A-Za-z_]' legacy-app/backend/src/main
           max-score: 10
 
       - name: "V-05 sem segredo hardcoded"
@@ -94,8 +99,11 @@ jobs:
         id: v07
         uses: classroom-resources/autograding-command-grader@v1
         with:
-          test-name: "V-07 JWT com setExpiration"
-          command: "grep -rq 'setExpiration' legacy-app/backend/src/main"
+          test-name: "V-07 JWT com expiracao"
+          # jjwt 0.12 usa .expiration(...); setExpiration(...) e a API antiga (aceita)
+          command: >-
+            grep -rhE '\.expiration\(|setExpiration\(' legacy-app/backend/src/main
+            | grep -qvE '^[[:space:]]*(\*|//)'
           max-score: 10
 
       # ---------------- Comportamental (prova a correcao) ----------------

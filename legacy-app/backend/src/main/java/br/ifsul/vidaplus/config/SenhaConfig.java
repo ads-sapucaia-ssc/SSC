@@ -23,6 +23,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * UsuarioDao.autenticar()). Ou seja: essa troca so fica limpa DEPOIS que a
  * query do login for parametrizada (corrigir o V-01 primeiro) - as duas
  * falhas estao acopladas neste endpoint.
+ *
+ * ATENCAO 2: os usuarios do seed.sql JA TEM hash MD5 gravado, e a coluna
+ * usuario.senha_hash e CHAR(32). Trocar o bean "seco" faz TODO login existente
+ * falhar (o teste login_valido_funciona fica vermelho). Planeje a migracao dos
+ * hashes existentes e o tamanho da coluna junto com a troca.
  */
 @Configuration
 public class SenhaConfig {

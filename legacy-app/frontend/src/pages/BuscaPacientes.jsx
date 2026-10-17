@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { buscar } from '../services/paciente';
 
 /**
- * V-13 (SQLi): 'termo' vai direto para uma query concatenada no backend.
+ * V-01 (SQLi, F-13): 'termo' vai direto para uma query concatenada no backend.
  *   Experimente: ' OR '1'='1
  * V-14 (sobrecoleta): a resposta traz religiao/renda_mensal - dados sem
  *   finalidade clara para uma busca de paciente (minimizacao, LGPD art. 6).

@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * Acesso a pacientes (LEGADO).
- * V-13: busca por nome/CPF por CONCATENACAO -> SQL Injection.
+ * V-01 (F-13): busca por nome/CPF por CONCATENACAO -> SQL Injection.
  * V-14: SELECT * expoe campos sobrecoletados (religiao, renda...).
  */
 @Repository
@@ -23,7 +23,7 @@ public class PacienteDao {
     @Autowired
     private DataSource dataSource;
 
-    /** V-13: termo concatenado direto na query. */
+    /** V-01 (F-13): termo concatenado direto na query. */
     public List<Map<String, Object>> buscar(String termo) {
         String sql = "SELECT * FROM paciente WHERE ativo = 1 AND " +
                 "(nome LIKE '%" + termo + "%' OR cpf LIKE '%" + termo + "%')";
@@ -50,7 +50,7 @@ public class PacienteDao {
     /**
      * V-10 (origem do Stored XSS): devolve o 'conteudo' da nota clinica como HTML CRU,
      * sem sanitizacao - o front o injeta com dangerouslySetInnerHTML.
-     * V-13 tambem: id concatenado na query.
+     * V-01 tambem: id concatenado na query.
      */
     public Map<String, Object> notaDoPaciente(long pacienteId) {
         String sql = "SELECT id, paciente_id, autor_id, conteudo, criado_em " +
@@ -77,7 +77,7 @@ public class PacienteDao {
     }
 
     public Map<String, Object> porId(long id) {
-        String sql = "SELECT * FROM paciente WHERE id = " + id; // V-13 tambem
+        String sql = "SELECT * FROM paciente WHERE id = " + id; // V-01 tambem
         try (Connection c = dataSource.getConnection();
              Statement st = c.createStatement();
              ResultSet rs = st.executeQuery(sql)) {

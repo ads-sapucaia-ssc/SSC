@@ -5,10 +5,11 @@ rules:
     languages: [java]
     severity: ERROR
     message: >-
-      Possivel SQL Injection (V-01/V-13): query SQL montada por concatenacao de String.
-      Use PreparedStatement/JdbcTemplate parametrizado.
+      Possivel SQL Injection (V-01): trecho de SQL concatenado com uma VARIAVEL.
+      Use PreparedStatement/JdbcTemplate parametrizado (?). Quebrar um SQL
+      constante em varias linhas com + nao e acusado.
     patterns:
-      - pattern-regex: '"[^"]*\b(SELECT|INSERT|UPDATE|DELETE|WHERE)\b[^"]*"\s*\+'
+      - pattern-regex: '"[^"\n]*\b(WHERE|AND|OR|SET|LIKE|VALUES)\b[^"\n]*"\s*\+\s*[A-Za-z_]'
 
   - id: vidaplus-weak-hash-md5
     languages: [java]

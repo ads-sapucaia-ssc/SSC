@@ -2,9 +2,9 @@
   "//": "FALLBACK ESTATICO. O grader ATIVO do Classroom e .github/workflows/classroom.yml, que combina estas checagens estaticas COM a nota comportamental (testes @security contra MySQL). Este arquivo fica como documentacao/fallback. Nao confie so no estatico: um grupo pode remover o padrao sem corrigir a logica - por isso o classroom.yml roda tambem os testes de comportamento.",
   "tests": [
     {
-      "name": "V-02 sem hash MD5",
+      "name": "V-02 PasswordEncoder Argon2id/bcrypt (fora de comentario)",
       "setup": "",
-      "run": "! grep -rqF '\"MD5\"' legacy-app/backend/src/main && echo PASS",
+      "run": "grep -rhE 'Argon2PasswordEncoder\\.defaults|new (Argon2|BCrypt)PasswordEncoder' legacy-app/backend/src/main | grep -qvE '^[[:space:]]*(\\*|//)' && echo PASS",
       "input": "",
       "output": "PASS",
       "comparison": "included",
@@ -12,9 +12,9 @@
       "points": 15
     },
     {
-      "name": "V-01/V-13 sem concatenacao SQL em executeQuery",
+      "name": "V-01 sem SQL concatenado com entrada do usuario",
       "setup": "",
-      "run": "! grep -rqE 'executeQuery\\(.*\\+' legacy-app/backend/src/main && echo PASS",
+      "run": "! grep -rqE '\"[^\"]*\\b(WHERE|AND|OR|SET|LIKE|VALUES)\\b[^\"]*\"[[:space:]]*\\+[[:space:]]*[A-Za-z_]' legacy-app/backend/src/main && echo PASS",
       "input": "",
       "output": "PASS",
       "comparison": "included",
@@ -52,9 +52,9 @@
       "points": 15
     },
     {
-      "name": "V-07 JWT com expiracao (setExpiration presente)",
+      "name": "V-07 JWT com expiracao (.expiration ou setExpiration)",
       "setup": "",
-      "run": "grep -rq 'setExpiration' legacy-app/backend/src/main && echo PASS",
+      "run": "grep -rhE '\\.expiration\\(|setExpiration\\(' legacy-app/backend/src/main | grep -qvE '^[[:space:]]*(\\*|//)' && echo PASS",
       "input": "",
       "output": "PASS",
       "comparison": "included",
