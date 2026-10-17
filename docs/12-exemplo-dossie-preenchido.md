@@ -30,8 +30,9 @@
      de remediação. Implementa-se apenas o **P0**, na aula de laboratório guiada.
   2. Este grupo escreveu um teste `@security` novo (`busca-injecao.feature`). No seu grupo, o
      teste do P0 **já vem pronto**. Vocês podem acrescentar cenários a ele, mas não precisam.
-- No fim, a seção **"Como transpor este exemplo para o seu pacote"** mostra as perguntas que este
-  exemplo ensina a fazer, aplicadas a cada grupo.
+- **Para fazer o dossiê do seu grupo, siga o roteiro da pasta [`roteiros/`](../roteiros/README.md)**:
+  há um roteiro por fase, escrito para as funcionalidades do **seu** pacote. Este exemplo é a
+  referência de qualidade que os roteiros citam a cada passo.
 
 ---
 
@@ -73,7 +74,7 @@
 | Data de nascimento, endereço | cadastro | Confidencial | C | jurídico | art. 7º, V | sozinhos não identificam ninguém; junto com outros dados, apontam uma pessoa |
 | Nota clínica | prontuário | Crítico | C + I | médico | art. 11, II, "f" | dado de saúde em texto livre: pode conter qualquer informação; a API a entrega sem login |
 | Resultado de exame | consulta de exame | Crítico | C + I | negócio, titular | art. 11, II, "f" | dado de saúde, também em texto livre; fica guardado para sempre, sem prazo de descarte |
-| Laudo em PDF (arquivo) | consulta de exame | Crítico | C | titular | art. 11, II, "f" | arquivo com nome e CPF impressos, numa pasta pública do servidor web, com nome previsível (`laudo-101.pdf`) |
+| Laudo em PDF (arquivo) | consulta de exame | Crítico | C | titular | art. 11, II, "f" | arquivo com o nome do paciente e o resultado impressos, numa pasta pública do servidor web, com nome previsível (`laudo-101.pdf`) |
 | Token de sessão (`localStorage`) | sessão | Crítico | C | segurança | art. 7º, V | fica no navegador e não expira: quem copia o token usa a conta |
 
 > 💡 **Duas lições desta tabela.**
@@ -224,7 +225,7 @@ As colunas seguem a sigla: **L**inking (vinculação), **I**dentifying (identifi
 | Paciente anonimizado | | X | | | | | | trocar nome por `ANON-1` e manter CPF/nascimento completo = pseudonimização — reidentificável | remover diretos + generalizar quase-identificadores | REQ-PRIV-ANON-01 |
 | Paciente anonimizado | X | | | | | | | `paciente.id` continua ligando exames e eventos de auditoria do mesmo titular (L) | aceitável **só** se nenhum atributo do conjunto reidentificar; id não é publicado | REQ-PRIV-ANON-01 |
 | Texto livre (nota clínica **e** resultado do exame) | | X | | | | | | texto livre pode conter nome/CPF — anonimizar colunas não basta. O resultado do exame parece "dado clínico", mas no legado também é texto livre | eliminar o texto livre ao anonimizar | REQ-PRIV-ANON-01 |
-| Arquivo do laudo (PDF) | | X | | | | | | o PDF tem nome e CPF impressos; apagar o caminho no banco **não apaga o arquivo**, que continua baixável no endereço previsível | apagar o arquivo junto com o registro | REQ-PRIV-ANON-01 (depende do F-08 — §6.1) |
+| Arquivo do laudo (PDF) | | X | | | | | | o PDF tem o nome do paciente e o resultado impressos; apagar o caminho no banco **não apaga o arquivo**, que continua baixável no endereço previsível | apagar o arquivo junto com o registro | REQ-PRIV-ANON-01 (depende do F-08 — §6.1) |
 | Datas (exame, atendimento) | | X | | | | | | a data exata de uma consulta, junto com o ano de nascimento, pode apontar uma única pessoa numa clínica pequena | generalizar para o ano | REQ-PRIV-ANON-01 |
 | Auditoria | | X | | | | | | log com CPF identificaria mesmo após anonimizar o cadastro | `user_id` opaco (pseudônimo) | REQ-PRIV-PSEUDO-01 |
 | Banco e cópias de segurança | | | | | | | X | retenção infinita (Nc) — e anonimizar o banco não alcança os backups antigos | anonimização ao fim da guarda + prazo de descarte dos backups | REQ-PRIV-ANON-01 (backups: plano, §6.2) |
@@ -445,7 +446,7 @@ insere `nota.conteudo` como HTML (XSS, F-14 — plano, §6.2).
 | `usuario` do paciente | credencial | e-mail `anonimizado-<id>@invalido`, senha inutilizável, `ativo = 0` | não há mais titular |
 | nota clínica | texto livre | **eliminação** | pode conter identificadores |
 | `exame.resultado` | texto livre | **eliminação** (`NULL`) | no legado é texto livre ("Resultado sensivel de sorologia") e pode conter qualquer coisa. Perdemos o valor estatístico do resultado; para mantê-lo, ele teria de ser **estruturado** (valor + unidade) — mudança de modelo que fica fora do escopo mínimo |
-| `exame.laudo_pdf` e o arquivo | ponteiro + arquivo | `laudo_pdf = NULL` e o id do exame vai para uma lista de arquivos a apagar | o PDF tem nome/CPF impressos (ver limitação abaixo) |
+| `exame.laudo_pdf` e o arquivo | ponteiro + arquivo | `laudo_pdf = NULL` e o id do exame vai para uma lista de arquivos a apagar | o PDF tem o nome do paciente e o resultado impressos (ver limitação abaixo) |
 | `exame.tipo` | atributo clínico | **mantido** | valor estatístico; não identifica sozinho |
 
 - **Limitação 1 — o arquivo PDF:** os PDFs ficam na pasta pública do frontend
@@ -756,36 +757,6 @@ e não pela linha em que aparece:
   o F-08, e o k-anonimato não foi medido numa base real.
 
 As ameaças transferidas dependem dos outros pacotes e ficam registradas aqui para acompanhamento.
-
----
-
-## Como transpor este exemplo para o seu pacote
-
-> Esta seção **não faz parte do dossiê**: é um guia para o seu grupo.
-
-Este exemplo ensina **seis perguntas**. Faça-as sobre as funcionalidades do **seu** pacote:
-
-| Pergunta | Onde aparece aqui |
-|---|---|
-| 1. Depois do teste verde, existe **outro caminho** até o mesmo dado? Ataque de novo, à mão | §7, "O que os testes não pegaram" |
-| 2. O que a minha correção **não** resolve? | §6.1, Controle 1 |
-| 3. Eu **testei** o impacto que escrevi na tabela, ou copiei o que "esse tipo de falha costuma fazer"? | §3, D2 e a 💡 |
-| 4. O controle **falha de forma segura**? Provoquei a falha para conferir? | §5, fail-secure |
-| 5. Se o ataque der certo, **o que fica registrado**? | §9 |
-| 6. A minha métrica conta **ameaças** ou **linhas**? | §10.2 |
-
-Pontos de partida para cada grupo (são perguntas, não respostas — o fio é de vocês):
-
-| Grupo | P0 (implementado na aula guiada) | Teste pronto | Criação (só especificar) | Comece perguntando… |
-|---|---|---|---|---|
-| **G1** — Identidade & Trilha | F-01, recorte credencial | `sqli.feature` | F-05 trilha de auditoria | O login é o único lugar onde o e-mail digitado entra numa consulta? Depois do 401, o que impede alguém de testar mil senhas seguidas? |
-| **G2** — Prontuário | F-02, recorte autorização | `idor.feature` | F-09 exportação do titular | Depois do 403 em `/api/exames/{id}`, os **outros** caminhos até o mesmo laudo (`/pdf`, a listagem por paciente, o arquivo em `/laudos/`) também negam? |
-| **G3** — Papéis & Consentimento | F-03 | `rbac.feature` | F-04 consentimento | O 403 na publicação vale para os outros endpoints de cada papel (usuários, agenda, fila de laudos)? Esconder o botão na tela é controle? |
-| **G4** — Vazamento & Ciclo de Vida | F-02, recorte canal de vazamento | `idor.feature` | F-06 retenção → eliminação | Por onde mais o laudo escapa — mensagem de erro, link, arquivo direto? O que uma resposta de erro do VidaPlus revela hoje? |
-
-Para a criação, o nível de especificação esperado é o do Controle 2 (§6.1): entidade, gatilho com
-dados que existem no banco, tratamento atributo por atributo, limitações assumidas e o `.feature`
-com `@analise` — só que **sem** a implementação.
 
 ---
 

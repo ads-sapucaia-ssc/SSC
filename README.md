@@ -77,6 +77,9 @@ projeto-vidaplus/
 │   ├── 11-apostila.md               material de estudo em texto (acompanha os slides)
 │   ├── 12-exemplo-dossie-preenchido.md  dossiê completo de exemplo (pacote 5) — o nível esperado
 │   └── 13-gate-bloqueante-do-grupo.md   (opcional) como tornar bloqueante o gate do seu grupo
+├── roteiros/                       ← passo a passo, fase por fase, para cada grupo (comece aqui)
+│   ├── comum/                       ambiente, observar o sistema, Git, testes, escrita
+│   └── G1-… G2-… G3-… G4-…          um roteiro por fase, com as funcionalidades do grupo
 ├── entregaveis/                    ← o que o grupo preenche e entrega
 │   └── DOSSIE.md                    dossiê de segurança e privacidade (preencher nas fases)
 ├── aulas/                          ← slides .pptx (template IFSul), um por aula

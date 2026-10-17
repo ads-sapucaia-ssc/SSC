@@ -35,3 +35,9 @@ Para ver **um dossiê inteiro preenchido** — com o nível de detalhe esperado 
 [12-exemplo-dossie-preenchido.md](12-exemplo-dossie-preenchido.md). Ele trata do **pacote 5**,
 que não foi atribuído a nenhum grupo nesta turma: serve de **modelo de qualidade**, não de
 resposta para o seu pacote.
+
+## Roteiros por fase
+
+Para **fazer** o dossiê do seu grupo, siga a pasta [`roteiros/`](../roteiros/README.md): um
+roteiro por fase, para as funcionalidades do **seu** pacote, mostrando a cada passo como o grupo do
+exemplo fez e como fazer o mesmo no seu.

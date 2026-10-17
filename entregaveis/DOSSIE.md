@@ -11,6 +11,9 @@
 >
 > **Quer ver um dossiê inteiro preenchido?** Veja o exemplo do pacote 5 em
 > [docs/12](../docs/12-exemplo-dossie-preenchido.md) — mostra o nível de detalhe esperado.
+>
+> **Como fazer cada seção?** Siga o roteiro da fase na pasta do seu grupo, em
+> [`roteiros/`](../roteiros/README.md).
 
 ---
 
