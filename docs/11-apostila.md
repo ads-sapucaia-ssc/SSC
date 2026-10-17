@@ -370,7 +370,8 @@ importante, não urgente; um CVSS 7 no KEV é urgente (explorado agora). Combine
 **Entregável (Fase 6):** pipeline como **evidência** (não é a nota) — placar de gates
 (vermelho→verde), SBOM e os segredos no código **identificados**, com plano de remediação
 (F-10). A **entrega segura já vem pré-fiada** (você **não configura ferramenta**): na `main`,
-`release-sign` (build+push+**assina**+**atesta o SBOM** → SLSA L2) → `deploy-staging`
+`release-sign` (build+push+**assina**+**atesta o SBOM**; ainda sem a proveniência que o SLSA L2
+exige) → `deploy-staging`
 (smoke/DAST) → `deploy-prod` (**verifica a assinatura** e exige **aprovação manual**). Seu
 trabalho: **ler e explicar** o fluxo e a evidência no dossiê. A proteção da `main` e o
 *environment* `production` são configurados pelo professor.

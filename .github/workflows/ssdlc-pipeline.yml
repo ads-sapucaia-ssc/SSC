@@ -229,9 +229,9 @@ jobs:
   # verifica e EXPLICA no dossie. Ver docs/06-pipeline-cicd.md.
   # ==================================================================
 
-  # ---------- Release: build once -> push -> assinar -> atestar (SLSA L2) ----------
+  # ---------- Release: build once -> push -> assinar -> atestar o SBOM (sem proveniencia: ainda nao e SLSA L2) ----------
   release-sign:
-    name: "Release - build, push, sign & attest (SLSA L2)"
+    name: "Release - build, push, sign & attest SBOM"
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     needs: [build-backend]

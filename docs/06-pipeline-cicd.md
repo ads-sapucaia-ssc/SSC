@@ -142,17 +142,30 @@ release-sign  →  deploy-staging  →  deploy-prod
 ```
 
 1. **`release-sign`** — *build once*: builda e **publica** a imagem no **GHCR**, **assina**
-   com **cosign** (keyless/OIDC, registrado no **Rekor**) e **atesta o SBOM** da imagem →
-   **proveniência assinada = SLSA L2**.
+   com **cosign** (keyless/OIDC, registrado no **Rekor**) e **atesta o SBOM** da imagem
+   (anexa a lista de componentes, também assinada).
 2. **`deploy-staging`** — "sobe" a app num **staging** efêmero e faz um *smoke* (o **DAST
    autenticado** exercita essa instância).
 3. **`deploy-prod`** — **admission gate**: `cosign verify` + `verify-attestation` **recusam
    imagem não assinada/atestada**, e só executa **após aprovação manual** do ambiente
    `production`. É o "*build once, deploy many*" **com portão**.
 
-**Conceitos (para a defesa):** **SLSA** L0→L3 mede a confiança da proveniência (meta **L2**,
-assinada); **Sigstore/cosign** assina por **identidade** (não por chave); e assinar só tem
-valor porque **alguém verifica** — por isso o `deploy-prod` recusa o não-assinado.
+**Conceitos (para a defesa):** **Sigstore/cosign** assina por **identidade** (não por chave); e
+assinar só tem valor porque **alguém verifica** — por isso o `deploy-prod` recusa o
+não-assinado. **SLSA** L0→L3 mede a confiança da **proveniência** do build.
+
+> **Assinar a imagem + atestar o SBOM ainda não é SLSA L2.** São duas perguntas diferentes:
+>
+> | Documento | Responde | O pipeline gera? |
+> |---|---|---|
+> | **SBOM** | *do que* a imagem é feita (bibliotecas e versões) | ✅ sim, assinado |
+> | **Proveniência** | *como* ela foi construída: de qual repositório e commit, por qual workflow | ❌ não |
+>
+> O nível 2 do SLSA exige a **proveniência assinada** pela plataforma de build. O que o pipeline já
+> garante é que a imagem publicada **é a que ele construiu** e que ninguém a trocou depois — um
+> passo importante, mas não o L2. Para chegar lá, faltaria gerar e assinar a proveniência (por
+> exemplo, com `cosign attest --type slsaprovenance`). No dossiê, explique essa diferença: saber
+> dizer **o que ainda falta** vale mais do que repetir um rótulo.
 
 ### O que você faz (não é configurar ferramenta)
 - **Ler** os jobs `release-sign` / `deploy-staging` / `deploy-prod` numa execução na `main`
