@@ -1,8 +1,9 @@
 # G1 · Fase 6 — Pipeline e segredos no código
 
 > **Seção do dossiê:** §8 · **Lidera:** ⚙️ DevSecOps · **Aula:** 8 · **Semana:** 13
-> Nesta fase **não se configura nada**: os gates ficam informativos e a proteção da `main` é do
-> professor. O trabalho é **ler** o pipeline e **explicar**.
+> Nesta fase vocês **não configuram o pipeline**: os gates ficam informativos e a proteção da
+> `main` é do professor. O trabalho é **ler** o pipeline e **explicar** — e há **uma correção
+> guiada no código**: tirar os segredos do código (F-10), no Passo 5.
 
 Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
 
@@ -11,7 +12,8 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
 1. A tabela de **gates**: o que cada um verifica, o estado antes e depois da PoC, e se deveria ser
    bloqueante num projeto real (e por quê).
 2. A explicação do **SBOM**, da **entrega assinada** e da **proteção da `main`**.
-3. A análise dos **segredos no código** (F-10) e o plano de remediação deles.
+3. Os **segredos no código** (F-10): a análise, a **correção guiada** e as provas do antes e
+   do depois.
 
 ## Passo 0 — Prepare o terminal, a branch e o VidaPlus
 
@@ -179,7 +181,58 @@ afetada?
    fora do Git, com um `.env.example` de modelo), **trocar o valor**, e o que fazer com segredos de
    teste (risco aceito?).
 
-**Não altere o código nem o pipeline** nesta fase: é análise e plano.
+Este passo é só a **análise**: não mexa no código ainda. A correção vem no Passo 5.
+
+## Passo 5 — Corrija os segredos no código (F-10) — aula guiada
+
+> 🔎 **Como o Grupo 5 fez:** seguiu o roteiro comum dos segredos, guardou as provas do antes e do
+> depois e escreveu na §8 o que foi feito, o requisito REQ-SEGREDO-01 nas duas formas e o que
+> **ainda** fica em aberto. Veja: [`docs/12` §8](../../docs/12-exemplo-dossie-preenchido.md#8-fase-6--pipeline-gerador-de-evidência).
+
+**▶ Agora no G1:**
+
+1. **Grave o que já escreveram do dossiê** (vocês estão na branch `dossie/fase-6`), porque o
+   roteiro comum vai trocar de branch:
+
+   ```bash
+   git add entregaveis/
+   git commit -m "docs(dossie): fase 6 - rascunho"
+   git push
+   ```
+
+   Se aparecer `nothing to commit`, não havia nada novo: siga em frente.
+2. **Siga o roteiro comum inteiro:** [`comum/08` — Segredos fora do código](../comum/08-segredos-fora-do-codigo.md),
+   do Passo 1 ao 13. Ele cria a branch `fix/F-10-segredos` a partir da `main` e termina com a
+   correção já na `main`. É o **mesmo** para os quatro grupos; o que muda no G1 está no item 3.
+3. **O que muda no G1:** a chave do token é a "chave mestra" da F-11. No Passo 9.1 do roteiro
+   comum, o token **antigo** do admin é recusado depois da troca — guardem essa evidência com
+   destaque: como o token do VidaPlus **não expira**, trocar a chave foi a **única** forma de
+   revogar todos os tokens já emitidos. Escrevam isso na §8 e liguem com o plano da F-11
+   (expiração curta): a troca da chave vira o "botão de emergência" do plano de resposta a
+   incidente da Fase 7.
+4. **Volte para a branch do dossiê** e traga a correção que acabou de entrar na `main`:
+
+   ```bash
+   git checkout dossie/fase-6
+   git pull
+   git merge main --no-edit
+   ```
+
+   (`--no-edit` aceita a mensagem padrão do merge, sem abrir um editor no terminal.)
+5. **Escreva na §8 do dossiê** (substitua a "análise e plano" do Passo 4 pelo que foi **feito**):
+   - a tabela **onde | segredo | risco | o que foi feito** (tirado do código? valor trocado? risco
+     aceito, com justificativa, para os de teste);
+   - o **REQ-SEGREDO-01** nas duas formas (o texto "deve" e o nome do arquivo `.feature` —
+     [`comum/08` Passo 10](../comum/08-segredos-fora-do-codigo.md#passo-10--escreva-o-requisito-as-duas-formas));
+   - as provas, com o nome de cada arquivo de evidência (`fase6-f10-...`): o Gitleaks 🔴 8 → 🟢
+     `no leaks found`, o V-05, o token antigo e o fabricado recusados, o "sem `.env` não sobe";
+   - **por que** os 8 achados do histórico viraram exceção no `.gitleaksignore` (e por que isso só
+     é honesto **depois** de trocar os valores);
+   - na **tabela de gates** (Passo 1), a linha do Gitleaks ganha o "depois" da F-10;
+   - **o que continua em aberto** (seja honesto): o `.env` fica em texto no computador de cada
+     um (num projeto real, um **cofre de segredos**); a troca foi manual (num projeto real, há um
+     processo de **rotação**); e, no G1, o token continua sem expiração (F-11, no plano) — a troca da chave revoga
+   **todos** os tokens de uma vez, inclusive os de quem não fez nada de errado.
 
 ## Último passo — Grave no Git e abra o Pull Request
 
@@ -226,3 +279,5 @@ Conflito ou erro? Veja [`comum/03`](../comum/03-git-e-github.md) §4.2 e §5.
 - [ ] Sei onde está o SBOM e achei nele as bibliotecas do meu pacote.
 - [ ] Expliquei assinatura, verificação de quem assinou e por que não é SLSA L2.
 - [ ] Cada segredo tem risco concreto e plano (incluindo **trocar** o valor).
+- [ ] Fiz a correção guiada da F-10 e registrei na §8 por que trocar a chave revogou todos os
+  tokens (ligação com a F-11).

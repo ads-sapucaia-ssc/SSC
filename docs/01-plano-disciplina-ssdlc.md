@@ -99,8 +99,9 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 - **Teoria:** DevSecOps; supply chain (SBOM); gestão de segredos.
 - **Prática:** interpretar o pipeline como **gerador de evidência** e **explicar** no dossiê o
   que cada gate verifica, o SBOM e a entrega assinada. Os segredos no código (F-10) são
-  **analisados** e entram no **plano de remediação** — sem mexer no código nem no pipeline. A
-  configuração do repositório (proteção da `main`, aprovação de produção) é feita pelo professor.
+  **corrigidos em aula guiada** (`roteiros/comum/08`): saem do código para variáveis de ambiente,
+  os valores são trocados e o gate do Gitleaks vai de 🔴 a 🟢. O pipeline não é configurado pelos
+  grupos: ele já gera os segredos descartáveis de que precisa. A configuração do repositório (proteção da `main`, aprovação de produção) é feita pelo professor.
 - **Artefato:** pipeline evidenciando a PoC + placar de gates ⚙️.
 
 ## Fase 7 — Operação & resposta a incidentes · Semana 14

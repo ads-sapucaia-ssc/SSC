@@ -131,10 +131,10 @@ para vocês aprenderem a removê-los. Por isso:
     [§5.2](#52-proteger-a-main-branch-protection));
   - como são segredos **de exemplo** (não credenciais reais), **permita o push** pela própria
     mensagem de erro do GitHub (link "allow secret") — é o esperado no primeiro push;
-  - **não corrija.** Os segredos no código são o **F-10**, que neste projeto é **analisado**,
-    não implementado: o grupo identifica os segredos, explica o risco e escreve o **plano de
-    remediação** (Fase 4) — sem mexer no código nem no pipeline. Por ora, apenas **documente** a
-    decisão **no `DOSSIE.md`** do grupo (o entregável, já no repo em
+  - **não corrija agora.** Os segredos no código são o **F-10**, que neste projeto é corrigido
+    **em aula guiada na Fase 6** ([`roteiros/comum/08`](../roteiros/comum/08-segredos-fora-do-codigo.md)):
+    lá o grupo tira os segredos do código, troca os valores e prova que os antigos não servem
+    mais. Por ora, apenas **documente** a decisão **no `DOSSIE.md`** do grupo (o entregável, já no repo em
     [`entregaveis/DOSSIE.md`](../entregaveis/DOSSIE.md)): é o **primeiro registro** de F-10.
 
 ---

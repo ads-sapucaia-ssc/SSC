@@ -31,7 +31,7 @@ que ela vê.
 | **F-11** Sessão / token | o "crachá" digital que a pessoa recebe ao entrar | 🟠 P1 | 🛠️ corrigir | analisada + plano |
 | **F-12** Recuperação de senha | o "esqueci minha senha" | 🟠 P1 | 🛠️ corrigir | analisada + plano |
 | **F-17** CORS / cabeçalhos de segurança | regras que o servidor manda ao navegador sobre quem pode chamá-lo e o que pode executar | 🟡 P1 | 🛠️ corrigir | analisada + plano |
-| **F-10** Segredos no código | higiene contínua (todos os grupos) | 🟠 P1 | — | analisada + plano (Fase 6) |
+| **F-10** Segredos no código | higiene contínua (todos os grupos) | 🟠 P1 | 🛠️ corrigir | **implementada** na aula guiada da Fase 6 ([`comum/08`](../comum/08-segredos-fora-do-codigo.md)) |
 | **F-21** Dependências (SCA/SBOM) | higiene contínua (todos os grupos) | 🟢 P2 | — | leitura do pipeline (Fase 6) |
 
 **Teste pronto do P0:** `legacy-app/backend/src/test/resources/br/ifsul/vidaplus/features/sqli.feature`

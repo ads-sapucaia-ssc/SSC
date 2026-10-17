@@ -30,7 +30,7 @@ isso as duas coisas estão no mesmo pacote.
 | **F-09** Exportação do titular (portabilidade) | o paciente baixa **todos os seus dados**, num formato estruturado | 🟠 P1 | ✨⚖️ criar | **especificada** (não implementada) |
 | **F-07** Publicação de laudo | o laboratório libera o laudo para o paciente | 🟠 P1 | 🛠️ corrigir | analisada + plano |
 | **F-08** Armazenamento de PDFs | onde e como os arquivos de laudo ficam guardados e são entregues | 🟠 P1 | 🛠️⚖️ corrigir/adequar | analisada + plano — **teste com um exame não publicado** (veja a nota do [`docs/04`](../../docs/04-catalogo-funcionalidades.md)) |
-| **F-10** Segredos no código | higiene contínua (todos os grupos) | 🟠 P1 | — | analisada + plano (Fase 6) |
+| **F-10** Segredos no código | higiene contínua (todos os grupos) | 🟠 P1 | 🛠️ corrigir | **implementada** na aula guiada da Fase 6 ([`comum/08`](../comum/08-segredos-fora-do-codigo.md)) |
 | **F-21** Dependências (SCA/SBOM) | higiene contínua (todos os grupos) | 🟢 P2 | — | leitura do pipeline (Fase 6) |
 
 **Teste pronto do P0:** `legacy-app/backend/src/test/resources/br/ifsul/vidaplus/features/idor.feature`

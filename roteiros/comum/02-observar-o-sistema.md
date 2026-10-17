@@ -205,6 +205,11 @@ docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidap
 - `mysql -uvidaplus -pvidaplus123 vidaplus` = abre o cliente do MySQL com o usuário `vidaplus`,
   a senha `vidaplus123` e o banco `vidaplus`.
 
+> Repare: a senha do banco está escrita **no repositório** — qualquer um que o leia entra no
+> banco. Na Fase 6 vocês corrigem isso (F-10, [`08`](08-segredos-fora-do-codigo.md)); **depois**
+> dela, `-pvidaplus123` não entra mais, e o comando passa a ser
+> `docker compose -f legacy-app/docker-compose.yml exec db sh -c 'mysql -uvidaplus -p"$MYSQL_PASSWORD" vidaplus'`.
+
 O terminal muda para `mysql>`. Agora você digita **SQL**; cada comando termina com `;`.
 
 ```sql

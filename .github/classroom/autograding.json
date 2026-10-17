@@ -22,9 +22,9 @@
       "points": 20
     },
     {
-      "name": "V-05 sem segredo hardcoded (JWT via variavel de ambiente)",
+      "name": "V-05 sem segredo hardcoded (JWT via variavel de ambiente, properties e JwtUtil)",
       "setup": "",
-      "run": "! grep -qE 'jwt.secret=[^$]' legacy-app/backend/src/main/resources/application.properties && echo PASS",
+      "run": "! grep -qE 'jwt.secret=[^$]' legacy-app/backend/src/main/resources/application.properties && ! grep -qE 'SECRET *= *\"' legacy-app/backend/src/main/java/br/ifsul/vidaplus/security/JwtUtil.java && echo PASS",
       "input": "",
       "output": "PASS",
       "comparison": "included",

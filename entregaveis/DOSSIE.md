@@ -228,9 +228,11 @@ Para cada controle implementado:
   por que a verificação da assinatura precisa conferir **quem** assinou (`docs/06` §5)._
 - **Proteção da `main` e aprovação de produção:** _o que foi configurado e por que "quem faz não
   aprova o próprio"._
-- **Segredos no código (F-10):** _liste os segredos gravados no repositório, o risco de cada um e
-  o plano de remediação (variável de ambiente, troca dos valores). Não é preciso alterar o
-  código._
+- **Segredos no código (F-10):** _tabela **onde | segredo | risco | o que foi feito** (correção
+  guiada em `roteiros/comum/08`); o **REQ-SEGREDO-01** nas duas formas; as provas do antes e do
+  depois (Gitleaks, V-05, token antigo e token fabricado recusados, "sem `.env` não sobe"); por
+  que os achados do histórico viraram exceção só depois de trocar os valores; o que continua em
+  aberto. **Nunca** copie valores de segredos para cá._
 
 ---
 

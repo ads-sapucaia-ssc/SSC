@@ -31,7 +31,7 @@ O seu pacote olha o dado de dois jeitos:
 | **F-16** Tratamento de erros | o que o sistema mostra quando algo dá errado | 🟡 P2 | 🛠️ corrigir | analisada + plano (parte entra no PR do P0 — veja a Fase 4) |
 | **F-18** Notificação (e-mail/SMS) com link | avisar o paciente de que o laudo está pronto | 🟠 P1 | 🛠️⚖️ corrigir/adequar | analisada + plano — **não há código no legado**: vocês analisam o desenho |
 | **F-20** Conteúdo institucional (site) | as páginas públicas da clínica | 🟢 P2 | 🛠️ corrigir | analisada + plano — **não há código específico**: vocês analisam o servidor do site |
-| **F-10** Segredos no código | higiene contínua (todos os grupos) | 🟠 P1 | — | analisada + plano (Fase 6) |
+| **F-10** Segredos no código | higiene contínua (todos os grupos) | 🟠 P1 | 🛠️ corrigir | **implementada** na aula guiada da Fase 6 ([`comum/08`](../comum/08-segredos-fora-do-codigo.md)) |
 | **F-21** Dependências (SCA/SBOM) | higiene contínua (todos os grupos) | 🟢 P2 | — | leitura do pipeline (Fase 6) |
 
 **Teste pronto do P0:** `legacy-app/backend/src/test/resources/br/ifsul/vidaplus/features/idor.feature`

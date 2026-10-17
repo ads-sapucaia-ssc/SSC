@@ -27,9 +27,11 @@ roteiros/
 │   ├── 05-escrever-o-dossie.md      Markdown, tabelas, imagens, evidências, DFD
 │   ├── 06-pipeline-do-zero.md       CI/CD e GitHub Actions do zero: o que é e onde clicar
 │   ├── 07-ferramentas-de-seguranca.md  Semgrep, CodeQL, Gitleaks, ZAP, Trivy, SBOM, cosign
+│   ├── 08-segredos-fora-do-codigo.md   aula guiada da F-10 (Fase 6): tirar e trocar os segredos
 │   ├── zerar-banco.sh               religa o VidaPlus com o banco original (e recompila)
 │   ├── tokens.sh                    faz login com os 6 usuários e guarda os tokens
-│   └── rodar-testes.sh              roda os testes de segurança no seu computador
+│   ├── rodar-testes.sh              roda os testes de segurança no seu computador
+│   └── fabricar-token.sh            monta um token com a chave do código (demonstração da F-10)
 ├── G1-identidade-e-trilha/          ← roteiros do Grupo 1
 ├── G2-prontuario-alheio-x-proprio/  ← roteiros do Grupo 2
 ├── G3-papeis-e-consentimento/       ← roteiros do Grupo 3

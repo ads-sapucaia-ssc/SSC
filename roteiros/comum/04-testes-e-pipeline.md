@@ -214,7 +214,8 @@ docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.21.2 \
 O `-v` mostra cada achado: arquivo, linha, regra e o **commit** onde o segredo apareceu. O
 `--log-opts="--all -- legacy-app"` limita a busca à pasta do **sistema** (`docs/` e `roteiros/`
 são material da disciplina), e o `--redact` troca o valor do segredo por `REDACTED`, para que ele
-não apareça na tela nem nas evidências. Hoje são **8 achados** (`leaks found: 8`).
+não apareça na tela nem nas evidências. Antes da correção da F-10 (Fase 6), são **8 achados**
+(`leaks found: 8`); depois dela, `no leaks found` ([`08`](08-segredos-fora-do-codigo.md)).
 
 > Repare: o Gitleaks varre **o histórico inteiro** do Git, não só os arquivos de hoje. Ele pode
 > acusar um arquivo que **já foi apagado**. É a prova de que apagar o segredo do arquivo não basta

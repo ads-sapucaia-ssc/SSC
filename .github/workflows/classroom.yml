@@ -75,8 +75,10 @@ jobs:
         id: v05
         uses: classroom-resources/autograding-command-grader@v1
         with:
-          test-name: "V-05 JWT via variavel de ambiente"
-          command: "! grep -qE 'jwt.secret=[^$]' legacy-app/backend/src/main/resources/application.properties"
+          test-name: "V-05 JWT via variavel de ambiente (properties e JwtUtil)"
+          command: >-
+            ! grep -qE 'jwt.secret=[^$]' legacy-app/backend/src/main/resources/application.properties
+            && ! grep -qE 'SECRET *= *"' legacy-app/backend/src/main/java/br/ifsul/vidaplus/security/JwtUtil.java
           max-score: 10
 
       - name: "V-10 sem dangerouslySetInnerHTML"
@@ -107,6 +109,11 @@ jobs:
           max-score: 10
 
       # ---------------- Comportamental (prova a correcao) ----------------
+      # F-10: depois da correcao, a chave do token vem do ambiente (JWT_SECRET). Cada execucao
+      # gera uma chave nova e descartavel: nenhuma chave fica gravada no repositorio.
+      - name: Chave do token so para este teste
+        run: |
+          K=$(openssl rand -hex 32); echo "::add-mask::$K"; echo "JWT_SECRET=$K" >> "$GITHUB_ENV"
       - name: "Testes de seguranca (IDOR/RBAC/auth)"
         id: sectests
         uses: classroom-resources/autograding-command-grader@v1

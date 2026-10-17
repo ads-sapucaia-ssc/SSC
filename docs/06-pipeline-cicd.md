@@ -63,6 +63,13 @@ config **junto do código** (`pom.xml`, `package.json`).
 | **Maven / JUnit** | `actions/setup-java@v4` + `mvn` | ✅ em [legacy-app/backend/pom.xml](../legacy-app/backend/pom.xml) |
 | **React / Vite** | `actions/setup-node@v4` + build | ✅ em [legacy-app/frontend/](../legacy-app/frontend/) |
 
+> **Os segredos do próprio pipeline.** Depois da correção da F-10 (Fase 6, `roteiros/comum/08`),
+> o VidaPlus só sobe com as senhas e a chave do token vindas do ambiente. O pipeline já está
+> preparado: nos jobs que sobem a aplicação (DAST, staging), a etapa **"Segredos descartaveis
+> deste ambiente"** cria um `legacy-app/.env` com valores sorteados a cada execução; nos jobs de
+> teste, a etapa **"Chave do token so para este teste"** faz o mesmo com a `JWT_SECRET`. Nada fica
+> gravado no repositório, e antes da correção essas etapas não têm efeito.
+
 > A quantidade de arquivos em `security/` **não** deveria bater com a quantidade de
 > ferramentas do pipeline: ela reflete só **quantas precisam de configuração customizada**.
 > Maven/JUnit e React/Vite são ferramentas de **build**, não de segurança — por isso a

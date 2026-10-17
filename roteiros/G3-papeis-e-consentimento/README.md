@@ -31,7 +31,7 @@ paciente **ver e corrigir os próprios dados** (autosserviço do titular).
 | **F-04** Gestão de consentimento | registrar, por finalidade e por versão do termo, o consentimento do paciente — e a revogação | 🔴 P0 | ✨⚖️ criar | **especificada** (não implementada) |
 | **F-15** Minimização no cadastro | o cadastro coleta dados sem finalidade | 🟠 P1 | ⚖️ adequar | analisada + plano |
 | **F-19** Perfil do usuário (autosserviço do titular) | o paciente ver e corrigir os próprios dados; hoje, a edição de cadastro não valida nada | 🟢 P2 | 🛠️ corrigir | analisada + plano |
-| **F-10** Segredos no código | higiene contínua (todos os grupos) | 🟠 P1 | — | analisada + plano (Fase 6) |
+| **F-10** Segredos no código | higiene contínua (todos os grupos) | 🟠 P1 | 🛠️ corrigir | **implementada** na aula guiada da Fase 6 ([`comum/08`](../comum/08-segredos-fora-do-codigo.md)) |
 | **F-21** Dependências (SCA/SBOM) | higiene contínua (todos os grupos) | 🟢 P2 | — | leitura do pipeline (Fase 6) |
 
 **Teste pronto do P0:** `legacy-app/backend/src/test/resources/br/ifsul/vidaplus/features/rbac.feature`

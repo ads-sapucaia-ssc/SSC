@@ -90,8 +90,8 @@ Ativo → Ameaça (STRIDE/LINDDUN) → Requisito → Controle → Teste → Evid
 | Status | Verificado / Planejado / Transferida |
 
 Para o G3: `REQ-AC-RBAC-01` e os demais requisitos de RBAC corrigidos no PR (**Verificados**);
-F-04, F-15 e F-19 (**Planejados** — a F-04 com a especificação da Fase 4); e os transferidos: a
-chave do token (F-10), a vida do token (F-11, G1), a trilha (F-05, G1), a regra de dono da
+F-04, F-15 e F-19 (**Planejados** — a F-04 com a especificação da Fase 4); o REQ-SEGREDO-01 da
+chave do token (F-10, **Verificado** na Fase 6); e os transferidos: a vida do token (F-11, G1), a trilha (F-05, G1), a regra de dono da
 carteira do médico (G2), as funções sem login (F-13, V-19).
 
 **Teste de consistência:** 3 ameaças da §3/§4 ao acaso estão na matriz? 3 linhas da matriz têm a
@@ -172,14 +172,17 @@ A defesa dura 10–15 minutos; **qualquer integrante** pode ser perguntado sobre
      bash roteiros/comum/rodar-testes.sh "security & F-03"
      ```
 
-   - e, honestamente, **o que continua aberto** — o token fabricado com a chave do código:
+   - **o elo que vocês fecharam na Fase 6** — o token fabricado. A chave não está mais no código;
+     o script acha a **antiga** no histórico do Git, e o servidor recusa:
 
      ```bash
-     FORJADO=$(bash roteiros/G3-papeis-e-consentimento/fabricar-token.sh 5 ADMIN)
+     FORJADO=$(bash roteiros/comum/fabricar-token.sh 5 ADMIN)
      curl -s -o /dev/null -w 'token fabricado -> lista de usuarios: %{http_code}\n' localhost:8080/api/usuarios -H "Authorization: Bearer $FORJADO"
      ```
 
-     — e o que está no plano para ele.
+     Esperado: a mensagem sobre a chave antiga e um código que **não** é 200. E, honestamente,
+     **o que continua aberto**: o token antigo depois de mudar o papel (F-11) — e o que está no
+     plano para ele.
 4. **Perguntas que o G3 certamente vai ouvir:**
    - por que esconder o menu não é controle de acesso?
    - qual a diferença entre 401 e 403? Quando o `Papeis.exigir` devolve cada um?

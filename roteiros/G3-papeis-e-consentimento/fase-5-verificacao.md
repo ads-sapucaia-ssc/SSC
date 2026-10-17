@@ -131,7 +131,7 @@ Ana" (usuário 5) dizendo que ela é **ADMIN**. Depois, o `curl` usa esse token 
 usuários, que só o ADMIN pode ver:
 
 ```bash
-FORJADO=$(bash roteiros/G3-papeis-e-consentimento/fabricar-token.sh 5 ADMIN)
+FORJADO=$(bash roteiros/comum/fabricar-token.sh 5 ADMIN)
 echo "$FORJADO" | cut -d. -f2 | base64 -d; echo
 curl -s -o /dev/null -w 'token fabricado -> lista de usuarios: %{http_code}
 ' localhost:8080/api/usuarios -H "Authorization: Bearer $FORJADO" \
@@ -178,7 +178,8 @@ impediria um de ver a carteira do outro? Que tipo de regra faltaria?
 **Zere o banco** ao terminar (rode `bash roteiros/comum/zerar-banco.sh` e depois `source roteiros/comum/tokens.sh`). Guarde cada saída em `entregaveis/evidencias/fase5-...txt`.
 
 **Para o dossiê:** os itens 1 e 2 mostram que o RBAC de vocês é **tão forte quanto o token**.
-Registrem como **interface documentada**: o controle supõe que a chave do token é secreta (F-10)
+Registrem como **interface documentada**: o controle supõe que a chave do token é secreta (F-10 —
+vocês **fecham** esse elo na Fase 6, na aula guiada dos segredos, e repetem este mesmo ataque)
 e que o token tem vida curta e é invalidado quando o papel muda (F-11, G1). Acrescentem a ameaça
 no STRIDE (§3) e na árvore, e a linha no plano (§6.2).
 

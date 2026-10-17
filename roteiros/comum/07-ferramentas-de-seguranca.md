@@ -199,9 +199,10 @@ Date:        2026-07-10T17:39:37Z
 | `File`, `Line` | arquivo e linha |
 | `Commit`, `Author`, `Date` | **em que momento da história** o segredo entrou, e por quem |
 
-No fim: `leaks found: N`. No VidaPlus de hoje, **8**: a senha do banco e a chave do token em
+No fim: `leaks found: N`. No VidaPlus original, **8**: a senha do banco e a chave do token em
 `application.properties` (o de produção e o de teste), a chave no `JwtUtil.java` e três senhas no
-`docker-compose.yml`.
+`docker-compose.yml`. Depois da correção guiada da F-10, na Fase 6
+([`08`](08-segredos-fora-do-codigo.md)), a última linha passa a ser `no leaks found`.
 
 > **Por que `--redact`?** Sem ele, o Gitleaks imprime o segredo na tela — e, se você grava a
 > saída como evidência, o segredo vai **de novo** para o Git, num arquivo novo. Quem procura

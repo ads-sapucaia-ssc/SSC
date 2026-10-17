@@ -224,7 +224,7 @@ Ao terminar: **zere o banco** (rode `bash roteiros/comum/zerar-banco.sh` e depoi
 
 **▶ Agora no G3:** cada letra marcada → requisito do G3 (crie, se faltar, e volte à §2) ou
 "outro pacote — transferida". Exemplos de transferência: o registro de **quem** desativou (F-05,
-G1); a chave do token no código (F-10 — de todos; plano na Fase 6); o token que não expira (F-11,
+G1); a chave do token no código (F-10 — de todos; corrigida na Fase 6); o token que não expira (F-11,
 G1); o paciente vendo exame de outro **paciente** (F-02, G2/G4).
 
 ---

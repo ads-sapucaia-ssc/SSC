@@ -10,6 +10,13 @@
 cd "$(dirname "$0")/../.." || exit 1
 COMPOSE="docker compose -f legacy-app/docker-compose.yml"
 
+# Depois da correcao da F-10, as senhas e a chave do token vem do arquivo legacy-app/.env.
+if grep -q '\${JWT_SECRET' legacy-app/docker-compose.yml && [ ! -f legacy-app/.env ]; then
+  echo "Falta o arquivo legacy-app/.env, com as senhas do banco e a chave do token."
+  echo "Ele nao vai pelo Git: cada integrante cria o seu. Veja roteiros/comum/08-segredos-fora-do-codigo.md (Passo 4)."
+  exit 1
+fi
+
 echo "1/3 Desligando o VidaPlus e apagando o banco..."
 $COMPOSE down -v >/dev/null 2>&1
 

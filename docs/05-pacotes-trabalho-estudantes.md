@@ -110,7 +110,7 @@ dependência entre equipes.
 
 | Func. | Criticidade | Quem faz |
 |-------|:-----------:|----------|
-| F-10 Gestão de segredos e configuração | 🟠 P1 | cada grupo **analisa**: identifica os segredos gravados no código e escreve o **plano de remediação** (sem mexer no código) |
+| F-10 Gestão de segredos e configuração | 🟠 P1 | cada grupo **analisa** os segredos gravados no código e os **corrige em aula guiada** na Fase 6 ([`roteiros/comum/08`](../roteiros/comum/08-segredos-fora-do-codigo.md)): variáveis de ambiente + `.env` fora do Git, **valores trocados**, Gitleaks 🔴→🟢 |
 | F-21 Gestão de dependências (SCA/SBOM) | 🟢 P2 | cada grupo, nas dependências que introduz/toca |
 
 ---

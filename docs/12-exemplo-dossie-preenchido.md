@@ -188,12 +188,12 @@ OBJETIVO: copiar nome, CPF e dados sensíveis de todos os pacientes             
 ├── 4. Virar ADMIN/recepção                                                                 (OR)
 │      ├── SQLi no login com ' --               custo trivial                               → REQ-AUTH-SQLI-01
 │      ├── Forjar um token de ADMIN: a chave que assina os tokens está no código
-│      │                                        custo trivial para quem lê o repositório    → F-10 (plano, §8)
+│      │                                        custo trivial para quem lê o repositório    → F-10 (corrigido, §8)
 │      └── XSS na nota rouba o JWT de um médico custo médio (precisa gravar uma nota,
 │                                               e o legado não tem tela para isso)          → REQ-XSS-01
 ├── 5. Ler direto do banco                                                                  (AND)
 │      ├── alcançar a porta 3306, aberta para fora do container   custo baixo (mesma rede)
-│      └── usar a senha gravada no docker-compose.yml             custo trivial             → F-10 (plano, §8)
+│      └── usar a senha gravada no docker-compose.yml             custo trivial             → F-10 (corrigido, §8)
 ├── 6. Busca legítima iterada (A, B, C...)      custo médio · com o REQ-AUTH-BUSCA-01,
 │                                               passa a exigir conta                        → REQ-PRIV-BUSCA-01
 └── 7. Base "antiga" vazada no futuro: dados nunca anonimizados                             → REQ-PRIV-ANON-01
@@ -542,7 +542,7 @@ ataque e a matriz.
     antes e depois, filtramos o relatório pelas regras do projeto.
 
   Os 4 achados que continuam são de funcionalidades fora desta correção: o XSS (F-14, no nosso
-  plano), o segredo do JWT gravado no código (F-10, no nosso plano — §8), o hash de senha em MD5
+  plano), o segredo do JWT gravado no código (F-10, corrigido depois, na Fase 6 — §8), o hash de senha em MD5
   (F-01, recorte de credencial, outro pacote) e o token sem prazo de validade (F-11, outro pacote).
 - **SAST — CodeQL:** uma segunda ferramenta, que funciona de outro jeito. Ela segue o caminho do
   dado, desde a requisição até a consulta, e acusava **3** pontos: busca, login e recuperação de
@@ -566,7 +566,7 @@ de outros pacotes.
 |---|---|:-:|:-:|---|
 | Testes de segurança | os testes `@security` de todos os pacotes | 🔴 6 de 7 falhando | 🔴 4 falhando (IDOR e RBAC, de outros pacotes); os nossos 🟢 | sim, quando todas as falhas estiverem corrigidas. Hoje travaria o merge pelas falhas dos outros pacotes |
 | SAST (Semgrep) | padrões inseguros no código | 🔴 11 achados das regras do projeto | 🟡 4 (nenhum de injeção de SQL) | a regra de SQL concatenado, sim: no nosso repositório ela já está em zero, e bloquear impediria a falha de voltar. O SAST inteiro ainda não: tem achados de outros pacotes |
-| Secret Scanning (Gitleaks) | senhas e chaves gravadas no código | 🔴 8 achados | 🔴 8 (F-10 está no plano) | sim, depois que os segredos saírem do código — é o tipo de falha que não pode voltar |
+| Secret Scanning (Gitleaks) | senhas e chaves gravadas no código | 🔴 8 achados | 🔴 8 após a PoC da Fase 4; 🟢 `no leaks found` após a F-10 (PR #15) | sim — com os segredos fora do código, um segredo novo é exatamente o tipo de falha que não pode voltar |
 | DAST / SCA / Container / SBOM | aplicação rodando, dependências, imagem, inventário | — | sem mudança | SCA e Container, sim: CVE crítica nova numa dependência deveria barrar a entrega |
 
 - **SBOM:** é a lista de componentes do software (bibliotecas e versões) que o pipeline gera a cada
@@ -586,17 +586,44 @@ de outros pacotes.
   Request e uma aprovação, e ninguém pode reescrever o histórico; a publicação em produção **pausa**
   até um integrante aprovar. Nos dois casos vale "quem faz não aprova o próprio": separação de
   funções, para que um erro ou uma má intenção de uma pessoa só não chegue à produção.
-- **Segredos no código (F-10) — análise e plano:**
+- **Segredos no código (F-10) — análise, correção e verificação** (aula guiada,
+  `roteiros/comum/08`; PR #15):
 
-  | Onde | Segredo | Risco | Plano |
+  | Onde | Segredo | Risco | O que foi feito |
   |---|---|---|---|
-  | `legacy-app/backend/src/main/java/br/ifsul/vidaplus/security/JwtUtil.java` | chave que assina os tokens de login | quem tem o código cria token válido de qualquer usuário, inclusive admin | ler de variável de ambiente; a aplicação não sobe sem ela; trocar o valor |
-  | `legacy-app/backend/src/main/resources/application.properties` | senha do banco; uma cópia (não usada) da chave do JWT | acesso direto ao banco por quem tem o código | apagar as linhas; o Spring lê a senha do ambiente |
-  | `legacy-app/docker-compose.yml` | senhas do banco (`root` e da aplicação, repetida na configuração do backend) | idem — e a porta do banco (3306) fica aberta na máquina: com a senha do repositório, qualquer um na mesma rede entra no banco | passar as senhas para um arquivo `.env`, fora do Git, com um `.env.example` de modelo; não publicar a porta 3306 fora do ambiente de desenvolvimento |
-  | `legacy-app/backend/src/test/resources/application.properties` (e o banco de teste do pipeline) | senha do banco descartável do CI e uma chave de JWT só de teste | baixo: o banco só existe durante a execução, sem dado real | **risco aceito**, registrado com justificativa |
+  | `legacy-app/backend/src/main/java/br/ifsul/vidaplus/security/JwtUtil.java` | chave que assina os tokens de login | quem tem o código cria token válido de qualquer usuário, inclusive admin | lida da variável de ambiente `JWT_SECRET`; sem ela (ou com menos de 32 caracteres), nenhum token é emitido nem aceito; **valor trocado** |
+  | `legacy-app/backend/src/main/resources/application.properties` | senha do banco; uma cópia (não usada) da chave do JWT | acesso direto ao banco por quem tem o código | senha vira `${SPRING_DATASOURCE_PASSWORD}` (o Spring não sobe sem ela); a cópia da chave foi apagada |
+  | `legacy-app/docker-compose.yml` | senhas do banco (`root` e da aplicação, repetida na configuração do backend) | idem — e a porta do banco (3306) fica aberta na máquina | as três vêm do `legacy-app/.env` (fora do Git; modelo em `.env.example`), com `${...:?}`: sem o `.env`, nada sobe; **valores trocados** |
+  | `legacy-app/backend/src/test/resources/application.properties` (e o banco de teste do pipeline) | senha do banco descartável do CI e uma chave de JWT só de teste | baixo: o banco só existe durante a execução, sem dado real | **risco aceito**, com esta justificativa |
 
-  Como os segredos já estão no histórico do Git, removê-los dos arquivos não basta: **os valores
-  precisam ser trocados**.
+  **Requisito.** *REQ-SEGREDO-01 — O sistema deve obter senhas e chaves do ambiente de execução, e
+  nunca do código-fonte ou do repositório; sem elas, não deve iniciar. Segredos que já estiveram
+  no repositório devem ser trocados.* (LGPD art. 46; ASVS V2.10.) Forma Gherkin:
+  `segredos-analise.feature` (`@analise`): a verificação é por **ferramenta** (Gitleaks e V-05) e
+  pelos comandos abaixo, não por um teste do Spring.
+
+  **Provas** (`entregaveis/evidencias/fase6-f10-*.txt`):
+
+  | Prova | Antes | Depois |
+  |---|---|---|
+  | Gitleaks (histórico de `legacy-app/`) | `leaks found: 8` | `no leaks found` (com as exceções abaixo) |
+  | V-05 do autograding (chave fora do `.properties` e do `JwtUtil.java`) | FALHOU | PASSOU |
+  | token de ADMIN **fabricado** só com o código, em `GET /api/usuarios` | **200** (a lista inteira, sem senha nenhuma) | recusado — o script achou a chave **antiga** no histórico do Git, e ela não serve mais |
+  | token **legítimo** do admin emitido antes da troca | 200 | recusado (500 "nao autenticado"; o certo seria 401 — F-16, outro pacote) |
+  | VidaPlus sem o `legacy-app/.env` | — | não sobe: `required variable DB_PASSWORD is missing a value` |
+  | senha antiga do banco (`docker compose exec db mysql -uvidaplus -p...`) | entra | `Access denied` |
+  | uso legítimo (login, telas, testes `@security` do nosso pacote) | ok | ok, sem mudança |
+
+  **Por que apagar não bastava:** os segredos continuam no histórico do Git — o token fabricado
+  com a chave antiga **prova** que um atacante a recupera. Ela só deixou de ser perigosa porque o
+  **valor foi trocado**. Pelo mesmo motivo, os 8 achados do histórico entraram como exceção no
+  `.gitleaksignore` — **só depois** da troca, cada um com a justificativa (valor trocado, ou de
+  teste). Um segredo **novo**, em qualquer arquivo do `legacy-app`, volta a deixar o gate vermelho.
+
+  **O que continua em aberto:** o `.env` fica em texto no computador de cada integrante (num
+  projeto real, um **cofre de segredos**, com acesso registrado); a troca foi manual (num projeto
+  real, **rotação** periódica e um procedimento para trocar às pressas — que o plano de incidente
+  da §9 usa); a porta 3306 continua publicada na máquina (plano: só na rede interna do Docker).
 
 ---
 
@@ -644,7 +671,7 @@ de outros pacotes.
 | Passo | Ação | Quem | Evidência |
 |---|---|---|---|
 | 1 Detecção | Sinais possíveis: (a) erros de SQL no log do backend — mas eles indicam **tentativas**; o ataque que dá certo hoje não deixa rastro; (b) aviso de fora (um titular, um pesquisador, a base à venda); (c) depois do REQ-LOG-01, volume anormal de buscas | Segurança (Integrante 1) | **copiar os logs para um arquivo antes de qualquer reinício** (`docker compose logs backend > incidente-<data>.log`): eles somem quando o container é recriado |
-| 2 Contenção | desativar a busca (uma versão de emergência do endpoint que responde 503) e bloquear o acesso externo à porta 8080; trocar o segredo do JWT (como o token não expira, é o único jeito de derrubar sessões roubadas); forçar troca das senhas (os hashes MD5 podem ter vazado por `UNION`) | DevSecOps (Integrante 3) | hora; o que foi feito |
+| 2 Contenção | desativar a busca (uma versão de emergência do endpoint que responde 503) e bloquear o acesso externo à porta 8080; trocar o `JWT_SECRET` do `.env` do servidor e reiniciar o backend (depois da F-10, é uma linha; como o token não expira, é o único jeito de derrubar sessões roubadas); forçar troca das senhas (os hashes MD5 podem ter vazado por `UNION`) | DevSecOps (Integrante 3) | hora; o que foi feito |
 | 3 Erradicação | parametrização da classe inteira (PR #7) **e** login obrigatório na busca (REQ-AUTH-BUSCA-01) — sem o segundo, a base continua saindo sem nenhuma injeção | Dev (Integrante 4) | PRs |
 | 4 Recuperação | redeploy; testes verdes; **repetir à mão** os ataques (`' OR '1'='1`, `q=%`, busca sem token) e conferir que todos falham | DevSecOps | execução do pipeline + saída dos `curl` |
 | 5 Notificação | DPO: ver §9.2 | DPO (Integrante 2) | protocolo |
@@ -701,7 +728,7 @@ que citam o requisito. Os itens de **outros pacotes** aparecem no fim, com statu
 | REQ-LOG-01 | registro sem dado pessoal | Responsabilização | arts. 37, 46; V7.1 | detecção de incidente (§9); LINDDUN D (busca) | uma linha de log por busca e login, sem termo nem senha | `registro-analise.feature` (`@analise`) | — | Planejado |
 | REQ-XSS-01 | conteúdo da nota exibido como texto + CSP | Integridade | art. 46; V5.3.3, V14.4.3 | STRIDE S/T/I/E (4.0), I (D4) | front: exibir a nota como texto (`{nota.conteudo}` no JSX, sem `dangerouslySetInnerHTML`); config: CSP com `script-src 'self'` no nginx; back: sanitizar a nota ao gravar (complementar, P2) | `xss-analise.feature` (`@analise`) | — | Planejado |
 | REQ-PRIV-PSEUDO-01 | registros só com identificador interno | Privacidade | art. 13, §4º | LINDDUN I (auditoria) | identificador interno nos registros | `pseudonimizacao-analise.feature` (`@analise`) | — | Transferida — outro pacote (F-05) |
-| F-10 | segredos fora do código | Confidencialidade | art. 46; V2.10 | árvore de ataque (ramos 4 e 5) | variável de ambiente + troca dos valores | — | — | Planejado (§8) |
+| REQ-SEGREDO-01 (F-10) | segredos fora do código | Confidencialidade | art. 46; V2.10 | árvore de ataque (ramos 4 e 5) | variável de ambiente + `.env` fora do Git + troca dos valores | Gitleaks (gate) e V-05 (autograding); `segredos-analise.feature` (`@analise`) | ci-pr15; `fase6-f10-*.txt` | **Verificado** |
 | V-13 | comunicação com TLS + HSTS (navegador ↔ API e API ↔ banco) | Confidencialidade, Integridade | art. 46; V9 | STRIDE T/I (fluxos que cruzam fronteiras) | TLS + HSTS | — | — | Transferida — outro pacote |
 | V-19 | login e autorização na leitura da nota clínica | Autorização | arts. 11, 46; V4 | STRIDE E (3.0), T/I (fluxo "id do paciente") | exigir login e verificar no 3.0 se quem pede pode ver o paciente | — | — | Transferida — outro pacote |
 | F-01 (credencial) | autenticação forte | Autenticidade | art. 46; V2 | STRIDE S (entidades), I (D1: hash MD5) | autenticação forte, hash com sal | — | — | Transferida — outro pacote |
@@ -753,6 +780,8 @@ e não pela linha em que aparece:
   versão **não iria para produção** sem ele.
 - **XSS:** **não**, até o F-14 ser implementado. O risco segue alto, embora a correção seja pequena
   (exibir a nota como texto + CSP).
+- **Segredos no código:** sim. Fora do código, valores trocados e o gate do Gitleaks verde; o
+  risco que sobra é o do `.env` em cada máquina (sem cofre) — aceitável numa prova de conceito.
 - **Anonimização:** **Médio** — os identificadores do banco somem, mas o PDF continua baixável até
   o F-08, e o k-anonimato não foi medido numa base real.
 

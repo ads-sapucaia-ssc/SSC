@@ -1,8 +1,9 @@
 # G4 · Fase 6 — Pipeline e segredos no código
 
 > **Seção do dossiê:** §8 · **Lidera:** ⚙️ DevSecOps · **Aula:** 8 · **Semana:** 13
-> Nesta fase **não se configura nada**: os gates ficam informativos e a proteção da `main` é do
-> professor. O trabalho é **ler** o pipeline e **explicar**.
+> Nesta fase vocês **não configuram o pipeline**: os gates ficam informativos e a proteção da
+> `main` é do professor. O trabalho é **ler** o pipeline e **explicar** — e há **uma correção
+> guiada no código**: tirar os segredos do código (F-10), no Passo 5.
 
 Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G4**.
 
@@ -12,7 +13,8 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G4**.
    bloqueante num projeto real (e por quê).
 2. A explicação do **SBOM**, da **entrega assinada** e da **proteção da `main`** — no G4, ligadas
    à F-20 (integridade do site).
-3. A análise dos **segredos no código** (F-10) e o plano.
+3. Os **segredos no código** (F-10): a análise, a **correção guiada** e as provas do antes e
+   do depois.
 
 ## Passo 0 — Prepare o terminal, a branch e o VidaPlus
 
@@ -190,7 +192,60 @@ descobre se está afetada?
 5. **O plano:** tirar do código (variável de ambiente; `.env` fora do Git com um `.env.example`),
    **trocar o valor**, e o que fazer com os segredos de teste.
 
-**Não altere o código nem o pipeline** nesta fase.
+Este passo é só a **análise**: não mexa no código ainda. A correção vem no Passo 5.
+
+## Passo 5 — Corrija os segredos no código (F-10) — aula guiada
+
+> 🔎 **Como o Grupo 5 fez:** seguiu o roteiro comum dos segredos, guardou as provas do antes e do
+> depois e escreveu na §8 o que foi feito, o requisito REQ-SEGREDO-01 nas duas formas e o que
+> **ainda** fica em aberto. Veja: [`docs/12` §8](../../docs/12-exemplo-dossie-preenchido.md#8-fase-6--pipeline-gerador-de-evidência).
+
+**▶ Agora no G4:**
+
+1. **Grave o que já escreveram do dossiê** (vocês estão na branch `dossie/fase-6`), porque o
+   roteiro comum vai trocar de branch:
+
+   ```bash
+   git add entregaveis/
+   git commit -m "docs(dossie): fase 6 - rascunho"
+   git push
+   ```
+
+   Se aparecer `nothing to commit`, não havia nada novo: siga em frente.
+2. **Siga o roteiro comum inteiro:** [`comum/08` — Segredos fora do código](../comum/08-segredos-fora-do-codigo.md),
+   do Passo 1 ao 13. Ele cria a branch `fix/F-10-segredos` a partir da `main` e termina com a
+   correção já na `main`. É o **mesmo** para os quatro grupos; o que muda no G4 está no item 3.
+3. **O que muda no G4:** o repositório era um **canal de vazamento** — a senha do banco dava
+   acesso a todos os laudos sem passar pela API. No **Passo 8.4 do roteiro comum**, gravem as duas
+   saídas como evidência do canal fechado, acrescentando no fim de cada comando:
+   `2>&1 | tee entregaveis/evidencias/fase6-f10-g4-banco-senha-antiga.txt` (no primeiro) e
+   `2>&1 | tee entregaveis/evidencias/fase6-f10-g4-banco-forma-nova.txt` (no segundo). É também
+   uma lição de **ciclo de vida**: o segredo antigo continua no histórico (não dá para eliminá-lo),
+   mas **perdeu a validade** — o mesmo raciocínio da F-06 (o que não se pode apagar, se torna
+   inútil).
+4. **Volte para a branch do dossiê** e traga a correção que acabou de entrar na `main`:
+
+   ```bash
+   git checkout dossie/fase-6
+   git pull
+   git merge main --no-edit
+   ```
+
+   (`--no-edit` aceita a mensagem padrão do merge, sem abrir um editor no terminal.)
+5. **Escreva na §8 do dossiê** (substitua a "análise e plano" do Passo 4 pelo que foi **feito**):
+   - a tabela **onde | segredo | risco | o que foi feito** (tirado do código? valor trocado? risco
+     aceito, com justificativa, para os de teste);
+   - o **REQ-SEGREDO-01** nas duas formas (o texto "deve" e o nome do arquivo `.feature` —
+     [`comum/08` Passo 10](../comum/08-segredos-fora-do-codigo.md#passo-10--escreva-o-requisito-as-duas-formas));
+   - as provas, com o nome de cada arquivo de evidência (`fase6-f10-...`): o Gitleaks 🔴 8 → 🟢
+     `no leaks found`, o V-05, o token antigo e o fabricado recusados, o "sem `.env` não sobe";
+   - **por que** os 8 achados do histórico viraram exceção no `.gitleaksignore` (e por que isso só
+     é honesto **depois** de trocar os valores);
+   - na **tabela de gates** (Passo 1), a linha do Gitleaks ganha o "depois" da F-10;
+   - **o que continua em aberto** (seja honesto): o `.env` fica em texto no computador de cada
+     um (num projeto real, um **cofre de segredos**); a troca foi manual (num projeto real, há um
+     processo de **rotação**); e, no G4, a porta 3306 do banco continua publicada na máquina (`ports: "3306:3306"` no
+   `docker-compose.yml`): com a senha nova ela está protegida, mas o canal existe — fica no plano.
 
 ## Último passo — Grave no Git e abra o Pull Request
 
@@ -237,3 +292,5 @@ Conflito ou erro? Veja [`comum/03`](../comum/03-git-e-github.md) §4.2 e §5.
 - [ ] Sei onde está o SBOM e onde aparece a versão do nginx.
 - [ ] Desenhei o caminho de uma mudança no site e os controles que ela atravessa.
 - [ ] Cada segredo tem risco concreto e plano — e o repositório aparece como canal.
+- [ ] Fiz a correção guiada da F-10 e registrei o canal "senha do banco no repositório" fechado
+  (senha antiga recusada).

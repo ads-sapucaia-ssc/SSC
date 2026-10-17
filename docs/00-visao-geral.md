@@ -105,7 +105,7 @@ cabeçalho de cada seção do arquivo indica a fase):
 | **3** Projeto seguro | ★ especifica controles, prioriza P0/P1/P2 e escreve a DoD | estima o esforço e como implementar cada controle | indica qual gate provará cada controle | garante os controles de privacidade no catálogo |
 | **4** Remediação (PoC) | revisa o PR (checklist) + plano de remediação | ★ corrige o P0 do pacote (e, se o grupo optar, a criação ✨) ponta-a-ponta num PR | ★ acompanha os gates dentro do PR | faz o módulo LGPD do pacote |
 | **5** Verificação | confere que a evidência é real (CI verde) | ★ escreve o teste do controle (`@Tag("security")`) | ★ lê os relatórios dos scanners e mostra o teste do P0 passando | confere que o requisito de privacidade tem teste |
-| **6** Release/DevSecOps | confere o placar de gates | garante que o build da imagem passa | ★ explica os gates, o SBOM e a assinatura/atestação; identifica os segredos no código (F-10) e escreve o plano | confirma que não há PII/segredo nos artefatos |
+| **6** Release/DevSecOps | confere o placar de gates | garante que o build da imagem passa | ★ explica os gates, o SBOM e a assinatura/atestação; conduz a correção guiada dos segredos no código (F-10) | confirma que não há PII/segredo nos artefatos |
 | **7** Operação/incidente | ★ escreve o runbook do incidente | instrumenta o app para gravar o evento auditado | valida os registros de operação (sem PII; trilha append-only, se o pacote tem o F-05) | ★ escreve a notificação à ANPD/titular (art. 48) |
 | **8** Rastreabilidade | ★ monta a matriz ativo→ameaça→…→evidência | confirma que cada controle tem teste ligado na matriz | extrai as métricas do pipeline | calcula métricas de privacidade + risco residual |
 
