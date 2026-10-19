@@ -25,7 +25,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G2**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -206,8 +206,16 @@ Este passo é só a **análise**: não mexa no código ainda. A correção vem n
    ```
 
    Esperado: **200** — a regra de vocês entregou o exame, **corretamente**, a quem o token diz
-   ser a Ana. **No Passo 9 do roteiro comum** (o "depois"), rode o mesmo comando trocando
-   `antes` por `depois` no nome do arquivo. Esperado: **não** é 200. Na §8, escrevam: "o controle
+   ser a Ana. **No Passo 9 do roteiro comum** (o "depois"), rode:
+
+   ```bash
+   FORJADO=$(bash roteiros/comum/fabricar-token.sh 5 PACIENTE)
+   curl -s -o /dev/null -w 'token fabricado da Ana -> exame 101: %{http_code}\n' \
+     localhost:8080/api/exames/101 -H "Authorization: Bearer $FORJADO" \
+     | tee entregaveis/evidencias/fase6-f10-g2-exame-forjado-depois.txt
+   ```
+
+   Esperado: a mensagem sobre a chave antiga e um código que **não** é 200. Na §8, escrevam: "o controle
    de dono é tão forte quanto a chave do token — e a chave agora não está no código".
 4. **Volte para a branch do dossiê** e traga a correção que acabou de entrar na `main`:
 
@@ -232,6 +240,23 @@ Este passo é só a **análise**: não mexa no código ainda. A correção vem n
      um (num projeto real, um **cofre de segredos**); a troca foi manual (num projeto real, há um
      processo de **rotação**); e, no G2, a regra de dono segue dependendo de o `sub` do token ser verdadeiro: se o `.env`
    de produção vazar, o problema volta.
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| `unzip: cannot find or open ~/Downloads/sbom.zip` | o arquivo do SBOM ainda não foi baixado, ou o navegador o salvou com outro nome | baixe de novo (**Actions** → execução → **Artifacts** → **sbom**) e confira o nome na pasta **Downloads**; se for outro (ex.: `sbom (1).zip`), use esse nome entre aspas no `unzip` |
+| O token fabricado da Ana deu `403` já no "antes" | o `PACIENTE` foi digitado diferente, ou o número do usuário não é 5 | copie o bloco inteiro de novo, sem editar |
+| `git merge main --no-edit` diz `CONFLICT` | o mesmo trecho do dossiê foi editado nas duas branches | veja [`comum/03` §4.2](../comum/03-git-e-github.md#42-se-aparecer-um-conflito) |
+| Algo da aula guiada (Passo 5) deu errado | — | use a tabela **Deu errado?** do próprio [`comum/08`](../comum/08-segredos-fora-do-codigo.md#deu-errado) |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

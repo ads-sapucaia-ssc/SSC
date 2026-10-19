@@ -162,28 +162,32 @@ repositório do seu grupo com a sua identidade.
    - `mkdir -p ssc` = cria a pasta `ssc` (o `-p` evita erro se ela já existir);
    - `cd ssc` = entra nela.
 
-4. Clone (cole o endereço copiado no lugar de `<endereço>`; no terminal do Ubuntu, colar é
-   **Ctrl+Shift+V**):
+4. Clone. No comando abaixo, troque `COLE-AQUI-O-ENDERECO` pelo endereço copiado (no terminal do
+   Ubuntu, colar é **Ctrl+Shift+V**). O `vidaplus` do fim dá à pasta um nome fixo e curto, igual
+   para todo mundo:
 
    ```bash
-   git clone <endereço>
+   git clone COLE-AQUI-O-ENDERECO vidaplus
    ```
+
+   Exemplo de como fica: `git clone https://github.com/ads-sapucaia-ssc/ssc-2026-2-vidaplus-exemplo.git vidaplus`.
 
 5. O Git pede **Username**: digite o seu usuário do GitHub. Depois pede **Password**: **cole o
    token** (o terminal não mostra nada enquanto você cola — é normal) e aperte **Enter**.
 
-Resposta esperada: linhas como `Cloning into '...'` e `Receiving objects: 100%`. Aparece uma
-pasta nova com o nome do repositório.
+Resposta esperada: linhas como `Cloning into 'vidaplus'...` e `Receiving objects: 100%`.
+Aparece uma pasta nova, `vidaplus`.
 
-6. Entre na pasta do repositório (troque pelo nome real):
+6. Entre na pasta do repositório:
 
    ```bash
-   cd <nome-do-repositorio>
+   cd vidaplus
    ls
    ```
 
-   O `ls` lista o conteúdo. Você deve ver: `README.md`, `docs`, `entregaveis`, `legacy-app`,
-   `roteiros`, `security`.
+   O `ls` lista o conteúdo. Você deve ver: `README.md`, `aulas`, `docs`, `entregaveis`,
+   `legacy-app`, `roteiros`, `security`. **A pasta do projeto é `~/ssc/vidaplus`**: é ela que você
+   abre no VS Code (seção 5).
 
 ---
 

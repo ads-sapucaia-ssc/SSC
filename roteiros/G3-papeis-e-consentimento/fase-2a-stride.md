@@ -21,7 +21,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G3**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -142,7 +142,7 @@ Guarde essa observação para o Passo 3.
 > - **3.0:** testou `/api/pacientes/1abc/notas` → **400**: proteção acidental.
 
 **▶ Agora no G3:** uma linha por elemento. Experimentos (no terminal, na raiz do repositório). Os tokens dos usuários (`TOKEN_ANA`, `TOKEN_HOUSE`, `TOKEN_REC`, `TOKEN_BIO`, `TOKEN_ADMIN`) vêm do `source roteiros/comum/tokens.sh`, que já está no começo de cada bloco abaixo. **Estes comandos mudam o banco: zere ao final** (rode `bash roteiros/comum/zerar-banco.sh` e depois `source roteiros/comum/tokens.sh`)
-([`comum/01` §5](../comum/01-subir-o-vidaplus.md#7-zerar-o-banco--e-por-que-isso-importa)).
+([`comum/01` §7](../comum/01-subir-o-vidaplus.md#7-zerar-o-banco--e-por-que-isso-importa)).
 
 **Gerir usuários**
 

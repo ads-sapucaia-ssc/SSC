@@ -233,7 +233,7 @@ Se ficar confuso, **não apague nada**: chame o professor ou um colega.
 
 | O que aparece | O que significa | O que fazer |
 |---|---|---|
-| `fatal: not a git repository` | o terminal não está dentro do repositório | `cd ~/ssc/<nome-do-repositorio>` |
+| `fatal: not a git repository` | o terminal não está dentro do repositório | `cd ~/ssc/vidaplus` (a pasta criada no clone, [`00` §4](00-antes-de-comecar.md#4-clone-o-repositório-do-grupo)) |
 | `Your local changes ... would be overwritten by checkout` | você tem mudanças não gravadas e tentou trocar de branch | grave-as (passos 4–5) ou, se forem lixo, peça ajuda antes de descartar |
 | `! [rejected] ... (fetch first)` no push | a branch no GitHub tem commits que você não tem | `git pull` e depois `git push` |
 | `Authentication failed` | token errado, vencido ou sem a permissão `repo` | gere outro token ([`00`](00-antes-de-comecar.md) §2.1) |

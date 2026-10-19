@@ -28,7 +28,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G2**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Branches desta fase:** a correção do código tem a sua própria branch (Passo 2 da Parte A); a
    escrita da §6 no dossiê é gravada no fim, numa branch `dossie/fase-4` (último passo).
@@ -305,13 +305,22 @@ por:
    | House → 102 (Bruno, que ela não atende) | 200 | **403** |
    | Bio → 104 (não publicado) | 200 | **200** |
    | Bio → 101 (já publicado) | 200 | **403** |
+   | Recepção → 101 | 200 | **403** |
 
 4. **Pela tela:** entre como Ana e troque `/exames/101` por `/exames/102` na barra de endereços: a
    tela deve mostrar "Exame não encontrado ou acesso negado.". Entre como Bio e abra a **Fila de
    Laudos**: o exame 104 continua abrindo e o botão **Publicar laudo** aparece?
-5. **A resposta negada não revela nada:**
-   `curl -s localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_ANA"` não pode conter
-   "Glicemia" nem "paciente_id".
+5. **A resposta negada não revela nada.** O comando pede o exame do Bruno como Ana e **conta**
+   quantas linhas da resposta contêm `Glicemia` (o tipo do exame) ou `paciente_id`:
+
+   ```bash
+   source roteiros/comum/tokens.sh
+   curl -s localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_ANA" | grep -c -E "Glicemia|paciente_id"
+   ```
+
+   Esperado: as linhas `TOKEN_... ok` e o número `0`. (A resposta em si traz um texto longo com
+   `"status":403` e `"trace"` — o "erro que conta demais", F-16, que é de outro pacote; o que
+   importa aqui é que **nenhum dado do exame** saiu.)
 6. **Os testes:**
 
    ```bash
@@ -415,6 +424,21 @@ dados de **1 titular**, formato **estruturado** (JSON ou CSV), **autenticado**. 
 8. **Limitações assumidas:** o que este desenho **não** cobre?
 9. **O `.feature @analise`** da F-09 (Fase 1), com pelo menos: "o titular recebe os próprios
    dados" e "o arquivo não contém dados de outro paciente".
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| O "antes" (Passo 3) já mostra `403` em algumas linhas | a correção já está nesta branch, ou o banco não foi zerado | `git log --oneline -3`; o "antes" tem de ser gravado **antes** dos Passos 4 e 5 |
+| Problemas ao compilar ou nos resultados do Passo 6 | — | veja a tabela **Deu errado?** dentro do Passo 6 |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

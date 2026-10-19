@@ -21,7 +21,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -251,10 +251,15 @@ anote o resultado e a letra):
    O que deveria acontecer depois do "Sair"? O que aconteceu?
 5. Em `JwtUtil.java`, a chave que assina o token está no código. Quem tem o código consegue
    **fabricar** um token com `"papel":"ADMIN"`? Que letra é essa, e em qual elemento? (Não precisa
-   fabricar: basta explicar. Se quiser ver, o script de demonstração faz isso só com o código —
-   `FORJADO=$(bash roteiros/comum/fabricar-token.sh 5 ADMIN)` e depois
-   `curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/api/usuarios -H "Authorization: Bearer $FORJADO"`;
-   esperado: `200`. Na Fase 6 vocês fecham essa porta.)
+   fabricar: basta explicar.) Se quiser ver, o script de demonstração faz isso só com o código:
+
+   ```bash
+   FORJADO=$(bash roteiros/comum/fabricar-token.sh 5 ADMIN)
+   curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/api/usuarios -H "Authorization: Bearer $FORJADO"
+   ```
+
+   Esperado: `Chave lida do codigo atual...` e `200` — a lista de usuários, que só o ADMIN pode
+   ver, entregue a um token que ninguém emitiu. Na Fase 6 vocês fecham essa porta.
 
 **Recuperar senha (F-12)**
 

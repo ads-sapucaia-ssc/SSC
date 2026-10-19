@@ -21,7 +21,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -161,7 +161,8 @@ errado** — e provoque a falha para ver o que acontece **hoje**:
    ```bash
    docker compose -f legacy-app/docker-compose.yml stop db
    curl -s -i -X POST localhost:8080/api/auth/login -H "Content-Type: application/json" \
-     -d '{"email":"ana.paciente@email.com","senha":"Paciente123"}' | head -20
+     -d '{"email":"ana.paciente@email.com","senha":"Paciente123"}' | head -20 \
+     | tee entregaveis/evidencias/fase3-login-banco-fora.txt
    docker compose -f legacy-app/docker-compose.yml start db
    ```
 
@@ -171,7 +172,8 @@ errado** — e provoque a falha para ver o que acontece **hoje**:
 2. **Token inválido:** um token adulterado deve dar **401**. O que dá hoje?
 
    ```bash
-   curl -s -i localhost:8080/api/exames/101 -H "Authorization: Bearer token-falso" | head -5
+   curl -s -i localhost:8080/api/exames/101 -H "Authorization: Bearer token-falso" | head -5 \
+     | tee entregaveis/evidencias/fase3-token-invalido.txt
    ```
 
    Esperado: cinco linhas de cabeçalho; a primeira, `HTTP/1.1` e o código de status.
@@ -179,7 +181,7 @@ errado** — e provoque a falha para ver o que acontece **hoje**:
 3. **Sem token** — o mesmo pedido, sem o cabeçalho `Authorization`:
 
    ```bash
-   curl -s -i localhost:8080/api/exames/101 | head -5
+   curl -s -i localhost:8080/api/exames/101 | head -5 | tee entregaveis/evidencias/fase3-sem-token.txt
    ```
 
    Esperado: de novo cinco linhas, a primeira com o código. Qual o código? Deveria ser qual?
@@ -189,7 +191,8 @@ errado** — e provoque a falha para ver o que acontece **hoje**:
    acontecer mesmo assim? Pense nos dois lados: segurança (sem registro, sem prova) e
    disponibilidade (ninguém entra se o log cair). Escolha e justifique.
 
-Guarde as saídas em `entregaveis/evidencias/fase3-...txt`.
+As saídas ficaram gravadas em `entregaveis/evidencias/fase3-login-banco-fora.txt`,
+`fase3-token-invalido.txt` e `fase3-sem-token.txt`.
 
 ## Passo 5 — Escreva a Definition of Done
 

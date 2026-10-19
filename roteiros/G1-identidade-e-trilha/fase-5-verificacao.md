@@ -20,7 +20,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -195,7 +195,8 @@ Roteiro mínimo:
    Esperado: duas linhas com `"reset_token":"5-...`. Compare os números depois do `5-`.
 
 4. **Uma ideia de vocês:** que outro caminho a árvore não tinha? Tente, e grave a saída com
-   `| tee entregaveis/evidencias/fase5-<nome-do-teste>.txt` no fim do comando.
+   `| tee entregaveis/evidencias/fase5-NOME-DO-TESTE.txt` no fim do comando (troque `NOME-DO-TESTE`
+   por um nome curto, sem espaços).
 
 **Achou algo novo?** Faça o que o Grupo 5 fez: novo requisito na §2 (com `.feature @analise`),
 linha no STRIDE e na árvore (§3), linha no plano (§6.2) e, se for de privacidade, no RIPD (§4.3).

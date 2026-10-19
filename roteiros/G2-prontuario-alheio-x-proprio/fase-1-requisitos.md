@@ -24,7 +24,7 @@ e **▶ o mesmo passo no G2**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -251,6 +251,21 @@ Dicas do G2:
 > 🔎 **Como o Grupo 5 fez:** tabela "requisito → arquivo → estado" ([`docs/12` §2, Forma 2](../../docs/12-exemplo-dossie-preenchido.md#forma-2--cenários-gherkin-feature-vinculados-à-tecnologia)).
 
 **▶ Agora no G2:** `idor.feature` com `@security`; os outros com `@analise`. 
+
+---
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| O teste do P0 deu **verde** já no "antes" | você está numa branch que já tem a correção | `git branch --show-current` deve mostrar `dossie/fase-1`; a Fase 1 vem antes da correção |
+| Muitas linhas `WARNING: ... agent ...` antes do resultado | avisos normais do Java | ignore; procure `expected` e `RESULTADO` ([`comum/04` §2.1](../comum/04-testes-e-pipeline.md#21-lendo-o-resultado)) |
 
 ---
 

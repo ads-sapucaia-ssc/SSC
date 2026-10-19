@@ -21,7 +21,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G2**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -163,7 +163,8 @@ for QUEM in ANA HOUSE REC; do
 done
 ```
 
-O `for` de fora troca a pessoa; o de dentro, o exame. Monte uma tabela no rascunho:
+O `for` de fora troca a pessoa; o de dentro, o exame. Esperado: as linhas `TOKEN_... ok` e nove
+linhas `QUEM -> exame NNN: CÓDIGO` (três pessoas × três exames). Monte uma tabela no rascunho:
 
 | Quem | 101 (Ana) | 102 (Bruno) | 104 (Carla, não publicado) | O que **deveria** acontecer? |
 |---|---|---|---|---|
@@ -181,7 +182,8 @@ for ID in 100 101 102 103 104 105; do
 done
 ```
 
-Um atacante percorre os números e "colhe" todos os exames. O que acontece com os números que
+Esperado: seis linhas `exame NNN: ...`, cada uma com o começo da resposta e o código entre
+colchetes, como `[200]`. Um atacante percorre os números e "colhe" todos os exames. O que acontece com os números que
 **não existem** (100, 105)? A resposta é diferente da de um exame que existe? Guarde essa
 observação para a Fase 2b (ela tem nome: oráculo de existência).
 
@@ -192,7 +194,8 @@ source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de n
 curl -s localhost:8080/api/exames/paciente/3 -H "Authorization: Bearer $TOKEN_ANA"; echo
 ```
 
-A Ana consegue a lista de exames da Carla — inclusive o número do exame de sorologia. Que letra?
+Esperado: as linhas `TOKEN_... ok` e uma lista entre colchetes, `[{"id":...}]`. A Ana consegue
+a lista de exames da Carla — inclusive o número do exame de sorologia. Que letra?
 E como isso ajuda o ataque do processo anterior?
 
 **Processo "Entregar PDF" (nginx) e o depósito "pasta de laudos"**
@@ -205,7 +208,7 @@ for ID in 101 102 103 104; do
 done
 ```
 
-Que letra? Que **controle** existe entre
+Esperado: quatro linhas `laudo-NNN.pdf -> CÓDIGO TIPO`. Que letra? Que **controle** existe entre
 o navegador e o arquivo? E o laudo 104, ainda **não publicado**?
 
 **Processo "Publicar laudo"**
@@ -216,10 +219,11 @@ curl -s -X POST localhost:8080/api/exames/104/publicar -H "Authorization: Bearer
 docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidaplus123 vidaplus -e "SELECT id, publicado, publicado_por, hash_laudo FROM exame WHERE id = 104;"
 ```
 
-A Ana (paciente) publicou um laudo — que letra? O sistema guardou **quem** publicou
+Esperado: uma linha JSON da API e, depois, a linha do exame `104` com as colunas `publicado`,
+`publicado_por` e `hash_laudo`. A Ana (paciente) publicou um laudo — que letra? O sistema guardou **quem** publicou
 (`publicado_por`)? Isso ajuda em qual letra (R)? E o `hash_laudo` continua vazio: se alguém
 mudar o resultado no banco depois de publicado, o que prova que mudou (T)? **Depois, zere o banco**
-(rode `bash roteiros/comum/zerar-banco.sh` e depois `source roteiros/comum/tokens.sh`) ([`comum/01` §5](../comum/01-subir-o-vidaplus.md#7-zerar-o-banco--e-por-que-isso-importa)).
+(rode `bash roteiros/comum/zerar-banco.sh` e depois `source roteiros/comum/tokens.sh`) ([`comum/01` §7](../comum/01-subir-o-vidaplus.md#7-zerar-o-banco--e-por-que-isso-importa)).
 
 **Depósitos `atendimento` e `usuario`:** eles têm a informação necessária para decidir quem pode
 ver o quê (o vínculo médico–paciente; a ligação usuário–paciente). Alguém consulta hoje?
@@ -264,6 +268,21 @@ OBJETIVO: <...>                                              (OR)
 │      └── <pedir o exame com esse número> custo <...>       → REQ-...
 └── 3. <...>
 ```
+
+---
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Os experimentos mostram resultados diferentes dos da tabela que você esperava (ex.: o 104 já aparece publicado) | o experimento de publicar o 104 já foi feito e o banco não foi zerado | `bash roteiros/comum/zerar-banco.sh` e `source roteiros/comum/tokens.sh`, e repita |
+| O `for` mostra `-> exame NNN: 500` para todo mundo | os tokens estão vazios | rode o bloco inteiro de novo, **com** a linha do `source` no começo |
 
 ---
 

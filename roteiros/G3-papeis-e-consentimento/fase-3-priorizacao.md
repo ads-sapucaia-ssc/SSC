@@ -22,7 +22,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G3**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -151,17 +151,33 @@ mais importante do G3.
 > trazia o SQL e o *stack trace*. A afirmação era **falsa**; corrigiu no próprio PR. Leia a 💡 em
 > [`docs/12` §5](../../docs/12-exemplo-dossie-preenchido.md#5-fase-3--especificação-priorização--definition-of-done).
 
-**▶ Agora no G3:** o que **deve** acontecer, e o que acontece **hoje** (no terminal, na raiz do repositório; os blocos carregam os tokens com `source roteiros/comum/tokens.sh`):
+**▶ Agora no G3:** o que **deve** acontecer, e o que acontece **hoje** (no terminal, na raiz do
+repositório):
 
-1. **Sem token:** `curl -s -i -X POST localhost:8080/api/exames/104/publicar | head -5` — deveria
-   ser **401** ("não sei quem você é"). O que vem?
-2. **Token inválido:** o mesmo com `-H "Authorization: Bearer token-falso"`.
+1. **Sem token** — um pedido para publicar o laudo 104 sem o cabeçalho `Authorization`. Deveria
+   ser **401** ("não sei quem você é"):
+
+   ```bash
+   curl -s -i -X POST localhost:8080/api/exames/104/publicar | head -5 \
+     | tee entregaveis/evidencias/fase3-publicar-sem-token.txt
+   ```
+
+   Esperado: cinco linhas, a primeira com `HTTP/1.1` e o código. O que vem?
+2. **Token inválido** — o mesmo pedido, agora com um token falso (o texto `token-falso`):
+
+   ```bash
+   curl -s -i -X POST localhost:8080/api/exames/104/publicar -H "Authorization: Bearer token-falso" | head -5 \
+     | tee entregaveis/evidencias/fase3-publicar-token-invalido.txt
+   ```
+
+   Esperado: de novo cinco linhas com o código na primeira. Deveria ser qual?
 3. **Papel desconhecido:** se amanhã surgir um papel novo (ex.: "ENFERMEIRO") e ninguém atualizar a
    matriz, a regra de vocês **nega** ou **libera**? (Tem que negar.)
 4. **Consentimento (planejado):** se o sistema não conseguir consultar o registro de consentimento
    (banco fora do ar), ele trata o dado para a finalidade opcional ou não?
 
-Guarde as saídas em `entregaveis/evidencias/fase3-...txt`.
+As saídas dos itens 1 e 2 ficaram em `entregaveis/evidencias/fase3-publicar-sem-token.txt` e
+`fase3-publicar-token-invalido.txt`.
 
 ## Passo 6 — Escreva a Definition of Done
 

@@ -23,7 +23,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G3**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -176,7 +176,7 @@ ou na **tabela de consentimento** (ou nos dois)? Por quê?
 | Passo | Perguntas para o G3 |
 |---|---|
 | 1 Detecção | por qual registro vocês perceberiam? Hoje existe? Como preservar? |
-| 2 Contenção | reativar as contas? Trocar a chave do token (derruba **todos** os tokens, inclusive os fabricados)? Suspender a finalidade opcional? |
+| 2 Contenção | reativar as contas? Trocar a chave do token — como vocês fizeram na Fase 6, com a `JWT_SECRET` do `legacy-app/.env` — derruba **todos** os tokens, inclusive os fabricados: e os legítimos? Suspender a finalidade opcional? |
 | 3 Erradicação | qual PR fecha a causa? |
 | 4 Recuperação | a matriz de acesso (script) igual à de permissões; testes verdes |
 | 5 Notificação | Passo 5 |

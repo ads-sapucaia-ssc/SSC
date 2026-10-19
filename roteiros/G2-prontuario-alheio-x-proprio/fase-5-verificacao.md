@@ -20,7 +20,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G2**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -127,7 +127,8 @@ O `zerar-banco.sh` recompila esse código e volta o banco ao original.)
 1. **O arquivo, fora da API:**
 
    ```bash
-   curl -s -o /dev/null -w '%{http_code}\n' localhost:4200/laudos/laudo-102.pdf
+   curl -s -o /dev/null -w '%{http_code}\n' localhost:4200/laudos/laudo-102.pdf \
+     | tee entregaveis/evidencias/fase5-arquivo-fora-da-api.txt
    ```
 
    Esperado: **continua 200** — a correção foi na API, e o arquivo nem passa por ela. Está no
@@ -137,21 +138,27 @@ O `zerar-banco.sh` recompila esse código e volta o banco ao original.)
    ```bash
    source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de novo se abriu outro terminal)
    curl -s -X POST localhost:8080/api/exames/solicitar -H "Authorization: Bearer $TOKEN_ANA" \
-     -H "Content-Type: application/json" -d '{"pacienteId":2,"tipo":"teste"}'; echo
+     -H "Content-Type: application/json" -d '{"pacienteId":2,"tipo":"teste"}' \
+     | tee entregaveis/evidencias/fase5-exame-em-nome-de-outro.txt; echo
    ```
 
-   A Ana (paciente 1) criou um exame para o Bruno (paciente 2)? Que requisito isso viola?
+   Esperado: as linhas `TOKEN_... ok` e uma linha JSON da API. A Ana (paciente 1) criou um exame para o Bruno (paciente 2)? Que requisito isso viola?
 3. **Mudar o dado em que a regra confia.** A regra do médico diz: "pode ver se **atende** o
    paciente" — e "atende" está na tabela `atendimento`. Quem consegue **escrever** nessa tabela?
    Teste:
 
    ```bash
    source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de novo se abriu outro terminal)
-   curl -s -o /dev/null -w 'House -> 102: %{http_code}\n' localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_HOUSE"
-   curl -s -X POST localhost:8080/api/atendimentos -H "Authorization: Bearer $TOKEN_ANA" \
-     -H "Content-Type: application/json" -d '{"medicoId":1,"pacienteId":2}'; echo
-   curl -s -o /dev/null -w 'House -> 102: %{http_code}\n' localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_HOUSE"
+   {
+     curl -s -o /dev/null -w 'House -> 102: %{http_code}\n' localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_HOUSE"
+     curl -s -X POST localhost:8080/api/atendimentos -H "Authorization: Bearer $TOKEN_ANA" \
+       -H "Content-Type: application/json" -d '{"medicoId":1,"pacienteId":2}'; echo
+     curl -s -o /dev/null -w 'House -> 102: %{http_code}\n' localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_HOUSE"
+   } | tee entregaveis/evidencias/fase5-atendimento-forjado.txt
    ```
+
+   As chaves `{ ... }` juntam os três pedidos para o `tee` gravar tudo num arquivo só. Esperado:
+   a linha `House -> 102: CÓDIGO`, uma linha JSON do agendamento e de novo `House -> 102: CÓDIGO`.
 
    O que aconteceu entre o primeiro e o terceiro comando? **Quem** abriu o caminho? Explique com
    as suas palavras por que uma regra de autorização é tão forte quanto **o dado em que ela
@@ -159,10 +166,18 @@ O `zerar-banco.sh` recompila esse código e volta o banco ao original.)
    do G3.) Registrem como **interface documentada**: o controle de vocês **supõe** que só a
    recepção cria atendimentos. **Depois, zere o banco** (rode `bash roteiros/comum/zerar-banco.sh` e depois `source roteiros/comum/tokens.sh`).
 4. **Sem login:**
-   `curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/api/exames/101` — 401 ou 500?
-5. **Uma ideia de vocês:** que outro caminho a árvore não tinha? Tente.
 
-Guarde cada saída em `entregaveis/evidencias/fase5-...txt`.
+   ```bash
+   curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/api/exames/101 \
+     | tee entregaveis/evidencias/fase5-sem-login.txt
+   ```
+
+   Esperado: um código de três dígitos. É 401 ou 500? Qual deveria ser?
+5. **Uma ideia de vocês:** que outro caminho a árvore não tinha? Tente, e grave a saída
+   acrescentando `| tee entregaveis/evidencias/fase5-NOME-DO-TESTE.txt` no fim do comando (troque
+   `NOME-DO-TESTE` por um nome curto, sem espaços).
+
+As saídas dos itens 1 a 4 ficaram gravadas em `entregaveis/evidencias/fase5-*.txt`.
 
 **Achou algo novo?** Faça como o Grupo 5: requisito na §2 (com `.feature @analise`), linha no
 STRIDE e na árvore (§3), no plano (§6.2) e, se for de privacidade, no RIPD (§4.3).
@@ -189,7 +204,10 @@ STRIDE e na árvore (§3), no plano (§6.2) e, se for de privacidade, no RIPD (�
 
    Ele roda as regras do projeto e conta os achados de cada uma (como ler:
    [`comum/07` §2](../comum/07-ferramentas-de-seguranca.md#2-semgrep--procura-padrões-perigosos-no-código)).
-   Alguma regra fala de dono de exame ou de papel?
+   Esperado: cinco linhas, cada uma com um número e o nome de uma regra
+   (`vidaplus-hardcoded-secret`, `vidaplus-jwt-no-expiration`, `vidaplus-react-dangerous-html`,
+   `vidaplus-sql-concat`, `vidaplus-weak-hash-md5`) — **as mesmas** de antes da correção de
+   vocês. Alguma regra fala de dono de exame ou de papel?
 
    Para o CodeQL: no GitHub, aba **Security** → **Code scanning** → filtro **Tool** = `CodeQL`
    (se a aba não mostrar alertas, diga isso no dossiê). Explique **por que não**: o código vulnerável não
@@ -215,6 +233,22 @@ STRIDE e na árvore (§3), no plano (§6.2) e, se for de privacidade, no RIPD (�
 
 E os parágrafos dos **scanners** e do **gate de testes** (vermelho pelos testes dos outros
 pacotes).
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| No item 3, a **primeira** linha já mostra `House -> 102: 200` | o atendimento Ana→Bruno já tinha sido criado numa tentativa anterior | `bash roteiros/comum/zerar-banco.sh`, `source roteiros/comum/tokens.sh` e repita o item 3 |
+| No item 3, a primeira linha mostra `House -> 102: 200` mesmo depois de zerar | a correção da Fase 4 não está nesta branch | `git log --oneline -3` deve mostrar o merge do `fix/F-02-idor`; se não mostrar, volte à Fase 4 |
+| O Semgrep demora na primeira vez | ele baixa a imagem do Semgrep | espere; das próximas vezes é rápido |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

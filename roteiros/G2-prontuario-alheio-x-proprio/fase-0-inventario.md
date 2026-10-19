@@ -31,7 +31,7 @@ atributo e quem demanda. A coluna **Base legal** fica para a Fase 1.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -89,7 +89,7 @@ Crie um rascunho: `entregaveis/evidencias/fase0-anotacoes.txt`.
 
 **▶ Agora no G2:**
 
-1. Entre com os seis usuários ([`comum/01` §3](../comum/01-subir-o-vidaplus.md#4-entrar-no-sistema)).
+1. Entre com os seis usuários ([`comum/01` §4](../comum/01-subir-o-vidaplus.md#4-entrar-no-sistema)).
    Para cada um, anote **por onde ele chega a um exame**:
    - **Ana / Bruno (pacientes):** a lista "Meus exames" no Início;
    - **Dra. House (médica):** **Meus Pacientes** → ficha → histórico de exames; e o campo de
@@ -146,7 +146,9 @@ Escreva as trilhas no rascunho: elas viram o DFD na Fase 2a.
      | tee entregaveis/evidencias/fase0-ana-exame-102.txt
    ```
 
-   Anote o status e o conteúdo. Que dado de saúde de outra pessoa a Ana viu?
+   Esperado: as seis linhas `TOKEN_... ok`; depois, a resposta com a linha `HTTP/1.1 ...`, os
+   cabeçalhos e, por último, uma linha JSON que começa com `{"id":102`. Anote o status e o
+   conteúdo. Que dado de saúde de outra pessoa a Ana viu?
 4. Teste os outros dois endereços do exame com o mesmo token:
 
    ```bash
@@ -155,7 +157,8 @@ Escreva as trilhas no rascunho: elas viram o DFD na Fase 2a.
    curl -s localhost:8080/api/exames/paciente/3 -H "Authorization: Bearer $TOKEN_ANA"; echo
    ```
 
-   O segundo lista os exames da **Carla** (paciente 3). Repare no exame 104: que tipo é, e está
+   Esperado: as linhas `TOKEN_... ok`, depois uma linha `{"laudo_pdf":"...","id":102}` e uma
+   lista entre colchetes `[{...}]`. O segundo lista os exames da **Carla** (paciente 3). Repare no exame 104: que tipo é, e está
    publicado?
 
 ---
@@ -173,7 +176,8 @@ docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidap
 docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidaplus123 vidaplus -e "SELECT * FROM atendimento;"
 ```
 
-Anote e pense:
+Esperado: três tabelas em texto — as colunas da tabela `exame` (`Field`, `Type`...), as quatro
+linhas de exame (ids 101 a 104) e as linhas de `atendimento`. Anote e pense:
 
 1. A coluna `resultado` guarda o quê? Que nível?
 2. Os números dos exames (`id`) são **sequenciais** (101, 102, 103, 104). O que isso facilita para
@@ -219,7 +223,8 @@ for ID in 101 102 103 104; do
 done
 ```
 
-O `for` repete o pedido para os quatro números. Depois abra no navegador
+O `for` repete o pedido para os quatro números. Esperado: quatro linhas `laudo-NNN.pdf -> ...`,
+cada uma com um código de status e um tipo de arquivo. Depois abra no navegador
 `http://localhost:4200/laudos/laudo-104.pdf` **numa janela anônima** (**Ctrl+Shift+P** no Firefox,
 **Ctrl+Shift+N** no Chrome), ou seja, sem login. O que está escrito no laudo 104? Ele está
 publicado? Leia a nota sobre F-07 × F-08 no [`docs/04`](../../docs/04-catalogo-funcionalidades.md):
@@ -287,6 +292,21 @@ ausentes.
 Ativos que um G2 atento encontra (confira os seus): o resultado do exame, o tipo do exame, o
 **arquivo PDF**, o status "publicado" e quem publicou, o vínculo médico–paciente, o número do
 exame, o token, os segredos do sistema — e o que **falta** (hash do laudo, exportação).
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Na tela, ao trocar `/exames/101` por `/exames/102`, aparece a tela de login | a sessão da Ana não está ativa nesta aba | entre como Ana de novo e repita, na mesma aba |
+| O PDF do laudo não abre na janela anônima (baixa um arquivo) | o navegador está configurado para baixar PDFs | abra o arquivo baixado na pasta **Downloads**: o conteúdo é o mesmo |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

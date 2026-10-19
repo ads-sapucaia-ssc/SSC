@@ -21,7 +21,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G2**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -152,11 +152,13 @@ A defesa dura 10–15 minutos; **qualquer integrante** pode ser perguntado sobre
 
    - **pela tela:** entre como Ana em `http://localhost:4200`, abra o exame 101 e troque, na barra de
      endereços, `/exames/101` por `/exames/102` → "Exame não encontrado ou acesso negado.";
-   - **a mesma coisa pelo terminal** (esperado: `403` e nada de "Glicemia"):
+   - **a mesma coisa pelo terminal** — o primeiro comando mostra o código; o segundo conta as
+     linhas da resposta que contêm `Glicemia` ou `paciente_id` (esperado: `403` e `0`):
 
      ```bash
      source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de novo se abriu outro terminal)
-     curl -s -w '\n%{http_code}\n' localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_ANA"
+     curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_ANA"
+     curl -s localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_ANA" | grep -c -E "Glicemia|paciente_id"
      ```
 
    - **a tabela de acessos por papel** (o uso legítimo dá 200; o resto, 403):
@@ -165,13 +167,23 @@ A defesa dura 10–15 minutos; **qualquer integrante** pode ser perguntado sobre
      bash roteiros/G2-prontuario-alheio-x-proprio/acessos-por-papel.sh
      ```
 
-   - **o teste do P0 verde:**
+   - **o teste do P0 verde** (esperado, na última linha: `RESULTADO: todos os testes ... PASSARAM (verde)`):
 
      ```bash
      bash roteiros/comum/rodar-testes.sh "security & F-02"
      ```
 
-   - e, honestamente, **o que continua aberto** — o PDF ainda baixa sem login:
+   - **os segredos fora do código** (Fase 6) — o token "da Ana" fabricado com a chave antiga, do
+     histórico do Git, não abre mais o exame dela (esperado: a mensagem sobre a chave antiga e um
+     código que **não** é `200`):
+
+     ```bash
+     FORJADO=$(bash roteiros/comum/fabricar-token.sh 5 PACIENTE)
+     curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/api/exames/101 -H "Authorization: Bearer $FORJADO"
+     ```
+
+   - e, honestamente, **o que continua aberto** — o PDF ainda baixa sem login (esperado:
+     `200 application/pdf`):
 
      ```bash
      curl -s -o /dev/null -w '%{http_code} %{content_type}\n' localhost:4200/laudos/laudo-102.pdf
@@ -184,6 +196,22 @@ A defesa dura 10–15 minutos; **qualquer integrante** pode ser perguntado sobre
    - o laudo está protegido? (Resposta honesta: pela API, sim; o arquivo, não — e por quê.)
    - a regra do médico depende de quê? E se alguém mexer nessa tabela? (O achado da Fase 5.)
    - como a exportação (F-09) evita o mesmo erro do IDOR?
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Na demonstração, a Ana vê o exame 102 (`200`) | a branch da defesa não tem a correção, ou o VidaPlus não foi religado | `git checkout main`, `git pull` e `bash roteiros/comum/zerar-banco.sh` |
+| A tabela de acessos mostra o Bio sem acesso ao 104 | os testes rodaram antes e publicaram o laudo 104 | zere o banco antes da tabela: `bash roteiros/comum/zerar-banco.sh` |
+| `zerar-banco.sh` diz `Falta o arquivo legacy-app/.env` | este computador ainda não tem o seu `.env` (Fase 6) | crie-o com o comando do [`comum/08` Passo 4b](../comum/08-segredos-fora-do-codigo.md#passo-4--crie-o-modelo-envexample-e-o-seu-env) |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

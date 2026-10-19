@@ -21,7 +21,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G2**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -127,9 +127,18 @@ VidaPlus não têm CVE → "n/a", com a explicação.
 **▶ Agora no G2:** escreva o que **deve** acontecer em cada falha e provoque para ver o que
 acontece **hoje** (no terminal, na raiz do repositório; os blocos carregam os tokens com `source roteiros/comum/tokens.sh`):
 
-1. **Exame que não existe:**
-   `curl -s -i localhost:8080/api/exames/999 -H "Authorization: Bearer $TOKEN_ANA" | head -5`
-   e o mesmo com `/api/exames/999/pdf`. As respostas são iguais? Alguma revela detalhes
+1. **Exame que não existe** — o exame 999 e o PDF dele:
+
+   ```bash
+   source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de novo se abriu outro terminal)
+   curl -s -i localhost:8080/api/exames/999 -H "Authorization: Bearer $TOKEN_ANA" | head -5 \
+     | tee entregaveis/evidencias/fase3-exame-inexistente.txt
+   curl -s -i localhost:8080/api/exames/999/pdf -H "Authorization: Bearer $TOKEN_ANA" | head -5 \
+     | tee entregaveis/evidencias/fase3-pdf-inexistente.txt
+   ```
+
+   Esperado: dois grupos de cinco linhas, cada um começando com `HTTP/1.1` e um código. As
+   respostas são iguais? Alguma revela detalhes
    (`exception`, `trace`)? Lembre do oráculo da Fase 2b: a resposta para "não existe" e "não é seu"
    deveria ser **a mesma**.
 2. **Papel desconhecido / regra não prevista:** se aparecer um papel novo amanhã (ex.:
@@ -139,16 +148,19 @@ acontece **hoje** (no terminal, na raiz do repositório; os blocos carregam os t
    ```bash
    source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de novo se abriu outro terminal)
    docker compose -f legacy-app/docker-compose.yml stop db
-   curl -s -i localhost:8080/api/exames/101 -H "Authorization: Bearer $TOKEN_ANA" | head -12
+   curl -s -i localhost:8080/api/exames/101 -H "Authorization: Bearer $TOKEN_ANA" | head -12 \
+     | tee entregaveis/evidencias/fase3-banco-fora-do-ar.txt
    docker compose -f legacy-app/docker-compose.yml start db
    ```
 
-   **Demora uns 30 segundos** (o backend espera o banco antes de desistir). A resposta entrega o
-   exame? Revela detalhes internos? Espere uns 20 segundos depois do `start`.
+   **Demora uns 30 segundos** (o backend espera o banco antes de desistir). Esperado: as linhas
+   `Container legacy-app-db-1 Stopped`, depois a resposta (`HTTP/1.1 ...` e o corpo) e, no fim,
+   `Container legacy-app-db-1 Started`. A resposta entrega o exame? Revela detalhes internos? Espere uns 20 segundos depois do `start`.
 4. **Exportação (planejada):** se a montagem do arquivo falhar no meio, o titular recebe um arquivo
    **pela metade**? Melhor receber parcial ou um erro claro?
 
-Guarde as saídas em `entregaveis/evidencias/fase3-...txt`.
+As saídas ficaram gravadas em `entregaveis/evidencias/fase3-exame-inexistente.txt`,
+`fase3-pdf-inexistente.txt` e `fase3-banco-fora-do-ar.txt`.
 
 ## Passo 5 — Escreva a Definition of Done
 
@@ -166,6 +178,21 @@ Guarde as saídas em `entregaveis/evidencias/fase3-...txt`.
   dela; o laboratório publica);
 - a resposta negada **não revela** nada do exame (nem tipo, nem paciente) e é **igual** para "não
   existe" e "não é seu".
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Depois do `stop db`, o `curl` ficou uns 30 segundos sem responder | o backend espera o banco antes de desistir | espere: é o comportamento que você está observando |
+| Depois do `start db`, os pedidos continuam dando erro | o banco ainda está subindo | espere uns 20 segundos; se persistir, `bash roteiros/comum/zerar-banco.sh` |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

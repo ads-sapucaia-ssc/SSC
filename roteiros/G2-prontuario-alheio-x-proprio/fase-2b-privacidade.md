@@ -22,7 +22,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G2**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -110,7 +110,9 @@ direito de receber os próprios dados (art. 18, V). E a correção do P0 pode cr
    curl -s localhost:8080/api/exames/101 -H "Authorization: Bearer $TOKEN_ANA" | python3 -m json.tool
    ```
 
-   A tela usa todos? O paciente precisa saber o **número interno do funcionário** que publicou
+   Esperado: as linhas `TOKEN_... ok` e o exame 101 em JSON formatado, um campo por linha (`"id"`,
+   `"paciente_id"`, `"tipo"`, `"resultado"`, `"laudo_pdf"`, `"publicado_por"`...). A tela usa
+   todos? O paciente precisa saber o **número interno do funcionário** que publicou
    (`publicado_por`)? E o caminho do arquivo (`laudo_pdf`)?
 4. **O arquivo (I).** Abra um PDF de laudo. O que nele identifica a pessoa?
 5. **O médico vê tudo do paciente?** A Dra. House atende a Carla: ela deveria ver **todos** os
@@ -186,6 +188,20 @@ duração) e **requisito** (crie, se faltar, e volte à §2 com o `.feature @ana
 > devem sair; a remoção é do F-15, de outro pacote."*
 
 **▶ Agora no G2:** o que as respostas do seu pacote devolvem **sem necessidade**? (Passo 1, item 3.)
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| `python3 -m json.tool` diz `Expecting value` | a resposta veio vazia (o VidaPlus caiu ou o token está vazio) | tire o `| python3 -m json.tool` para ver a resposta crua; veja a tabela comum |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

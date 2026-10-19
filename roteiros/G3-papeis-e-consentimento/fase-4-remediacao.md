@@ -28,7 +28,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G3**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Branches desta fase:** a correção do código tem a sua própria branch (Passo 2 da Parte A); a
    escrita da §6 no dossiê é gravada no fim, numa branch `dossie/fase-4` (último passo).
@@ -217,17 +217,81 @@ ela ficasse **antes** do `exigir`, quem chega sem token receberia 500 em vez de 
 
 por `Papeis.exigir(auth, "BIOQUIMICO");`.
 
-**5.3 — `UsuarioController.listar` e `alternarAtivo`.** Em cada um, troque a linha
-`if (usuarioId(auth) == null) throw new RuntimeException("nao autenticado");` e o comentário
-`// FALHA` logo abaixo dela por `Papeis.exigir(auth, "ADMIN");`.
+**5.3 — `UsuarioController`** (abra **Ctrl+P** → `UsuarioController.java`).
 
-**5.4 — `AtendimentoController`.**
+- No `listar`, troque:
 
-- `listar` e `agendar`: troque a linha `if (usuarioId(auth) == null) ...` (e, no `listar`, o
-  comentário `// FALHA: nao verifica papel`) por `Papeis.exigir(auth, "RECEPCAO", "ADMIN");`. No
-  `agendar`, **mantenha** o comentário sobre validar os ids: isso é outra falha (vai para o plano).
-- `pacientesDoMedico`: troque a linha `if (usuarioId(auth) == null) ...` e o comentário
-  `// FALHA` por `Papeis.exigir(auth, "MEDICO");`.
+  ```java
+          if (usuarioId(auth) == null) throw new RuntimeException("nao autenticado");
+          // FALHA: nao verifica JwtUtil.papelDoToken(...) == "ADMIN"
+  ```
+
+  por:
+
+  ```java
+          Papeis.exigir(auth, "ADMIN");
+  ```
+
+- No `alternarAtivo`, troque:
+
+  ```java
+          if (usuarioId(auth) == null) throw new RuntimeException("nao autenticado");
+          // FALHA: nao verifica papel nem registra quem alterou (F-05 auditoria)
+  ```
+
+  por:
+
+  ```java
+          Papeis.exigir(auth, "ADMIN");
+          // registrar quem alterou o que: F-05 (auditoria, outro pacote)
+  ```
+
+**5.4 — `AtendimentoController`** (abra **Ctrl+P** → `AtendimentoController.java`).
+
+- No `listar`, troque:
+
+  ```java
+          if (usuarioId(auth) == null) throw new RuntimeException("nao autenticado");
+          // FALHA: nao verifica papel
+  ```
+
+  por:
+
+  ```java
+          Papeis.exigir(auth, "RECEPCAO", "ADMIN");
+  ```
+
+- No `agendar`, troque a primeira linha do método:
+
+  ```java
+          if (usuarioId(auth) == null) throw new RuntimeException("nao autenticado");
+  ```
+
+  por:
+
+  ```java
+          Papeis.exigir(auth, "RECEPCAO", "ADMIN");
+  ```
+
+  e, três linhas abaixo, troque o comentário `// FALHA: nao verifica papel nem valida os ids` por
+  `// FALHA: nao valida os ids (plano)` — o papel agora é verificado; os ids, ainda não (isso vai
+  para o plano).
+- No `pacientesDoMedico`, troque:
+
+  ```java
+          if (usuarioId(auth) == null) throw new RuntimeException("nao autenticado");
+          // FALHA: nao verifica se medicoId == o medico autenticado
+  ```
+
+  por:
+
+  ```java
+          Papeis.exigir(auth, "MEDICO");
+          // FALHA: nao verifica se medicoId == o medico autenticado (dono da carteira: G2, plano)
+  ```
+
+  Aqui o comentário **fica**, ajustado: o `exigir` garante que é um médico, mas não que é **o**
+  médico daquela carteira.
 
 **5.5 — `PacienteController.editar`.** Troque as linhas
 
@@ -240,8 +304,16 @@ por `Papeis.exigir(auth, "BIOQUIMICO");`.
 
 por `Papeis.exigir(auth, "RECEPCAO", "ADMIN");`.
 
-**Confira:** **Ctrl+Shift+F** → `Papeis.exigir`. Deve aparecer **uma vez em cada função da sua
-matriz** (8 vezes, se a matriz for a do quadro acima).
+**Confira:** no terminal, conte as chamadas nos controllers:
+
+```bash
+grep -rn "Papeis.exigir(auth" legacy-app/backend/src/main/java/br/ifsul/vidaplus/controller
+```
+
+Esperado: **uma linha por função da sua matriz** — 8 linhas, se a matriz for a do quadro acima
+(2 no `ExameController`, 2 no `UsuarioController`, 3 no `AtendimentoController`, 1 no
+`PacienteController`). (A busca do VS Code, **Ctrl+Shift+F**, mostra mais duas: as do comentário
+de uso dentro do próprio `Papeis.java`.)
 
 ## Passo 6 — Remonte, ataque de novo e rode os testes
 

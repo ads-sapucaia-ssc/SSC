@@ -31,7 +31,7 @@ atributo e quem demanda. A coluna **Base legal** fica para a Fase 1.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -91,7 +91,7 @@ Crie agora um rascunho para anotar tudo o que observar: `entregaveis/evidencias/
 
 **▶ Agora no G1:**
 
-1. Entre com os seis usuários ([`comum/01` §3](../comum/01-subir-o-vidaplus.md#4-entrar-no-sistema)).
+1. Entre com os seis usuários ([`comum/01` §4](../comum/01-subir-o-vidaplus.md#4-entrar-no-sistema)).
    Para cada um, anote: telas do menu; nome que aparece no canto superior direito.
 2. Na tela de login, clique em **Esqueci minha senha**, digite um e-mail e envie. Anote o que
    aparece.

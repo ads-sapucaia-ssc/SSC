@@ -26,7 +26,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G4**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -217,10 +217,17 @@ Este passo é só a **análise**: não mexa no código ainda. A correção vem n
    do Passo 1 ao 13. Ele cria a branch `fix/F-10-segredos` a partir da `main` e termina com a
    correção já na `main`. É o **mesmo** para os quatro grupos; o que muda no G4 está no item 3.
 3. **O que muda no G4:** o repositório era um **canal de vazamento** — a senha do banco dava
-   acesso a todos os laudos sem passar pela API. No **Passo 8.4 do roteiro comum**, gravem as duas
-   saídas como evidência do canal fechado, acrescentando no fim de cada comando:
-   `2>&1 | tee entregaveis/evidencias/fase6-f10-g4-banco-senha-antiga.txt` (no primeiro) e
-   `2>&1 | tee entregaveis/evidencias/fase6-f10-g4-banco-forma-nova.txt` (no segundo). É também
+   acesso a todos os laudos sem passar pela API. No **Passo 8.4 do roteiro comum**, rodem os dois
+   comandos desta forma, que grava as saídas como evidência do canal fechado:
+
+   ```bash
+   docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidaplus123 vidaplus -e "SELECT 1;" \
+     2>&1 | tee entregaveis/evidencias/fase6-f10-g4-banco-senha-antiga.txt
+   docker compose -f legacy-app/docker-compose.yml exec db sh -c 'mysql -uvidaplus -p"$MYSQL_PASSWORD" vidaplus -e "SELECT COUNT(*) AS usuarios FROM usuario;"' \
+     2>&1 | tee entregaveis/evidencias/fase6-f10-g4-banco-forma-nova.txt
+   ```
+
+   Esperado: no primeiro, `ERROR 1045 (28000): Access denied`; no segundo, `usuarios` e `6`. É também
    uma lição de **ciclo de vida**: o segredo antigo continua no histórico (não dá para eliminá-lo),
    mas **perdeu a validade** — o mesmo raciocínio da F-06 (o que não se pode apagar, se torna
    inútil).

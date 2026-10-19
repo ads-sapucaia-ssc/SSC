@@ -24,7 +24,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G2**.
    ```
 
    Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
-   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
+   aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório (se você seguiu o [`comum/00`](../comum/00-antes-de-comecar.md#4-clone-o-repositório-do-grupo), é a `vidaplus`, dentro da pasta `ssc` da sua pasta pessoal).
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
 
@@ -127,6 +127,11 @@ Agora rode **um bloco de cada vez** e, depois de cada um, olhe os Terminais 1 e 
    curl -s -o /dev/null -w '%{http_code}\n' localhost:4200/laudos/laudo-104.pdf
    ```
 
+No Terminal 3, as respostas esperadas são `200`, `403` e `200`. Nos logs, o esperado é: no
+**Terminal 1 (API)**, **nenhuma** linha nova nos pedidos 1 e 2; no **Terminal 2 (nginx)**, uma
+linha no pedido 3, parecida com
+`172.18.0.1 - - [19/Oct/2026:15:50:40 +0000] "GET /laudos/laudo-104.pdf HTTP/1.1" 200 1040 "-" "curl/8.18.0"`.
+
 Compare os Terminais 1 e 2. O nginx registrou o download: **com que** informações (endereço IP,
 data, arquivo, programa usado)? Ele sabe **quem** baixou? (Por que não?) E a API, registrou o
 acesso da Ana — permitido ou negado? Se um laudo vazasse ontem, o que vocês conseguiriam descobrir
@@ -203,6 +208,21 @@ pública. O modelo da Aula 9 é exatamente este caso; adapte ao que **vocês** v
 4. **Quantos titulares?** O nginx mostra **quais arquivos** foram baixados (Passo 1): isso ajuda a
    delimitar? E pela API, sem registro?
 5. **Recomendação aos titulares.**
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Nenhuma linha aparece no Terminal 2 (nginx) depois do pedido 3 | o Terminal 2 não está acompanhando o log do `frontend` | clique no Terminal 2: a última linha deve ser o comando `logs frontend -f`, sem o prompt `$` depois; se tiver, rode-o de novo |
+| Os arquivos `fase7-log-*.txt` ficaram sem as linhas dos pedidos | o VidaPlus foi religado depois dos pedidos (o log começa do zero) | repita os pedidos do Passo 1 e grave os logs em seguida, sem zerar o banco no meio |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 
