@@ -28,6 +28,11 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
+      # F-10: depois da correcao, a chave do token vem do ambiente (JWT_SECRET). Cada execucao
+      # gera uma chave nova e descartavel: nenhuma chave fica gravada no repositorio.
+      - name: Chave do token so para este teste
+        run: |
+          K=$(openssl rand -hex 32); echo "::add-mask::$K"; echo "JWT_SECRET=$K" >> "$GITHUB_ENV"
       - name: Compilar e testar (exclui testes @security, que rodam no gate proprio com MySQL)
         working-directory: legacy-app/backend
         run: mvn -B -q verify -DexcludedGroups=security
@@ -54,10 +59,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
+      # CLI em Docker (o mesmo comando dos roteiros). A gitleaks-action@v2 exige licenca paga
+      # em repositorios de organizacao e, sem ela, sai sem varrer nada.
+      # Varre so o historico da pasta legacy-app (o sistema); --redact esconde os valores no log.
       - name: Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITLEAKS_CONFIG: security/gitleaks/gitleaks.toml
+        run: |
+          docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.21.2 \
+            detect --source /repo --config /repo/security/gitleaks/gitleaks.toml \
+            --log-opts="--all -- legacy-app" --no-banner --redact -v
 
   # ---------- Gate: SAST (V-01,V-02,V-07,V-10) ----------
   sast-semgrep:
@@ -159,6 +168,13 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
+      # F-10: depois da correcao, o docker-compose le as senhas e a chave do legacy-app/.env
+      # (fora do Git). Aqui, cada execucao cria um .env com valores novos e descartaveis.
+      - name: Segredos descartaveis deste ambiente (legacy-app/.env)
+        working-directory: legacy-app
+        run: |
+          printf 'MYSQL_ROOT_PASSWORD=%s\nDB_PASSWORD=%s\nJWT_SECRET=%s\n' \
+            "$(openssl rand -hex 16)" "$(openssl rand -hex 16)" "$(openssl rand -hex 32)" > .env
       - name: Subir ambiente
         working-directory: legacy-app
         run: |
@@ -206,7 +222,7 @@ jobs:
         ports:
           - "3306:3306"
         options: >-
-          --health-cmd="mysqladmin ping -h localhost -uroot -proot123"
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot123"
           --health-interval=10s --health-timeout=5s --health-retries=10
     steps:
       - uses: actions/checkout@v4
@@ -217,6 +233,11 @@ jobs:
           sudo apt-get update && sudo apt-get install -y mysql-client
           mysql -h127.0.0.1 -uroot -proot123 < legacy-app/db/schema.sql
           mysql -h127.0.0.1 -uroot -proot123 vidaplus < legacy-app/db/seed.sql
+      # F-10: depois da correcao, a chave do token vem do ambiente (JWT_SECRET). Cada execucao
+      # gera uma chave nova e descartavel: nenhuma chave fica gravada no repositorio.
+      - name: Chave do token so para este teste
+        run: |
+          K=$(openssl rand -hex 32); echo "::add-mask::$K"; echo "JWT_SECRET=$K" >> "$GITHUB_ENV"
       - name: Testes de aceite de seguranca (@Tag security)
         working-directory: legacy-app/backend
         # No legado FALHA de proposito (gate vermelho); fica verde quando corrigido.
@@ -229,9 +250,9 @@ jobs:
   # verifica e EXPLICA no dossie. Ver docs/06-pipeline-cicd.md.
   # ==================================================================
 
-  # ---------- Release: build once -> push -> assinar -> atestar (SLSA L2) ----------
+  # ---------- Release: build once -> push -> assinar -> atestar o SBOM (sem proveniencia: ainda nao e SLSA L2) ----------
   release-sign:
-    name: "Release - build, push, sign & attest (SLSA L2)"
+    name: "Release - build, push, sign & attest SBOM"
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     needs: [build-backend]
@@ -277,6 +298,13 @@ jobs:
     environment: staging      # criado automaticamente; sem reviewer
     steps:
       - uses: actions/checkout@v4
+      # F-10: depois da correcao, o docker-compose le as senhas e a chave do legacy-app/.env
+      # (fora do Git). Aqui, cada execucao cria um .env com valores novos e descartaveis.
+      - name: Segredos descartaveis deste ambiente (legacy-app/.env)
+        working-directory: legacy-app
+        run: |
+          printf 'MYSQL_ROOT_PASSWORD=%s\nDB_PASSWORD=%s\nJWT_SECRET=%s\n' \
+            "$(openssl rand -hex 16)" "$(openssl rand -hex 16)" "$(openssl rand -hex 32)" > .env
       - name: Subir a app (staging efemero) e checar saude
         working-directory: legacy-app
         run: |

@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * Pacientes (LEGADO).
- * V-13: busca repassa 'termo' para SQL concatenado (SQLi).
+ * V-01 (F-13): busca repassa 'termo' para SQL concatenado (SQLi).
  * V-14: retorna campos sobrecoletados.
  * V-04: editar() nao checa papel (RECEPCAO/ADMIN) nem registra auditoria.
  */
@@ -21,7 +21,7 @@ public class PacienteController {
     @Autowired
     private PacienteDao pacienteDao;
 
-    /** V-13: 'q' vai direto para a query concatenada no DAO. */
+    /** V-01 (F-13): 'q' vai direto para a query concatenada no DAO. */
     @GetMapping("/busca")
     public List<Map<String, Object>> buscar(@RequestParam("q") String q) {
         return pacienteDao.buscar(q);

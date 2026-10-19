@@ -26,8 +26,9 @@ reescrever do zero**. A stack é **atual** (React + Java 21/Spring Boot 3 + MySQ
 é puxada pela demanda** de cada fase (você aprende o conceito quando precisa aplicá-lo). O
 trabalho é em **grupos de 3–4**, cada um com um pacote de funcionalidades. A avaliação é
 **por artefato** (o dossiê) + defesa; o pipeline é evidência, não a nota. O foco é o
-**processo** (SSDLC + LGPD + privacidade), não codar muito: você **analisa** tudo, faz a
-**prova de conceito** de 1–2 controles e entrega um **plano de remediação** do restante.
+**processo** (SSDLC + LGPD + privacidade), não codar muito: você **analisa** tudo, corrige em
+aula guiada o **P0** do seu pacote e os **segredos no código** (F-10) e entrega um **plano de
+remediação** do restante.
 
 **Cronograma (16 semanas).** Fase 0 (sem. 1) kickoff+classificação · Fase 1 (sem. 2–3)
 requisitos+LGPD · Fase 2 (sem. 4–5) STRIDE+LINDDUN+RIPD · Fase 3 (sem. 6) projeto
@@ -88,6 +89,12 @@ de que o mecanismo funciona (teste, cobertura, nível ASVS) — responde *"quant
 temos?"*. Analogia: o RFS é "a porta deve ter fechadura"; o RGS é "a fechadura deve ser
 testada e certificada". Equivalem ao par **SFR × SAR** do Common Criteria. Todo controle P0
 tem um RGS associado.
+
+> **No VidaPlus (recorte do projeto):** cada requisito é escrito em **duas formas**. A
+> declaração ***shall*** (Forma 1, no dossiê, sem tecnologia) diz **o que** o sistema deve
+> fazer — o papel do RFS. O **cenário Gherkin** (Forma 2, arquivo `.feature`) diz **como provar**
+> — o papel do RGS: com a etiqueta `@security` ele roda no pipeline; com `@analise` fica
+> especificado, sem rodar.
 
 **As quatro fontes.** Requisitos não se inventam; garimpa-se em: **Negócio** (ativos, apetite
 a risco), **Legal** (LGPD, PCI-DSS — não-negociáveis), **Padrões** (OWASP ASVS/Top 10, NIST,
@@ -172,8 +179,8 @@ ECA Digital), **art. 18** (direitos do titular), **arts. 8/9** (consentimento), 
 16 bytes; MD5/SHA-1 proibidos" — verificável por teste. Requisito sem critério de aceite é
 só uma intenção.
 
-**Entregável (Fase 1):** catálogo inicial com RFS + RGS por funcionalidade, base legal por
-dado, nível ASVS alvo (L2) justificado.
+**Entregável (Fase 1):** catálogo inicial com cada requisito nas duas formas (*shall* +
+cenário Gherkin) por funcionalidade, base legal por dado, nível ASVS alvo (L2) justificado.
 
 ---
 
@@ -278,10 +285,10 @@ especificar, outra para verificar.
 atualizado, SAST/SCA sem críticos, testes de authn/authz passando, sem segredos, logging,
 ASVS verificado. É o que impede a segurança de "cair" na pressa do release.
 
-**Entregável (Fase 3):** catálogo consolidado (RFS+RGS) + priorização (P0/P1/P2) + DoD; aqui
-o grupo decide se a prova de conceito da Fase 4 será só o **P0 já atribuído ao seu pacote**
-([05](05-pacotes-trabalho-estudantes.md)) ou também a **funcionalidade de criação** (✨) — o
-*qual* corrigir já vem balanceado, não é escolha do grupo.
+**Entregável (Fase 3):** catálogo consolidado (*shall* + Gherkin) + priorização (P0/P1/P2) +
+DoD. O P0 que será corrigido na Fase 4 já vem atribuído ao seu pacote
+([05](05-pacotes-trabalho-estudantes.md)); a **funcionalidade de criação** (✨) é só
+especificada.
 
 ---
 
@@ -301,18 +308,23 @@ recurso pertence ao usuário (deny by default, RBAC). *Crypto:* Argon2id, TLS 1.
 AES-256-GCM — nunca MD5/SHA-1. *Segredos:* fora do código, em cofre/variável de ambiente.
 
 **Exemplo — corrigir o IDOR (F-02).** *Antes:* `GET /api/exames/{id}` devolve qualquer
-exame. *Ataque:* A troca o id e baixa o exame de B. *Correção:* `if (exame.pacienteId !=
-usuarioAtual.id) return 403;`. *Fail-secure:* deny by default; 403 **sem vazar metadados**
-(senão vira enumeração). *Garantia (RGS):* teste anti-IDOR no CI — se a proteção some, o
-teste falha e bloqueia o merge.
+exame. *Ataque:* A troca o id e baixa o exame de B. *Correção:* o servidor descobre **de quem
+é** o exame e compara com **quem está logado** — atenção: o id do **usuário** (no token) não é
+o id do **paciente** (no exame); é preciso traduzir um no outro antes de comparar (no VidaPlus, a
+Ana é o usuário 5 e a paciente 1). Se não for o dono, **403**. *Fail-secure:* deny by default;
+403 **sem vazar metadados** (senão vira enumeração). *Garantia (RGS):* teste anti-IDOR no CI —
+se a proteção some, o teste falha. (No VidaPlus os gates são informativos: o teste fica
+vermelho, mas não bloqueia o merge; num projeto real, ele bloquearia.)
 
-**Módulos LGPD a criar:** consentimento (versionado, revogável — art. 8/9), portabilidade
-(exportar dados — art. 18), eliminação (anonimizar o prontuário por dever de guarda +
-remover credencial), auditoria (trilha append-only, sem PII, hash-chain).
+**Módulos LGPD que faltam no legado:** consentimento (versionado, revogável — art. 8/9),
+portabilidade (exportar dados — art. 18), eliminação (anonimizar o prontuário por dever de
+guarda + remover credencial), auditoria (trilha append-only, sem PII, hash-chain). *No VidaPlus
+(recorte do projeto):* esses módulos são as funcionalidades de **criação** (✨) dos pacotes —
+**especificadas** no dossiê, não implementadas.
 
-**Entregável (Fase 4):** **prova de conceito** — corrigir 1–2 controles ponta-a-ponta
-(≥1 P0) num Pull Request, com o teste que os prova; para o restante, um **plano de
-remediação**. O objetivo é fechar o fio completo, não corrigir tudo.
+**Entregável (Fase 4):** **prova de conceito** — corrigir o **P0** do pacote ponta-a-ponta
+(aula guiada), num Pull Request, com o cenário `@security` que o prova; para o restante, um
+**plano de remediação**. O objetivo é fechar o fio completo, não corrigir tudo.
 
 ---
 
@@ -339,12 +351,11 @@ risco real; há ameaça sem requisito?). As duas são necessárias.
 prova algo se **falha quando a proteção some** ("quebrar para ver vermelho"): no legado ele
 falha (200); após a correção, passa (403).
 
-**Entregável (Fase 5):** teste que exercita o controle + evidências reais do CI; torne
-**bloqueante** o gate da classe corrigida. Requisito só está pronto com teste **E** evidência.
-Cada grupo torna bloqueante **só o gate do seu pacote** — os gates de funcionalidades de
-outros pacotes (ou das suas apenas *analisadas*) seguem **informativos**, e o workflow já
-conclui **verde** desde o 1º push. A nota **não** exige o pipeline 100% verde (nota = dossiê
-+ defesa; pipeline = evidência).
+**Entregável (Fase 5):** o teste do seu P0 (que já vem pronto) mostrado **vermelho** antes e
+**verde** depois da correção, com a evidência real do CI, e a leitura dos relatórios dos scanners.
+Requisito só está pronto com teste **E** evidência. Os gates ficam **informativos** — o workflow
+já conclui **verde** desde o 1º push, e o vermelho dos testes de outros pacotes é esperado. A
+nota **não** exige o pipeline 100% verde (nota = dossiê + defesa; pipeline = evidência).
 
 ---
 
@@ -360,7 +371,8 @@ post-mortem** (foco no sistema, não na pessoa).
 
 **Supply chain — "assinar é o novo HTTPS".** Ataques cresceram +742%. Defesas: **SBOM** (a
 "lista de ingredientes" do software, legível por máquina — CycloneDX/SPDX); **SLSA** (níveis
-de garantia da proveniência do build, L0→L3; meta acadêmica L2); **Sigstore/cosign** (assinar
+de garantia da proveniência do build, L0→L3; o L2 é uma meta de referência comum);
+**Sigstore/cosign** (assinar
 artefatos por identidade OIDC, sem gerenciar chaves). O próprio pipeline é alvo de alto valor
 — trate-o como sistema crítico (runners efêmeros, OIDC, branch protection).
 
@@ -369,11 +381,13 @@ importante, não urgente; um CVSS 7 no KEV é urgente (explorado agora). Combine
 × KEV**. O **VEX** documenta quando sua aplicação não é afetada por uma CVE.
 
 **Entregável (Fase 6):** pipeline como **evidência** (não é a nota) — placar de gates
-(vermelho→verde), SBOM, sem segredos. A **entrega segura já vem pré-fiada** (você **não
-configura ferramenta**): na `main`, `release-sign` (build+push+**assina**+**atesta o SBOM** →
-SLSA L2) → `deploy-staging` (smoke/DAST) → `deploy-prod` (**verifica a assinatura** e exige
-**aprovação manual**). Seu trabalho: tornar os gates bloqueantes, e **explicar o fluxo + a
-evidência** no dossiê. Único setup: criar o *environment* `production` com revisor (docs/08 §5.3).
+(vermelho→verde), SBOM e os segredos no código (F-10) **corrigidos em aula guiada** — fora do
+código, valores trocados, Gitleaks 🔴→🟢. A **entrega segura já vem pré-fiada** (você **não configura ferramenta**): na `main`,
+`release-sign` (build+push+**assina**+**atesta o SBOM**; ainda sem a proveniência que o SLSA L2
+exige) → `deploy-staging`
+(smoke/DAST) → `deploy-prod` (**verifica a assinatura** e exige **aprovação manual**). Seu
+trabalho: **ler e explicar** o fluxo e a evidência no dossiê. A proteção da `main` e o
+*environment* `production` são configurados pelo professor.
 
 ---
 
@@ -385,8 +399,11 @@ evidência** no dossiê. Único setup: criar o *environment* `production` com re
 Registrar: autenticação, autorização negada, acesso/alteração de dado sensível, ações
 administrativas — **sem expor PII/segredos** no log (isso vira nova vulnerabilidade).
 Qualidade do log: **imutável/assinado**, tempo sincronizado (NTP), retenção conforme a lei,
-alertas em padrões anômalos. No VidaPlus a auditoria usa **hash-chain** (cada entrada
-encadeia a anterior) e `user_id` opaco.
+alertas em padrões anômalos. Uma técnica de integridade é o **hash-chain** (cada entrada
+encadeia o hash da anterior: adulterar uma quebra a corrente), com `user_id` opaco no lugar de
+nome/CPF. *No VidaPlus (recorte do projeto):* o legado **não tem** trilha de auditoria; ela é a
+F-05 (criação, só especificada). O que existe para investigar são os **logs dos containers**
+(`docker compose logs`), usados no roteiro da Fase 7.
 
 **Métricas de operação:** **MTTD** (tempo até detectar — média do setor: 194 dias), **MTTR**
 (tempo até remediar — meta: críticas < 14 dias), **% de cobertura** (código + dependências),
@@ -398,7 +415,9 @@ lições (post-mortem realimenta os requisitos). Sem trilha de auditoria confiá
 provar quem fez o quê.
 
 **Runbook-exemplo (modelo a adaptar) — vazamento de laudo no VidaPlus.** Cenário: a trilha de
-auditoria detecta que o paciente A baixou o laudo do paciente B (IDOR, V-03).
+auditoria detecta que o paciente A baixou o laudo do paciente B (IDOR). O modelo supõe a trilha
+**já criada** (F-05); sem ela, a detecção depende dos logs do backend — e essa ausência entra no
+runbook como lição (passo 6).
 
 1. **Detecção.** Alerta da auditoria: acesso a `/api/exames/{id}` com `user_id ≠ dono do
    exame` (ou pico de downloads). Registre **quem, quando, qual exame**; **preserve o log**
@@ -419,8 +438,10 @@ auditoria detecta que o paciente A baixou o laudo do paciente B (IDOR, V-03).
    gere **novos requisitos** (ex.: teste anti-IDOR obrigatório no CI + **alerta** de acesso
    *cross-owner*) e atualize a **matriz de rastreabilidade**. O incidente vira requisito.
 
-**Entregável (Fase 7):** trilha de auditoria funcional (com verificação de integridade) +
-runbook de resposta; adulterar uma entrada do log deve ser detectável.
+**Entregável (Fase 7):** operação das funcionalidades do pacote (o que monitorar, que eventos
+registrar, sem PII) + runbook de resposta a um incidente do pacote, com o vazamento de laudo acima
+como modelo. Quem tem o F-05 no pacote **especifica** a trilha (eventos, campos sem PII,
+integridade), sem implementá-la.
 
 ---
 
@@ -446,7 +467,7 @@ sobre todos os gates do repositório).
 
 **Anti-padrões × boas práticas.** Pior antipadrão: requisito vago ("ser seguro") que ninguém
 testa; segundo: "segurança no fim". Boas práticas: requisitos SMART e testáveis, elicitar
-cedo (custo 500× menor), vincular requisito → ameaça → teste, rastreabilidade viva. A rubrica
+cedo (custo até 100× menor), vincular requisito → ameaça → teste, rastreabilidade viva. A rubrica
 valoriza as boas práticas; os antipadrões derrubam a nota da própria fase (sem penalidades à
 parte).
 

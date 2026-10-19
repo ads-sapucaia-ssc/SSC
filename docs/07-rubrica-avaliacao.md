@@ -12,14 +12,14 @@ depois (0–10, com fator individual) e as duas se combinam na **nota final** �
 | # | Fase / critério | Peso (0–10) | O que se espera |
 |---|-----------------|:-----------:|-----------------|
 | 0 | Inventário & classificação de dados | 0,8 | Ativos e endpoints mapeados; dados classificados; fluxos críticos identificados |
-| 1 | Requisitos & **LGPD** | 1,4 | RFS+RGS testáveis; **base legal por dado**; nível ASVS justificado |
+| 1 | Requisitos & **LGPD** | 1,4 | Cada requisito nas **duas formas** — declaração *shall* (dossiê) + cenário **Gherkin** (`.feature`, `@security` ou `@analise`) — testável; **base legal por dado**; nível ASVS justificado |
 | 2 | Threat modeling (STRIDE) | 1,0 | DFD com trust boundaries; STRIDE-per-element; árvore de ataque |
 | 2p | **Privacidade — LINDDUN + PbD + RIPD/DPIA** | 1,8 | LINDDUN-per-element; controles/PET; minimização; **RIPD** derivado |
 | 3 | Projeto seguro & priorização | 1,0 | Catálogo consolidado; risco→P0/P1/P2 por **gravidade (CVSS/DREAD) × exploração real (EPSS/KEV)**; **Definition of Done** segura |
-| 4 | **Remediação — prova de conceito** | 0,8 | 1–2 controles corrigidos ponta-a-ponta **+ plano de remediação** do restante |
-| 5 | Verificação & evidências | 1,2 | Teste que exercita o controle; scanners como evidência; evidência real |
-| 6 | DevSecOps / pipeline (evidência) | 0,6 | Gates verdes + tornados bloqueantes; **assinatura + SBOM atestado (SLSA L2)** e **promoção verificada** (staging → aprovação → prod), **explicados** no dossiê (o pipeline já provê; o aluno usa e justifica) |
-| 7 | **Operação, incidente & LGPD art. 48** | 0,6 | Trilha de auditoria íntegra; runbook + fluxo de notificação ANPD |
+| 4 | **Remediação — prova de conceito** | 0,8 | O **P0** do pacote corrigido ponta-a-ponta (aula guiada) **+ plano de remediação** do restante |
+| 5 | Verificação & evidências | 1,2 | O cenário `@security` do P0 vermelho → verde, com evidência real do CI; leitura correta dos relatórios dos scanners |
+| 6 | DevSecOps / pipeline (evidência) | 0,6 | **Explicação** no dossiê do que cada gate verifica, do SBOM, da **assinatura + SBOM atestado** (e por que isso ainda não é SLSA L2) e da **promoção verificada** (staging → aprovação → prod) — o pipeline já provê; o aluno lê e justifica. Segredos no código (F-10) corrigidos (aula guiada), com as provas do antes/depois e o REQ-SEGREDO-01 |
+| 7 | **Operação, incidente & LGPD art. 48** | 0,6 | Operação das funcionalidades do pacote (o que monitorar e registrar, sem PII; a trilha especificada, para quem tem o F-05); runbook de um incidente do pacote + fluxo de notificação ANPD |
 | 8 | Rastreabilidade & defesa | 0,8 | Matriz completa; métricas; **defesa fecha o fio ao vivo** (pontuada à parte) |
 | — | **Nota de artefatos (grupo)** | **10,0** | |
 
@@ -29,8 +29,8 @@ depois (0–10, com fator individual) e as duas se combinam na **nota final** �
 
 > Sem bônus nem penalidades à parte: **a qualidade entra na nota da própria fase**. Ex.:
 > PII em log ou "OK" na matriz sem prova **rebaixam** a fase correspondente (7 e 5/8); um
-> requisito vago rebaixa a Fase 1; fazer além do mínimo (ex.: mais um módulo LGPD) **eleva**
-> a fase respectiva.
+> requisito vago rebaixa a Fase 1; fazer além do mínimo (ex.: a funcionalidade de criação
+> especificada com mais profundidade) **eleva** a fase respectiva.
 
 ---
 
@@ -96,8 +96,11 @@ cobre arredondamentos. Exemplos:
 ## O papel do pipeline e do autograding
 
 São **instrumentos de evidência e feedback**, **não a nota**:
-- o **placar de gates** dá ao grupo um sinal objetivo do efeito da PoC (🔴→🟢);
-- o **autograding** dá nota parcial automática de apoio.
+- o **pipeline** mostra o efeito da PoC: o cenário do seu P0 verde no job de testes e o
+  Gitleaks verde depois do F-10 (os gates cobrem o repositório inteiro e podem seguir vermelhos
+  pelas falhas dos outros pacotes);
+- o **autograding** dá nota parcial automática de apoio: F-10 + cenário do P0
+  ([docs/08 §4](08-setup-grupos.md#4-autograding-nota-parcial-de-apoio)).
 
 A nota real vem do **dossiê de segurança e privacidade** (artefatos das fases) e da
 **defesa**. Um pipeline verde sem os artefatos por trás **não** vale a nota; artefatos
@@ -105,10 +108,11 @@ sólidos com uma PoC bem-feita **valem**.
 
 ## Definition of Done — dois níveis (ver docs/05)
 
-- **Analisada** (todas as funcionalidades do pacote): requisito + base legal + ameaça
-  (STRIDE/LINDDUN) + controle proposto + linha na matriz + plano de remediação.
-- **Implementada** (1–2 por grupo, prova de conceito): + correção em PR + teste + evidência
-  + status "Verificado" + gate 🔴→🟢.
+- **Analisada** (todas as funcionalidades do pacote): requisito (*shall* + cenário Gherkin
+  `@analise`) + base legal + ameaça (STRIDE/LINDDUN) + controle proposto + linha na matriz +
+  plano de remediação.
+- **Implementada** (o P0 e o F-10, em aulas guiadas): + correção em PR + cenário `@security`
+  (ou a verificação do F-10) 🔴→🟢 + evidência + status "Verificado".
 
 ## Checklist de secure code review (para os PRs da PoC)
 
@@ -116,6 +120,6 @@ sólidos com uma PoC bem-feita **valem**.
 - [ ] Autorização server-side (ownership + RBAC deny-by-default).
 - [ ] Sem segredo no código; config por ambiente.
 - [ ] Erro genérico ao cliente; detalhe só no log (sem PII).
-- [ ] Evento de segurança auditado (append-only, sem PII).
+- [ ] Evento de segurança registrado no log, sem PII (a trilha append-only é o F-05, só especificada).
 - [ ] Dado tratado tem base legal e finalidade (LGPD).
 - [ ] Teste cobre o caminho de ataque e o comportamento fail-secure.

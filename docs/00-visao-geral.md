@@ -9,8 +9,8 @@ para os alunos **vivenciarem, na prática, a aplicação da teoria**. Consequên
 - O **produto avaliado é o processo seguro** e seus artefatos (classificação de dados,
   requisitos+LGPD, threat model STRIDE e LINDDUN, Privacy by Design, RIPD/DPIA,
   rastreabilidade, verificação, resposta a incidente), **não** a quantidade de código.
-- A **remediação é prova de conceito**: cada grupo corrige **1–2 controles ponta-a-ponta**
-  para demonstrar que sabe fechar o fio ativo→ameaça→requisito→controle→teste→evidência;
+- A **remediação é prova de conceito**: cada grupo corrige, em aulas guiadas, o **P0 do seu
+  pacote** e os **segredos no código** (F-10) ponta-a-ponta, para demonstrar que sabe fechar o fio ativo→ameaça→requisito→controle→teste→evidência;
   o restante das falhas é **analisado e planejado** (plano de remediação), não codado.
 - O **pipeline e o autograding** são **geradores de evidência e feedback**, não a nota.
 
@@ -73,9 +73,11 @@ Ao final do semestre, o estudante será capaz de:
 | Senha / credencial | **Crítico** | LGPD; ASVS V2 |
 | Histórico clínico / diagnóstico | **Crítico** (saúde) | LGPD art. 11 |
 | E-mail / telefone | Confidencial | LGPD |
-| Dados de pagamento (exame particular) | **Crítico** | PCI-DSS |
-| Logs de acesso e auditoria | Confidencial | LGPD; PCI-DSS 10 |
+| Logs de acesso e auditoria | Confidencial | LGPD arts. 37 e 46 |
 | Registro de consentimento | Confidencial | LGPD art. 8 |
+
+> Dados de **pagamento** (regidos pelo **PCI-DSS**) são comuns em sistemas de saúde e aparecem
+> na teoria da disciplina, mas o VidaPlus **não** os trata.
 
 ## Papéis na equipe (responsabilidade individual, definida por fase)
 
@@ -100,13 +102,13 @@ cabeçalho de cada seção do arquivo indica a fase):
 | Fase | 🛡️ Segurança | 💻 Dev | ⚙️ DevSecOps | 📋 DPO |
 |------|--------------|--------|-------------|--------|
 | **0** Inventário | ★ mapeia ativos, endpoints e fluxos críticos | explora a app e reproduz o IDOR | faz o 1º push; confirma o pipeline; registra o placar | ★ classifica cada dado por sensibilidade/impacto |
-| **1** Requisitos + LGPD | ★ escreve RFS+RGS e o nível ASVS | revisa a viabilidade técnica de cada RFS | liga cada requisito ao gate do CI que o prova | ★ atribui a base legal LGPD a cada dado |
+| **1** Requisitos + LGPD | ★ escreve as declarações *shall* e o nível ASVS | escreve os cenários Gherkin (`.feature`) e revisa a viabilidade técnica | marca quais cenários rodam no gate (`@security`) e quais ficam `@analise` | ★ atribui a base legal LGPD a cada dado |
 | **2** Threat modeling | ★ DFD + STRIDE-per-element + árvore de ataque | ajuda no DFD (quem chama o quê no código) | marca no DFD onde cada scanner/gate atua | ★ LINDDUN-per-element + esboço do RIPD |
 | **3** Projeto seguro | ★ especifica controles, prioriza P0/P1/P2 e escreve a DoD | estima o esforço e como implementar cada controle | indica qual gate provará cada controle | garante os controles de privacidade no catálogo |
-| **4** Remediação (PoC) | revisa o PR (checklist) + plano de remediação | ★ corrige 1 P0 + 1 P1 ponta-a-ponta num PR | ★ acompanha os gates dentro do PR | faz o módulo LGPD do pacote |
-| **5** Verificação | confere que a evidência é real (CI verde) | ★ escreve o teste do controle (`@Tag("security")`) | ★ lê os scanners e torna o gate bloqueante | confere que o requisito de privacidade tem teste |
-| **6** Release/DevSecOps | confere o placar e o que virou bloqueante | garante que o build da imagem passa | ★ SBOM; remove os segredos (F-10); explica assinatura/atestação | confirma que não há PII/segredo nos artefatos |
-| **7** Operação/incidente | ★ escreve o runbook do incidente | instrumenta o app para gravar o evento auditado | valida a trilha de auditoria (append-only, sem PII) | ★ escreve a notificação à ANPD/titular (art. 48) |
+| **4** Remediação (PoC) | revisa o PR (checklist) + plano de remediação | ★ corrige o P0 do pacote ponta-a-ponta num PR (aula guiada) | ★ acompanha os gates dentro do PR | especifica a criação ✨ (o módulo LGPD do pacote) |
+| **5** Verificação | confere que a evidência é real (CI verde) | ★ roda o teste-semente do P0 (`rodar-testes.sh`) e registra o 🔴→🟢 | ★ lê os relatórios dos scanners e mostra o teste do P0 passando no CI | confere que o requisito de privacidade tem teste |
+| **6** Release/DevSecOps | confere o placar de gates | garante que o build da imagem passa | ★ explica os gates, o SBOM e a assinatura/atestação; conduz a correção guiada dos segredos no código (F-10) | confirma que não há PII/segredo nos artefatos |
+| **7** Operação/incidente | ★ escreve o runbook do incidente | levanta nos logs dos containers o que o sistema registra hoje (e o que falta) | define o que monitorar e confere que os registros não têm PII | ★ escreve a notificação à ANPD/titular (art. 48) |
 | **8** Rastreabilidade | ★ monta a matriz ativo→ameaça→…→evidência | confirma que cada controle tem teste ligado na matriz | extrai as métricas do pipeline | calcula métricas de privacidade + risco residual |
 
 > **Liderar não é fazer sozinho.** O ★ apenas **coordena e responde** por aquela entrega — os

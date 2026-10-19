@@ -9,8 +9,9 @@ Consulta rápida dos termos usados na disciplina. Para o detalhe, veja o documen
 - **Shift-left** — antecipar as atividades de segurança para o começo do ciclo (requisitos,
   design) em vez de deixá-las para o fim.
 - **DevSecOps** — integrar segurança ao fluxo de CI/CD (testes, SAST/DAST/SCA, gates).
-- **Prova de conceito (PoC)** — aqui: corrigir **1–2 controles** ponta-a-ponta para
-  demonstrar o ciclo completo, sem corrigir tudo. → [05](05-pacotes-trabalho-estudantes.md)
+- **Prova de conceito (PoC)** — corrigir **poucos controles** ponta-a-ponta para demonstrar o
+  ciclo completo, sem corrigir tudo. No VidaPlus: o **P0** do pacote e os segredos (F-10), em
+  aulas guiadas. → [05](05-pacotes-trabalho-estudantes.md)
 - **Rastreabilidade** — ligar ativo → ameaça → requisito → controle → teste → evidência.
 - **DoD** (*Definition of Done*) segura — critérios que definem quando algo está "pronto"
   com segurança (teste + evidência + rastreabilidade).
@@ -23,6 +24,12 @@ Consulta rápida dos termos usados na disciplina. Para o detalhe, veja o documen
 - **RGS** (Requisito de Garantia de Segurança / *assurance*) — a **evidência** de que o
   mecanismo funciona (teste, cobertura, nível ASVS). Responde "quanta confiança temos?".
   ≈ **SAR** (Common Criteria).
+- **Declaração *shall*** — o requisito em linguagem natural, **sem tecnologia** ("O sistema
+  deve…"). No VidaPlus é a **Forma 1**, escrita no dossiê; faz o papel do RFS.
+- **Cenário Gherkin / `.feature`** — o mesmo requisito como **critério de aceite executável**
+  (*Dado/Quando/Então*), num arquivo `.feature`. No VidaPlus é a **Forma 2**; faz o papel do RGS.
+- **`@security` / `@analise`** — etiquetas dos cenários do VidaPlus: `@security` **roda** no
+  pipeline (o requisito foi implementado); `@analise` fica **especificado**, sem rodar.
 - **ASVS** (*Application Security Verification Standard*, OWASP) — catálogo de requisitos de
   segurança em 3 níveis (L1/L2/L3). O projeto adota **L2**.
 - **EARS / Gherkin (BDD)** — notações para escrever requisitos/critérios testáveis
@@ -123,6 +130,7 @@ Vale reconhecê-los pelo nome — são a base atemporal de todo o SSDLC.
   Alterar, apagar ou inserir uma linha **quebra a cadeia** dali em diante, tornando a
   adulteração **detectável**. Com **append-only** (só acrescenta) e **sem PII**, dá à trilha
   integridade e não-repúdio (STRIDE-**R**; arts. 37/46). É o mesmo princípio do git/blockchain.
+  No VidaPlus, a trilha (F-05) é **especificada**, não implementada.
 
 ## Vulnerabilidades comuns
 
@@ -153,12 +161,13 @@ Vale reconhecê-los pelo nome — são a base atemporal de todo o SSDLC.
   **no build** (defesa tipo anti-SolarWinds).
 - **SLSA** (*Supply-chain Levels for Software Artifacts*, OpenSSF) — níveis (**L0–L3**) que
   medem **quão confiável** é a proveniência: `L1` existe · `L2` **assinada** por plataforma
-  hospedada (meta do projeto) · `L3` build **isolado/não-forjável**.
+  hospedada (meta de referência comum) · `L3` build **isolado/não-forjável**. O pipeline do
+  VidaPlus ainda **não** chega ao L2 (ver *cosign*).
 - **Sigstore / cosign** — assinatura de artefatos por **identidade OIDC** (*keyless*, sem
-  gerenciar chaves), registrada no log público **Rekor**. É como se atinge a proveniência
-  assinada (SLSA L2). → [06](06-pipeline-cicd.md)
-- **Gate** — verificação no CI que pode **bloquear** o merge; no projeto, começa
-  informativo e vira bloqueante conforme o grupo corrige. → [06](06-pipeline-cicd.md)
+  gerenciar chaves), registrada no log público **Rekor**. No projeto, assina a imagem e o SBOM;
+  para o SLSA L2 faltaria assinar também a **proveniência**. → [06](06-pipeline-cicd.md)
+- **Gate** — verificação no CI que pode **bloquear** o merge. No projeto, os gates ficam
+  **informativos**: mostram o problema, mas não travam o merge. → [06](06-pipeline-cicd.md)
 - **CVSS / DREAD** — métodos de pontuação de risco para priorização (P0/P1/P2).
 
 ## Gestão de vulnerabilidades
@@ -190,3 +199,29 @@ em [02-lgpd.md](02-lgpd.md), seção 9):
 - **NIST SSDF** (SP 800-218) — liga requisitos ao ciclo (PO/PS/PW/RV) e à atestação. →
   [01](01-plano-disciplina-ssdlc.md).
 - **OWASP SAMM / BSIMM** — modelos de **maturidade** de AppSec (quão maduro o processo é).
+
+## No dia a dia do projeto (termos dos roteiros)
+
+- **Container / imagem / Docker Compose** — a *imagem* é o pacote pronto de um programa; o
+  *container* é ela rodando; o *Compose* liga vários containers juntos (banco, backend,
+  frontend). → [`roteiros/comum/01`](../roteiros/comum/01-subir-o-vidaplus.md)
+- **Token / JWT** — o "crachá" que o sistema entrega no login e que vai em cada requisição
+  (cabeçalho `Authorization: Bearer …`). É **assinado** com uma chave secreta: quem tem a chave
+  fabrica crachás. → [`roteiros/comum/02`](../roteiros/comum/02-observar-o-sistema.md)
+- **401 × 403** — *401*: "não sei quem você é" (sem login ou token inválido); *403*: "sei quem
+  você é, mas você não pode" (falta permissão). Um IDOR corrigido responde **403**.
+- **Variável de ambiente** — um valor que o sistema operacional entrega ao programa ao ligá-lo
+  (ex.: `JWT_SECRET`); o código lê com `System.getenv`. Tira o segredo de dentro do código.
+- **`.env` / `.gitignore`** — o `.env` guarda os segredos **no seu computador**; o `.gitignore`
+  garante que ele **nunca** vá para o Git. O `.env.example` (sem valores) vai, como modelo. →
+  [`roteiros/comum/08`](../roteiros/comum/08-segredos-fora-do-codigo.md)
+- **Teste-semente** — o cenário `@security` do P0 que **já vem pronto** no repositório: nasce
+  vermelho no legado e fica verde quando a correção funciona. →
+  [`roteiros/comum/04`](../roteiros/comum/04-testes-e-pipeline.md)
+- **Fingerprint (Gitleaks)** — a "impressão digital" de um achado (commit + arquivo + regra + linha). Ir
+  no `.gitleaksignore` diz ao Gitleaks: "este achado antigo do histórico já foi tratado".
+- **Branch / commit / Pull Request** — linha de trabalho separada / ponto gravado no histórico /
+  pedido revisável para juntar a branch na `main`. →
+  [`roteiros/comum/03`](../roteiros/comum/03-git-e-github.md)
+- **Workflow / job / placar** — o arquivo do pipeline / cada tarefa dele / o resumo dos gates no
+  fim de uma execução. → [`roteiros/comum/06`](../roteiros/comum/06-pipeline-do-zero.md)

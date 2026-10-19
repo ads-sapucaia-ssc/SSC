@@ -8,8 +8,9 @@ Cada funcionalidade tem um **estado no legado** e uma **ação esperada**:
 A **criticidade** guia a priorização (P0 bloqueia release) e a distribuição entre os grupos.
 
 > ⚠️ **Este catálogo é a superfície de ANÁLISE, não uma lista de tarefas de código.** Como
-> o foco é o processo (SSDLC + LGPD + privacidade), cada grupo **corrige apenas 1–2
-> controles ponta-a-ponta (prova de conceito)** e, para as demais funcionalidades do seu
+> o foco é o processo (SSDLC + LGPD + privacidade), cada grupo **corrige apenas o P0 do seu
+> pacote e os segredos no código (F-10), ponta-a-ponta e em aulas guiadas (prova de
+> conceito)** e, para as demais funcionalidades do seu
 > pacote, entrega **análise + plano de remediação** (ameaça, controle proposto, esforço,
 > prioridade) — **sem precisar implementar**. Todas as funcionalidades devem ser
 > **analisadas** (requisito, STRIDE/LINDDUN, base legal); poucas são **implementadas**.
@@ -39,13 +40,15 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 | F-08 | **Armazenamento de PDFs de exame** | Pasta pública, nomes sequenciais | 🛠️⚖️ | Acesso direto a arquivo (art. 46) |
 | F-09 | **Exportação de dados do titular (portabilidade)** | Não existe | ✨⚖️ | LGPD art. 18 |
 | F-10 | **Gestão de segredos e configuração** | Credenciais e JWT secret no código | 🛠️ | Hardcoded secrets |
-| F-11 | **Sessão / token** | Token longo, sem expiração/rotação; `alg:none` aceito | 🛠️ | Session hijacking |
+| F-11 | **Sessão / token** | Token sem expiração nem rotação; segredo fixo no código; "logout" só limpa o navegador | 🛠️ | Session hijacking |
 | F-12 | **Recuperação de senha** | Token previsível, sem expiração, resposta que enumera e-mail | 🛠️ | Account takeover, enumeração |
+| F-22 | **Cifra de dados em repouso** | `cpf`, `exame.resultado` e `nota_clinica.conteudo` gravados em texto claro | 🛠️ | Disclosure em caso de vazamento do banco/backup (art. 46; ASVS V6) |
+| F-23 | **Painel estatístico (indicadores agregados)** | Não existe | ✨⚖️ | Inferência individual a partir de agregados (LINDDUN `L.2.2.3`); arts. 6º III, 12 |
 
 > ⚠️ **F-07 e F-08 não são independentes.** O status de "publicado" (F-07) é um **rótulo
 > de fluxo de trabalho** no banco — ele não controla o acesso ao arquivo (F-08). No
 > legado, um exame **ainda em rascunho** (`publicado = 0`, ex.: sorologia não liberada)
-> é baixável do mesmo jeito, sem nenhuma autenticação. Ao escrever o RGS de F-08, teste
+> é baixável do mesmo jeito, sem nenhuma autenticação. Ao escrever o cenário Gherkin de F-08, teste
 > justamente um exame **não publicado**: se ele também vazar, corrigir só um dos dois
 > (RBAC na publicação **ou** acesso ao arquivo) deixa a lacuna real — os dois requisitos
 > precisam ser corrigidos e verificados **juntos**.
@@ -60,7 +63,7 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 | F-14 | **Notas/observações clínicas** | Renderizadas com `dangerouslySetInnerHTML` (React) | 🛠️ | Stored XSS |
 | F-15 | **Cadastro de paciente** | Coleta religião, estado civil, etc. sem finalidade | ⚖️ | Minimização (LINDDUN-U/N) |
 | F-16 | **Tratamento de erros** | Stack trace devolvido ao cliente | 🛠️ | Information disclosure |
-| F-17 | **CORS / cabeçalhos de segurança** | `Allow-Origin: *` com credenciais; sem HSTS/CSP | 🛠️ | Misconfiguration |
+| F-17 | **CORS / cabeçalhos de segurança** | `Allow-Origin: *` (qualquer site chama a API); sem HSTS/CSP | 🛠️ | Misconfiguration |
 | F-18 | **Notificação (e-mail/SMS) com link** | Link direto ao laudo, sem autenticação | 🛠️⚖️ | Disclosure |
 
 ---
@@ -72,6 +75,35 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 | F-19 | **Perfil do usuário** | Sem validação de entrada | 🛠️ | Hardening |
 | F-20 | **Conteúdo institucional (site)** | Sem proteção anti-defacement | 🛠️ | Integridade |
 | F-21 | **Gestão de dependências (SCA/SBOM)** | Manter dependências atualizadas e sem CVE crítica (higiene contínua) | ⚙️ | Supply chain (OWASP A06/A03) |
+
+---
+
+## Códigos V-XX (comentários do código legado)
+
+O código do VidaPlus marca cada falha plantada com um código **V-XX** nos comentários (ex.:
+`// V-12`). Os roteiros às vezes citam esses códigos. O dossiê usa os **F-XX** acima; esta
+tabela liga um ao outro.
+
+| Código | Falha plantada | Funcionalidade |
+|---|---|---|
+| V-01 | SQL por concatenação (login e busca) | F-01, F-13 |
+| V-02 | hash de senha fraco (MD5, sem salt) | F-01 |
+| V-03 | IDOR — exame de outro paciente pelo id | F-02 |
+| V-04 | sem checagem de papel (RBAC) | F-03, F-07 |
+| V-05 | segredos no código (senha do banco, chave do token) | F-10 |
+| V-06 | sem trilha de auditoria | F-05 |
+| V-07 | token sem expiração; "logout" só no navegador | F-11 |
+| V-08 | recuperação de senha com token previsível e enumeração de e-mail | F-12 |
+| V-09 | PDF do laudo em pasta pública, nome previsível | F-08 |
+| V-10 | `dangerouslySetInnerHTML` (XSS armazenado) | F-14 |
+| V-11 | erro devolve o *stack trace* ao cliente | F-16 |
+| V-12 | CORS aberto; sem cabeçalhos de segurança | F-17 |
+| V-13 | HTTP puro, sem TLS | — (transversal; nenhum pacote) |
+| V-14 | dados coletados sem finalidade (religião, renda…) | F-15 |
+| V-15 | sem registro de consentimento | F-04 |
+| V-16 | "exclusão" só oculta (retenção infinita) | F-06 |
+| V-17 | PII (nome/CPF) onde deveria haver id opaco (logs, auditoria) | F-05 |
+| V-19 | nota clínica sem autenticação nem vínculo | F-14 |
 
 ---
 
@@ -88,6 +120,8 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 | F-13 Busca | Adulteração (Tampering) | Identificabilidade (`I.2.3` — filtro estreito isola um único registro) | art. 46 |
 | F-15 Cadastro | — | Divulgação (`DD.2.1`, volume) + Desconhecimento (Unawareness) + Não-conformidade | art. 6 (minimização) |
 | F-19 Perfil | — | Incapacidade de retificação/acesso (Unintervenability, `U.2.2`/`U.2.3`) | art. 18 |
+| F-22 Cifra em repouso | Divulgação de informação (Information Disclosure) | Divulgação (`DD`) — dado legível em backup/dump | art. 46 |
+| F-23 Painel estatístico | — | Vinculação (Linking, `L.2.2.3` — inferência por consulta agregada) | arts. 6º III, 12 |
 
 > Os nós entre parênteses (ex.: `I.2.3`, `Nc.3`) referenciam a árvore de ameaças oficial do
 > LINDDUN — mais específicos que a categoria de topo, úteis para justificar a escolha na
@@ -122,12 +156,12 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 | Lacuna | Por que é necessária | Onde foi identificada |
 |--------|------------------------|------------------------|
 | **Canal de comunicação com o titular / encarregado** | LGPD **art. 41** exige um encarregado (DPO) e um canal para o titular se comunicar — inclusive para relatar **suspeita de uso indevido dos próprios dados** por um funcionário (ex.: acesso a prontuário sem necessidade). O VidaPlus não tem nada disso hoje. | Cruzamento com o caso real "vazamento de rastreamento de contato" (`docs/03`, seção *Casos reais*) — acesso **legítimo** por insiders, sem invasão; um canal de denúncia é a mitigação que falta. |
-| **Cifra de dados em repouso** | LGPD **art. 46** exige proteção contra acesso não autorizado e situações acidentais/ilícitas; ASVS **V6** (o nível-alvo, L2, cobra isso) exige criptografia de dados sensíveis armazenados. Hoje `cpf` é `VARCHAR` em texto claro e `resultado`/`conteudo` (dado clínico) não têm nenhuma cifra — só o MySQL padrão, sem TDE nem cifra de coluna. | Já **citado como requisito esperado** em 3 lugares (`docs/02` linha 121/137, `docs/11`, Aula 3 slide 8 — "AES-256 em repouso"), mas nunca amarrado a uma falha rastreável nem a um dono. |
+| ~~Cifra de dados em repouso~~ | **Promovida a F-22** (2026-10) — ver a tabela de criticidade ALTA. | — |
 
 > **Candidatas a versão futura.** Esta lista é o backlog natural para quando o VidaPlus
 > ganhar uma nova rodada de funcionalidades planejadas (F-22 em diante) — cada lacuna
 > aqui já vem com a base legal e a onde foi identificada, prontas para virar entrada
-> formal do catálogo (com dono, RFS/RGS e teste) quando isso acontecer.
+> formal do catálogo (com dono, requisito *shall* + cenário Gherkin e teste) quando isso acontecer.
 
 ### Ameaças de privacidade (LINDDUN) candidatas a versão futura
 
@@ -137,13 +171,16 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 > o app é rico em falhas **STRIDE** (IDOR, RBAC, injeção de SQL, XSS…) e pobre nas ameaças que
 > **só o LINDDUN enxerga**: aquelas em que **não há invasão**, o sistema "funciona", e mesmo
 > assim a privacidade do titular é atingida. Uma versão futura pode **plantá-las** como
-> vulnerabilidades didáticas (novos V-XX no gabarito) **ou** um grupo pode citá-las na análise
-> do próprio pacote. **Não estão plantadas hoje.**
+> vulnerabilidades didáticas (novos códigos V-XX) **ou** um grupo pode citá-las na análise
+> do próprio pacote. **Não estão plantadas hoje** como falhas próprias. (O oráculo `D.3` já
+> aparece de outro jeito: no legado, `GET /api/exames/999`, que não existe, responde **200 com
+> corpo vazio**, e um exame existente responde 200 com os dados — a diferença também revela
+> quais IDs existem. A tabela descreve a forma que surge **depois** de corrigir o IDOR.)
 
 | Ameaça de privacidade (nó LINDDUN) | Como apareceria no VidaPlus | Por que o STRIDE não a vê | Fonte (exemplo LINDDUN) |
 |---|---|---|---|
 | **Detectabilidade** — oráculo de existência (`D.3`) | `GET /api/exames/{id}` responder **403** quando o exame existe (é de outro) e **404** quando não existe — a diferença revela *quais* IDs existem, sem ler o conteúdo | é o **complemento** do IDOR (V-03): devolver 403 "resolve" o acesso, mas 403 ≠ 404 continua vazando a existência dos registros | *Wrong password* / *DB access denied* (`linddunexamples` §4.9, §4.11) |
-| **Vinculação (Linking)** — inferência por consulta agregada (`L.2.2.3`) | um endpoint de estatística/painel (ex.: `/api/estatisticas?diagnostico=…&unidade=…&idade=…`) que devolve contagem/média **sem exigir coorte mínima** (k-anonimato): filtro estreito isola **um** paciente | **parametrizar a query (corrigir a injeção de SQL / V-01) não corrige** — a falha é o *design da consulta*, não a injeção de código | *DB Query inference* / *Salary statistics queries* (`lindduncomplexexamples` §5; `linddunexamples` §1.17) |
+| **Vinculação (Linking)** — inferência por consulta agregada (`L.2.2.3`) — **promovida a F-23** (2026-10) | um endpoint de estatística/painel (ex.: `/api/estatisticas?diagnostico=…&unidade=…&idade=…`) que devolve contagem/média **sem exigir coorte mínima** (k-anonimato): filtro estreito isola **um** paciente | **parametrizar a query (corrigir a injeção de SQL / V-01) não corrige** — a falha é o *design da consulta*, não a injeção de código | *DB Query inference* / *Salary statistics queries* (`lindduncomplexexamples` §5; `linddunexamples` §1.17) |
 | **Identificabilidade** — metadados em arquivo exportado (`I.1.2`) | o PDF do laudo (`laudo-{id}.pdf`) carregar, nos **metadados do arquivo** (Author/Creator/Keywords), o nome do médico revisor, IDs internos e timestamps — dado invisível no corpo do laudo | o vazamento acontece **fora do conteúdo** que os controles de conteúdo inspecionam; só some ao *sanitizar* o arquivo | *Author information in metadata* / *Geo-tagged photos* / *Whistleblower* (`linddunexamples` §2.3; `lindduncomplexexamples` §10, §8) |
 | **Divulgação de informação** — payload da notificação (`DD.4.2`) | o **texto** do e-mail/SMS/push dizer *"seu resultado de sorologia HIV está pronto"* — o dado sensível vaza para o provedor da mensagem e para a **tela de bloqueio**, mesmo com o link protegido | distinto do link sem autenticação (já coberto em F-18): aqui a sobre-exposição está no **corpo da mensagem**, sem nenhuma falha "técnica" | *Push notification payloads* (`lindduncomplexexamples` §23) |
 | **Vinculação (Linking)** — enumeração por IDs sequenciais (`L.1.1`) | IDs sequenciais e previsíveis (`101, 102, 103…`) permitirem **percorrer e correlacionar** todos os exames de um mesmo titular; combina com o oráculo de existência acima para "colher" a base | STRIDE vê o acesso **individual** (IDOR), não a **correlação em massa** habilitada pela previsibilidade do identificador | *Facebook data leak* — número de telefone como identificador (`lindduncomplexexamples` §2) |

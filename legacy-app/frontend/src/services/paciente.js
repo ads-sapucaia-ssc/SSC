@@ -4,7 +4,7 @@ import { getToken } from './auth';
 
 /**
  * Acesso a pacientes pelo front (LEGADO).
- * V-13: busca por termo concatenado no backend -> SQL Injection.
+ * V-01 (F-13): busca por termo concatenado no backend -> SQL Injection.
  * V-14: a resposta traz campos sobrecoletados (religiao, renda_mensal...).
  */
 function authHeader() {

@@ -74,7 +74,11 @@ projeto-vidaplus/
 │   ├── 08-setup-grupos.md           passo a passo para os grupos começarem
 │   ├── 09-dossie-template.md        visão geral do dossiê (arquivo a preencher em entregaveis/)
 │   ├── 10-glossario.md              consulta rápida dos termos da disciplina
-│   └── 11-apostila.md               material de estudo em texto (acompanha os slides)
+│   ├── 11-apostila.md               material de estudo em texto (acompanha os slides)
+│   └── 12-exemplo-dossie-preenchido.md  dossiê completo de exemplo (pacote 5) — o nível esperado
+├── roteiros/                       ← passo a passo, fase por fase, para cada grupo (comece aqui)
+│   ├── comum/                       ambiente, observar o sistema, Git, testes, escrita
+│   └── G1-… G2-… G3-… G4-…          um roteiro por fase, com as funcionalidades do grupo
 ├── entregaveis/                    ← o que o grupo preenche e entrega
 │   └── DOSSIE.md                    dossiê de segurança e privacidade (preencher nas fases)
 ├── aulas/                          ← slides .pptx (template IFSul), um por aula
@@ -114,22 +118,28 @@ O professor compartilha um **link de convite** (Classroom 50). O repositório do
    o usuário "não for encontrado", é porque o colega ainda não está na organização.
 
 Depois, **cada integrante clona** o mesmo repositório para trabalhar — passo a passo (com clone
-e autenticação) em [docs/08 §1](docs/08-setup-grupos.md).
+e autenticação) em [roteiros/comum/00](roteiros/comum/00-antes-de-comecar.md).
 
 ---
 
 ## 5. Como rodar o legado
 
-Já **dentro da pasta do repositório do grupo** (depois de cloná-lo — passo a passo, com clone
-e autenticação, em [docs/08 §1](docs/08-setup-grupos.md)) e com o **Docker** instalado:
+Já **na pasta raiz do repositório do grupo** (depois de cloná-lo — passo a passo, com clone
+e autenticação, em [roteiros/comum/00](roteiros/comum/00-antes-de-comecar.md)) e com o
+**Docker** instalado:
 
 ```bash
-cd legacy-app
-docker compose up --build
+bash roteiros/comum/zerar-banco.sh
 # Frontend:  http://localhost:4200
 # API:       http://localhost:8080
-# MySQL:     localhost:3306  (vidaplus / senha em docker-compose.yml — de propósito!)
+# MySQL:     localhost:3306
 ```
+
+O script liga o VidaPlus do zero (banco com os dados originais) e espera a API responder;
+detalhes em [roteiros/comum/01](roteiros/comum/01-subir-o-vidaplus.md). No legado, as senhas
+ficam no `docker-compose.yml` — de propósito; depois da correção do F-10 elas vêm do arquivo
+`legacy-app/.env`, que cada integrante cria
+([roteiros/comum/08](roteiros/comum/08-segredos-fora-do-codigo.md)).
 
 Usuários de teste, endpoints e as falhas exploráveis estão em
 [legacy-app/README.md](legacy-app/README.md).
@@ -146,10 +156,10 @@ Usuários de teste, endpoints e as falhas exploráveis estão em
 | 1 · Requisitos & conformidade | 2–3 | Eng. de requisitos de segurança, **LGPD**, ASVS | Requisitos de segurança + base legal |
 | 2 · Privacidade & threat modeling | 4–5 | **Privacy by Design, LINDDUN**, STRIDE, DFD | DFD + LINDDUN + STRIDE + árvore de ataque + RIPD |
 | 3 · Projeto seguro | 6 | Arquitetura segura, cripto, authn/authz, DoD | Especificação + Definition of Done |
-| 4 · Remediação (prova de conceito) | 7–10 | OWASP Top 10, secure coding do controle escolhido | **1–2 controles corrigidos ponta-a-ponta** + plano de remediação do restante |
+| 4 · Remediação (prova de conceito) | 7–10 | OWASP Top 10, secure coding do controle escolhido | **P0 do pacote corrigido ponta-a-ponta** (aula guiada) + plano de remediação do restante |
 | 5 · Verificação | 11–12 | SAST/DAST/SCA, testes de segurança | Testes + evidências no CI |
 | 6 · Release & DevSecOps | 13 | Pipeline, supply chain, gestão de segredos | Pipeline como **gerador de evidência** |
-| 7 · Operação & resposta | 14 | Logging, monitoração, resposta a incidentes, ANPD | Trilha de auditoria + plano de resposta (art. 48) |
+| 7 · Operação & resposta | 14 | Logging, monitoração, resposta a incidentes, ANPD | Operação (o que monitorar, sem PII) + plano de resposta (art. 48) |
 | 8 · Retro & auditoria | 15 | Métricas, risco residual, melhoria contínua | Matriz de rastreabilidade + métricas |
 | — · Defesas | 16 | — | Defesa final (fecha o fio ao vivo) |
 

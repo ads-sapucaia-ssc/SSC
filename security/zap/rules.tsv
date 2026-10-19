@@ -8,6 +8,6 @@
 10035	WARN	HSTS ausente (V-13)
 10036	WARN	Server leaks version
 90022	WARN	Application Error disclosure (V-11 stack trace)
-40018	FAIL	SQL Injection (V-01/V-13)
+40018	FAIL	SQL Injection (V-01 login e busca)
 40012	FAIL	Cross Site Scripting refletido/persistente (V-10)
 # IDOR (V-03) e RBAC (V-04) sao logicos: cobertos pelos testes de seguranca (nao pelo baseline).

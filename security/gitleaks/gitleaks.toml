@@ -8,14 +8,31 @@ useDefault = true
 [[rules]]
 id = "vidaplus-jwt-secret"
 description = "Segredo de JWT hardcoded (V-05)"
-regex = '''vidaplus\.jwt\.secret\s*=\s*.+'''
+# so o VALOR e o segredo (secretGroup); "${JWT_SECRET}" e "${JWT_SECRET:?...}" (vem do ambiente) nao contam
+# vale tambem para um legacy-app/.env commitado por engano (JWT_SECRET=...)
+regex = '''(?:vidaplus\.jwt\.secret|JWT_SECRET)[ \t]*[:=][ \t]*([^\s$#'"?][^\s#]*)'''
+secretGroup = 1
 tags = ["secret", "jwt", "V-05"]
 
 [[rules]]
 id = "vidaplus-db-password"
 description = "Senha do banco em texto claro (V-05)"
-regex = '''(datasource\.password|MYSQL_PASSWORD)\s*[:=]\s*\S+'''
+# application.properties, docker-compose e workflows; "${...}" (variavel de ambiente) nao conta
+regex = '''(?i)(?:datasource[._]password|mysql_(?:root_)?password|db_password)[ \t]*[:=][ \t]*([^\s$#'"?][^\s#]*)'''
+secretGroup = 1
 tags = ["secret", "db", "V-05"]
+
+[[rules]]
+id = "vidaplus-hardcoded-secret-java"
+description = "Segredo/senha em constante no codigo Java (V-05)"
+# as regras padrao nao reconhecem a chave atual do JwtUtil (texto legivel, "baixa entropia")
+regex = '''(?i)\b\w*(?:secret|password|senha|chave)\w*\s*=\s*"([^"]{6,})"'''
+secretGroup = 1
+path = '''\.java$'''
+tags = ["secret", "V-05"]
 
 # Quando os grupos migrarem os segredos para variaveis de ambiente/cofre,
 # estas regras deixam de encontrar ocorrencias e o gate fica verde.
+
+# O recorte (so o historico da pasta legacy-app, o sistema) fica no comando, em
+# --log-opts="--all -- legacy-app": docs/, roteiros/ e aulas/ sao material da disciplina.

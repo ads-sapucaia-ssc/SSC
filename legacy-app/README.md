@@ -42,7 +42,7 @@ docker compose up --build
  # V-04 RBAC: Ana (paciente) publica um laudo:  
  curl -s -X POST localhost:8080/api/exames/104/publicar -H "Authorization: Bearer $TOKEN"  
    
- # V-13 SQL Injection na busca:  
+ # V-01 SQL Injection na busca (F-13):  
  curl -s "localhost:8080/api/pacientes/busca?q=%27%20OR%20%271%27%3D%271"  
    
  # V-08 enumeração/reset fraco:  

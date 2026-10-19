@@ -1,65 +1,15 @@
 {
-  "//": "FALLBACK ESTATICO. O grader ATIVO do Classroom e .github/workflows/classroom.yml, que combina estas checagens estaticas COM a nota comportamental (testes @security contra MySQL). Este arquivo fica como documentacao/fallback. Nao confie so no estatico: um grupo pode remover o padrao sem corrigir a logica - por isso o classroom.yml roda tambem os testes de comportamento.",
+  "//": "FALLBACK ESTATICO. O autograding ATIVO e .github/workflows/classroom.yml, que pontua (1) a F-10 (esta mesma checagem) e (2) o cenario @security do P0 do grupo, que precisa de um MySQL de servico e por isso so roda la. Este arquivo fica como documentacao/fallback.",
   "tests": [
     {
-      "name": "V-02 sem hash MD5",
+      "name": "F-10 / V-05 JWT via variavel de ambiente (properties e JwtUtil)",
       "setup": "",
-      "run": "! grep -rqF '\"MD5\"' legacy-app/backend/src/main && echo PASS",
+      "run": "! grep -qE 'jwt.secret=[^$]' legacy-app/backend/src/main/resources/application.properties && ! grep -qE 'SECRET *= *\"' legacy-app/backend/src/main/java/br/ifsul/vidaplus/security/JwtUtil.java && echo PASS",
       "input": "",
       "output": "PASS",
       "comparison": "included",
       "timeout": 1,
-      "points": 15
-    },
-    {
-      "name": "V-01/V-13 sem concatenacao SQL em executeQuery",
-      "setup": "",
-      "run": "! grep -rqE 'executeQuery\\(.*\\+' legacy-app/backend/src/main && echo PASS",
-      "input": "",
-      "output": "PASS",
-      "comparison": "included",
-      "timeout": 1,
-      "points": 20
-    },
-    {
-      "name": "V-05 sem segredo hardcoded (JWT via variavel de ambiente)",
-      "setup": "",
-      "run": "! grep -qE 'jwt.secret=[^$]' legacy-app/backend/src/main/resources/application.properties && echo PASS",
-      "input": "",
-      "output": "PASS",
-      "comparison": "included",
-      "timeout": 1,
-      "points": 15
-    },
-    {
-      "name": "V-10 sem dangerouslySetInnerHTML no frontend",
-      "setup": "",
-      "run": "! grep -rq 'dangerouslySetInnerHTML' legacy-app/frontend/src && echo PASS",
-      "input": "",
-      "output": "PASS",
-      "comparison": "included",
-      "timeout": 1,
-      "points": 15
-    },
-    {
-      "name": "V-12 CORS sem allowedOrigins(*)",
-      "setup": "",
-      "run": "! grep -rqF 'allowedOrigins(\"*\")' legacy-app/backend/src/main && echo PASS",
-      "input": "",
-      "output": "PASS",
-      "comparison": "included",
-      "timeout": 1,
-      "points": 15
-    },
-    {
-      "name": "V-07 JWT com expiracao (setExpiration presente)",
-      "setup": "",
-      "run": "grep -rq 'setExpiration' legacy-app/backend/src/main && echo PASS",
-      "input": "",
-      "output": "PASS",
-      "comparison": "included",
-      "timeout": 1,
-      "points": 20
+      "points": 40
     }
   ]
 }

@@ -8,6 +8,12 @@
 >
 > Lembre: **todas** as funcionalidades do pacote são **analisadas**; só **1–2** são
 > **implementadas** (prova de conceito). O resto vira **plano de remediação**.
+>
+> **Quer ver um dossiê inteiro preenchido?** Veja o exemplo do pacote 5 em
+> [docs/12](../docs/12-exemplo-dossie-preenchido.md) — mostra o nível de detalhe esperado.
+>
+> **Como fazer cada seção?** Siga o roteiro da fase na pasta do seu grupo, em
+> [`roteiros/`](../roteiros/README.md).
 
 ---
 
@@ -66,13 +72,17 @@ quando tem as **duas** formas — a declaração no dossiê **e** o seu `.featur
 
 ### Forma 1 — Declarações *shall* (agnósticas, aqui no dossiê)
 
-| Requisito | Declaração *shall* | Prioridade | Base legal / ASVS | Ameaça |
+| Requisito | Declaração *shall* | Prioridade | Base legal / ASVS | Ameaça (em palavras) |
 |-----------|--------------------|:----------:|-------------------|--------|
-| _REQ-AUTH-SQLI-01_ | _O sistema **deve** rejeitar tentativas de login com conteúdo de injeção, sem autenticar e sem emitir credencial de sessão._ | _P0_ | _art. 46 · ASVS V5_ | _Injeção_ |
-| _REQ-AC-IDOR-01_ | _O sistema **deve** validar a titularidade do recurso no servidor e negar o acesso ao laudo — sem revelar metadados — quando o solicitante não for o dono._ | _P0_ | _art. 11/46 · ASVS V4_ | _EoP/IDOR_ |
-| _REQ-AC-RBAC-01_ | _O sistema **deve** permitir publicar laudo apenas a quem tem o papel autorizado; qualquer outro papel **deve** ser negado (deny-by-default)._ | _P0_ | _art. 46 · ASVS V4_ | _EoP_ |
-| _REQ-SESS-01_ | _O sistema **deve** expirar a sessão e rejeitar a credencial após logout ou troca de senha._ | _P1_ | _art. 46 · ASVS V3_ | _Spoofing_ |
+| _REQ-AUTH-SQLI-01_ | _O sistema **deve** rejeitar tentativas de login com conteúdo de injeção, sem autenticar e sem emitir credencial de sessão._ | _P0_ | _art. 46 · ASVS V5_ | _entrar como outro usuário sem saber a senha_ |
+| _REQ-AC-IDOR-01_ | _O sistema **deve** validar a titularidade do recurso no servidor e negar o acesso ao laudo — sem revelar metadados — quando o solicitante não for o dono._ | _P0_ | _art. 11/46 · ASVS V4_ | _um paciente ver o laudo de outro trocando o número na URL_ |
+| _REQ-AC-RBAC-01_ | _O sistema **deve** permitir publicar laudo apenas a quem tem o papel autorizado; qualquer outro papel **deve** ser negado (deny-by-default)._ | _P0_ | _art. 46 · ASVS V4_ | _um paciente (ou outro papel não autorizado) publicar um laudo_ |
+| _REQ-SESS-01_ | _O sistema **deve** expirar a sessão e rejeitar a credencial após logout ou troca de senha._ | _P1_ | _art. 46 · ASVS V3_ | _alguém reutilizar uma sessão antiga para agir como o usuário_ |
 |  |  |  |  |  |
+
+> **Ameaça em palavras:** na Fase 1, descreva **o que pode dar errado com o ativo**, como
+> contaria a alguém de fora da área. A **classificação** (STRIDE/LINDDUN) vem na Fase 2 (§3 e
+> §4) e aparece depois na matriz (§10).
 
 **Nível ASVS alvo:** _L2_ — **justificativa:** _dados sensíveis de saúde…_
 
@@ -187,9 +197,14 @@ Para cada controle implementado:
 
 ## 7. Fase 5 — Verificação & evidências
 
-| Requisito | Teste (ID/tipo) | Ferramenta | Resultado | Evidência |
-|-----------|-----------------|-----------|-----------|-----------|
-| _REQ-AC-IDOR-01_ | _`idor.feature` (@security) / integração_ | _JUnit + Cucumber + ZAP_ | _Pass_ | _ci-idor.txt_ |
+> O teste do seu P0 **já vem pronto**. Mostre que ele estava **vermelho** no código original e
+> ficou **verde** depois da correção: abra o job "Gate - Testes de seguranca" na aba **Actions** e
+> procure o nome do seu cenário no log (o job inteiro continua vermelho por causa dos testes de
+> outros pacotes — é esperado).
+
+| Requisito | Teste (ID/tipo) | Ferramenta | Antes → depois | Evidência |
+|-----------|-----------------|-----------|:--------------:|-----------|
+| _REQ-AC-IDOR-01_ | _`idor.feature` (@security)_ | _JUnit + Cucumber_ | _🔴 → 🟢_ | _print do log do CI_ |
 |  |  |  |  |  |
 
 **Scanners como evidência:** _SAST (…), SCA (…), Secret scanning (…), DAST (…)._
@@ -198,24 +213,45 @@ Para cada controle implementado:
 
 ## 8. Fase 6 — Pipeline (gerador de evidência)
 
-| Gate | Estado inicial | Estado após PoC | Bloqueante? |
-|------|:--------------:|:---------------:|:-----------:|
-| _Testes de segurança_ | _🔴_ | _🟢_ | _sim_ |
-| _SAST_ | _🔴_ | _🟡 (em curso)_ | _não_ |
-|  |  |  |  |
+> Nesta fase **não é preciso configurar nada** no pipeline: os gates ficam informativos, e a
+> proteção da `main` e a aprovação de produção são configuradas pelo professor. O que se espera é
+> **ler** o pipeline e **explicar** o que ele faz.
 
-**SBOM gerado:** _sim/não_ · **Segredos no repo:** _removidos?_
+| Gate | O que verifica | Estado inicial | Estado após PoC | Deveria ser bloqueante num projeto real? Por quê? |
+|------|----------------|:--------------:|:---------------:|----------------------------------------------------|
+| _Testes de segurança_ | _testes `@security` de todos os pacotes_ | _🔴_ | _🔴 (o seu teste 🟢)_ | _sim, quando todas as falhas estiverem corrigidas; hoje travaria o merge pelas falhas dos outros pacotes_ |
+| _SAST_ | _…_ | _🔴_ | _🟡_ | _…_ |
+|  |  |  |  |  |
+
+- **SBOM:** _o que é e onde encontrá-lo numa execução do pipeline._
+- **Entrega assinada:** _explique o fluxo `release-sign` → `deploy-staging` → `deploy-prod` e
+  por que a verificação da assinatura precisa conferir **quem** assinou (`docs/06` §5)._
+- **Proteção da `main` e aprovação de produção:** _o que foi configurado e por que "quem faz não
+  aprova o próprio"._
+- **Segredos no código (F-10):** _tabela **onde | segredo | risco | o que foi feito** (correção
+  guiada em `roteiros/comum/08`); o **REQ-SEGREDO-01** nas duas formas; as provas do antes e do
+  depois (Gitleaks, V-05, token antigo e token fabricado recusados, "sem `.env` não sobe"); por
+  que os achados do histórico viraram exceção só depois de trocar os valores; o que continua em
+  aberto. **Nunca** copie valores de segredos para cá._
 
 ---
 
 ## 9. Fase 7 — Operação & resposta a incidente
 
-- **Trilha de auditoria:** _descreva a sua trilha e como cada garantia é (ou será) atendida:
-  é **append-only**? está **sem PII** em texto claro? tem **integridade verificável**
+- **Operação das funcionalidades do pacote:** _para cada funcionalidade do seu pacote, responda:
+  o que monitorar e que sinal indica problema? que eventos ela precisa registrar (sempre **sem
+  PII**)? quem é avisado e como? Se ela depende de algo de outro pacote (ex.: a trilha de
+  auditoria, F-05), registre a **interface**: o que você precisa que exista lá._
+- **Só se o seu pacote tem o F-05 (trilha de auditoria):** _descreva também as garantias da
+  trilha: é **append-only**? está **sem PII** em texto claro? tem **integridade verificável**
   (ex.: hash-chain)?_
 
-### 9.1 Runbook de incidente — vazamento de laudo
+### 9.1 Runbook de incidente — um incidente das funcionalidades do seu pacote
 
+> Escolha o incidente **mais grave** que pode acontecer com as funcionalidades do **seu** pacote.
+> O vazamento de laudo trabalhado na Aula 9 é o modelo: os exemplos em itálico abaixo são dele —
+> adapte cada passo ao seu caso.
+>
 > Preencha cada passo com **ação concreta**, **quem faz** e **o que registrar**. Regra de ouro:
 > **conter antes de erradicar**, e **nunca apagar o log** (é a prova).
 
@@ -225,7 +261,8 @@ Para cada controle implementado:
 | **2 Contenção** | _revogar sessão? bloquear/rate-limit endpoint? tirar URL do ar?_ | _quem_ | _hora da contenção; ações tomadas_ |
 | **3 Erradicação** | _causa-raiz e correção (ownership no servidor; deny-by-default; URL assinada)_ | _quem_ | _PR da correção_ |
 | **4 Recuperação** | _redeploy + validação com teste anti-IDOR (A→B = 403); volta a monitorar_ | _quem_ | _log do teste/CI verde_ |
-| **5 Lições** | _post-mortem sem culpados; qual requisito novo nasce?_ | _quem_ | _linha do tempo; item na matriz_ |
+| **5 Notificação** | _há risco relevante ao titular? comunicar ANPD e titulares (detalhe em §9.2)_ | _quem (DPO)_ | _data/hora da ciência e do envio; texto enviado_ |
+| **6 Lições** | _post-mortem sem culpados; qual requisito novo nasce?_ | _quem_ | _linha do tempo; item na matriz_ |
 
 ### 9.2 Notificação LGPD (art. 48)
 
