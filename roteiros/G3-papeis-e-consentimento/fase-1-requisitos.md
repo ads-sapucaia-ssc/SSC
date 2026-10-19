@@ -277,6 +277,21 @@ Para F-19, uma frase pronta serve para a **atribuição em massa**:
 
 ---
 
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| O teste do P0 deu **verde** já no "antes" | você está numa branch que já tem a correção | `git branch --show-current` deve mostrar `dossie/fase-1`; a Fase 1 vem antes da correção |
+| Muitas linhas `WARNING: ... agent ...` antes do resultado | avisos normais do Java | ignore; procure `expected` e `RESULTADO` ([`comum/04` §2.1](../comum/04-testes-e-pipeline.md#21-lendo-o-resultado)) |
+
+---
+
 ## Último passo — Grave no Git e abra o Pull Request
 
 Com a seção escrita e salva (**Ctrl+S**), no terminal, na branch `dossie/fase-1`:

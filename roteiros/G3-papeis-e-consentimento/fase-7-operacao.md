@@ -97,12 +97,15 @@ source roteiros/comum/tokens.sh
 
 Rode **um bloco de cada vez** e, depois de cada um, olhe o Terminal 1.
 
-1. O **admin** desativa a conta da recepção (usuário 3) — uma ação **permitida**, e grave:
+1. O **admin** desativa a conta da recepção (usuário 3) — uma ação **permitida**:
 
    ```bash
    source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de novo se abriu outro terminal)
    curl -s -X POST localhost:8080/api/usuarios/3/alternar-ativo -H "Authorization: Bearer $TOKEN_ADMIN"; echo
    ```
+
+   Esperado: `{"id":3,"alterado":true}`. Nos próximos dois blocos, o `source` vai mostrar
+   `TOKEN_REC FALHOU`: é o efeito deste item (a conta da recepção está desativada).
 
 2. A **Ana** (paciente) tenta reativar a mesma conta — uma ação que, depois da correção da Fase 4,
    deve ser **negada** (403):
@@ -112,6 +115,8 @@ Rode **um bloco de cada vez** e, depois de cada um, olhe o Terminal 1.
    curl -s -o /dev/null -w '%{http_code}\n' -X POST localhost:8080/api/usuarios/3/alternar-ativo -H "Authorization: Bearer $TOKEN_ANA"
    ```
 
+   Esperado: `403`.
+
 3. O **admin** reativa a conta (o mesmo pedido do item 1 inverte o estado):
 
    ```bash
@@ -119,7 +124,10 @@ Rode **um bloco de cada vez** e, depois de cada um, olhe o Terminal 1.
    curl -s -X POST localhost:8080/api/usuarios/3/alternar-ativo -H "Authorization: Bearer $TOKEN_ADMIN"; echo
    ```
 
-O que apareceu no Terminal 1 depois de cada um? Se a recepção chegasse amanhã e não conseguisse
+   Esperado: de novo `{"id":3,"alterado":true}`.
+
+Esperado no Terminal 1: **nenhuma** linha nova, em nenhum dos três — nem na ação permitida, nem
+na negada. O que apareceu no Terminal 1 depois de cada um? Se a recepção chegasse amanhã e não conseguisse
 entrar, alguém saberia **quem** desativou a conta dela, e **quando**? A tentativa **negada** da Ana
 deixou algum rastro?
 
@@ -196,6 +204,21 @@ ou na **tabela de consentimento** (ou nos dois)? Por quê?
    qualquer forma.
 2. **Prazo, quem envia, os 6 itens.**
 3. **Quantos titulares?** Sem registro de quem fez o quê, como saber?
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| `TOKEN_REC FALHOU` nos itens 2 e 3 | a conta da recepção foi desativada no item 1 (é o experimento) | siga em frente; o item 3 a reativa e o bloco final zera o banco |
+| No item 2, a Ana recebeu `200` | a correção da Fase 4 não está nesta branch | `git log --oneline -3` deve mostrar o merge do `fix/F-03-rbac`; depois, `zerar-banco.sh` |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

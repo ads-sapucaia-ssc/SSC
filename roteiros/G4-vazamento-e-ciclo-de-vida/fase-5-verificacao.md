@@ -135,28 +135,45 @@ O `zerar-banco.sh` recompila esse código e volta o banco ao original.)
 
    O 102 e o 104 continuam saindo sem login? O 105 continua revelando que não existe? Registre como
    **aberto** (está no plano).
-2. **Outro dado de saúde, outro canal:** `curl -s localhost:8080/api/pacientes/1/notas` — sem token
-   nenhum. O que sai? Isso é o laudo? Não — mas é **dado de saúde** saindo por um canal que o
+2. **Outro dado de saúde, outro canal** — a nota clínica da Ana, sem token nenhum:
+
+   ```bash
+   curl -s localhost:8080/api/pacientes/1/notas | tee entregaveis/evidencias/fase5-nota-sem-login.txt; echo
+   ```
+
+   Esperado: uma linha JSON com `"conteudo"`. O que sai? Isso é o laudo? Não — mas é **dado de saúde** saindo por um canal que o
    recorte de vocês não cobria. De quem é? (V-19.) Registre como **interface**.
 3. **O dado em que a regra confia.** A regra do médico depende da tabela `atendimento`:
 
    ```bash
    source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de novo se abriu outro terminal)
-   curl -s -o /dev/null -w 'House -> 102: %{http_code}\n' localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_HOUSE"
-   curl -s -X POST localhost:8080/api/atendimentos -H "Authorization: Bearer $TOKEN_ANA" \
-     -H "Content-Type: application/json" -d '{"medicoId":1,"pacienteId":2}'; echo
-   curl -s -o /dev/null -w 'House -> 102: %{http_code}\n' localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_HOUSE"
+   {
+     curl -s -o /dev/null -w 'House -> 102: %{http_code}\n' localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_HOUSE"
+     curl -s -X POST localhost:8080/api/atendimentos -H "Authorization: Bearer $TOKEN_ANA" \
+       -H "Content-Type: application/json" -d '{"medicoId":1,"pacienteId":2}'; echo
+     curl -s -o /dev/null -w 'House -> 102: %{http_code}\n' localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_HOUSE"
+   } | tee entregaveis/evidencias/fase5-atendimento-forjado.txt
    ```
+
+   As chaves `{ ... }` juntam os três pedidos para o `tee` gravar tudo num arquivo só. Esperado:
+   `House -> 102: CÓDIGO`, uma linha JSON do agendamento e de novo `House -> 102: CÓDIGO`.
 
    A Ana (paciente) criou um atendimento — e a médica passou a ver o exame do Bruno. Quem abriu o
    canal? (Controle por papel, F-03, do G3.) Registrem como **interface documentada**. **Zere o banco**
    (rode `bash roteiros/comum/zerar-banco.sh` e depois `source roteiros/comum/tokens.sh`).
 4. **O efeito colateral bom.** A configuração de erros é global:
-   `curl -s -G localhost:8080/api/pacientes/busca --data-urlencode "q='"`. O SQL ainda aparece? A
-   correção de vocês fechou um canal **de outro pacote** também. Registrem.
-5. **Uma ideia de vocês:** que outro canal a árvore não tinha? Tente.
 
-Guarde cada saída em `entregaveis/evidencias/fase5-...txt`.
+   ```bash
+   curl -s -G localhost:8080/api/pacientes/busca --data-urlencode "q='" | tee entregaveis/evidencias/fase5-busca-aspa.txt; echo
+   ```
+
+   Esperado: uma linha curta com `"status":500`. O SQL ainda aparece? A
+   correção de vocês fechou um canal **de outro pacote** também. Registrem.
+5. **Uma ideia de vocês:** que outro canal a árvore não tinha? Tente, e grave a saída
+   acrescentando `| tee entregaveis/evidencias/fase5-NOME-DO-TESTE.txt` no fim do comando (troque
+   `NOME-DO-TESTE` por um nome curto, sem espaços).
+
+As saídas dos itens 2 a 4 ficaram em `entregaveis/evidencias/fase5-*.txt`.
 
 **Achou algo novo?** Faça como o Grupo 5: requisito na §2 (com `.feature @analise`), linha no
 STRIDE e na árvore (§3), no plano (§6.2) e, se for de privacidade, no RIPD (§4.3).
@@ -195,7 +212,10 @@ STRIDE e na árvore (§3), no plano (§6.2) e, se for de privacidade, no RIPD (�
 
    Ele roda as regras do projeto e conta os achados de cada uma (como ler:
    [`comum/07` §2](../comum/07-ferramentas-de-seguranca.md#2-semgrep--procura-padrões-perigosos-no-código)).
-   Alguma regra fala de dono de exame?
+   Esperado: cinco linhas, cada uma com um número e o nome de uma regra
+   (`vidaplus-hardcoded-secret`, `vidaplus-jwt-no-expiration`, `vidaplus-react-dangerous-html`,
+   `vidaplus-sql-concat`, `vidaplus-weak-hash-md5`) — **as mesmas** de antes da correção de
+   vocês. Alguma regra fala de dono de exame?
 
    Para o CodeQL: no GitHub, aba **Security** → **Code scanning** → filtro **Tool** = `CodeQL`
    (se a aba não mostrar alertas, diga isso no dossiê). Por que não acusam? (O código não tem nada de "errado" no texto.)

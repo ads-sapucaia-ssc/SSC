@@ -183,6 +183,14 @@ finalidade?) ou manter só para uma finalidade com **consentimento** (F-04). Esc
 coluna | decisão | por quê | onde mais ela aparece (busca, seed, tela) — tudo o que precisa mudar
 junto.
 
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+---
+
 ## Último passo — Grave no Git e abra o Pull Request
 
 Com a seção escrita e salva (**Ctrl+S**), no terminal, na branch `dossie/fase-2b`:

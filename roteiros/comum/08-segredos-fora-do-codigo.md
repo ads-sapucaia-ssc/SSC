@@ -436,9 +436,10 @@ Salve (**Ctrl+S**). O que mudou, linha a linha:
    rm ~/token-admin-antigo.txt
    ```
 
-   Esperado: **não** é 200 (no VidaPlus aparece **500**, com o erro "nao autenticado" no log — o
-   certo seria 401, mas a resposta de erro é assunto da F-16; o que importa aqui é que o pedido
-   **não foi atendido**). Como os tokens do VidaPlus **não expiram** (F-11), trocar a chave é a
+   Esperado: **não** é 200. Aparece **500** (o erro "nao autenticado" do legado; o certo seria 401,
+   mas a resposta de erro é assunto da F-16) ou **401**, se o grupo já trocou essa resposta na
+   Fase 4 (o G3 trocou, com o `Papeis.exigir`). Os dois querem dizer o que importa aqui: o pedido
+   **não foi atendido**. Como os tokens do VidaPlus **não expiram** (F-11), trocar a chave é a
    **única** forma de invalidar todos os que já foram emitidos — inclusive os que vazaram.
 
 2. **O ataque de novo.** Agora a chave não está no código; o script faz o que um atacante faria:

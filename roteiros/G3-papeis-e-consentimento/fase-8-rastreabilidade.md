@@ -166,7 +166,8 @@ A defesa dura 10–15 minutos; **qualquer integrante** pode ser perguntado sobre
 
    - **pela tela:** entre como Ana em `http://localhost:4200` e digite, na barra de endereços,
      `http://localhost:4200/usuarios` → a tela abre, mas fica em "Carregando…" (a API negou);
-   - **o teste do P0 verde** (zere antes, porque a matriz mudou dados):
+   - **o teste do P0 verde** (zere antes, porque a matriz mudou dados; esperado, na última linha:
+     `RESULTADO: todos os testes ... PASSARAM (verde)`):
 
      ```bash
      bash roteiros/comum/zerar-banco.sh
@@ -191,6 +192,21 @@ A defesa dura 10–15 minutos; **qualquer integrante** pode ser perguntado sobre
    - por que o atendimento médico não depende de consentimento? Para que finalidade a F-04 pede?
    - o que acontece se a chave do token vazar?
    - o que é atribuição em massa, e onde ela aparece no VidaPlus?
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| A matriz mostra `200` em células que deveriam ser `403` | a branch da defesa não tem a correção, ou o VidaPlus não foi religado | `git checkout main`, `git pull` e `bash roteiros/comum/zerar-banco.sh` |
+| `zerar-banco.sh` diz `Falta o arquivo legacy-app/.env` | este computador ainda não tem o seu `.env` (Fase 6) | crie-o com o comando do [`comum/08` Passo 4b](../comum/08-segredos-fora-do-codigo.md#passo-4--crie-o-modelo-envexample-e-o-seu-env) |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

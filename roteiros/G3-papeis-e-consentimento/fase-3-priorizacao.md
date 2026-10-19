@@ -193,6 +193,20 @@ As saídas dos itens 1 e 2 ficaram em `entregaveis/evidencias/fase3-publicar-sem
 - sem token → 401; papel errado → 403; papel desconhecido → 403;
 - todo dado coletado tem finalidade registrada (F-15).
 
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Os dois pedidos deram `200` e o laudo 104 foi publicado | os comandos foram editados (ganharam um token válido) | copie os blocos inteiros de novo; depois, zere o banco |
+
+---
+
 ## Último passo — Grave no Git e abra o Pull Request
 
 Com a seção escrita e salva (**Ctrl+S**), no terminal, na branch `dossie/fase-3`:

@@ -209,7 +209,7 @@ cada passo:
 
 | Passo | Perguntas para o G1 |
 |---|---|
-| 1 Detecção | como vocês perceberiam? Hoje, com o log que vocês viram no Passo 1, perceberiam? E depois da F-05? Como preservar a prova (`docker compose -f legacy-app/docker-compose.yml logs backend > ...txt`)? |
+| 1 Detecção | como vocês perceberiam? Hoje, com o log que vocês viram no Passo 1, perceberiam? E depois da F-05? Como preservar a prova (ex.: `docker compose -f legacy-app/docker-compose.yml logs backend > incidente-log-backend.txt`, **antes** de religar qualquer coisa)? |
 | 2 Contenção | como derrubar **já** a sessão do invasor, se o token não expira? (Pista: vocês já fizeram isso na Fase 6 — trocar a `JWT_SECRET` do `legacy-app/.env` e religar o backend; o que acontece com **todos** os tokens?) Desativar a conta? Trocar senhas? |
 | 3 Erradicação | qual a causa-raiz e qual PR a corrige? |
 | 4 Recuperação | como saber que voltou a ser seguro? (Testes verdes + repetir o ataque à mão.) |

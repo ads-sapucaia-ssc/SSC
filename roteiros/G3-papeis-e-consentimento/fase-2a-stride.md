@@ -153,6 +153,11 @@ curl -s -X POST localhost:8080/api/auth/login -H "Content-Type: application/json
   -d '{"email":"recepcao@vidaplus.local","senha":"Recep123"}'; echo
 ```
 
+Esperado: as linhas `TOKEN_... ok`, depois `{"id":3,"alterado":true}` e
+`{"erro":"credenciais invalidas"}`. **Daqui até zerar o banco**, todo `source` do `tokens.sh` vai
+mostrar `TOKEN_REC FALHOU`: não é erro seu, é o efeito deste experimento (a conta da recepção ficou
+desativada).
+
 A Ana (paciente) desativou a conta da recepção. A recepção consegue entrar? Que letras são essas
 (E por fazer; **D** pelo efeito)? E se ela fizer isso com **todas** as contas — inclusive a do
 admin (`alternar-ativo` no usuário 1)? Alguém registrou **quem** desativou (R)?
@@ -166,7 +171,8 @@ curl -s -X POST localhost:8080/api/atendimentos -H "Authorization: Bearer $TOKEN
   -H "Content-Type: application/json" -d '{"medicoId":1,"pacienteId":2}'; echo
 ```
 
-O primeiro: a Ana vê **quem se trata com qual médico** — que letra, e que tipo de dado é esse? O
+Esperado: uma lista JSON formatada (os atendimentos) e, depois, uma linha
+`{"pacienteId":2,"medicoId":1,"agendado":true}`. O primeiro: a Ana vê **quem se trata com qual médico** — que letra, e que tipo de dado é esse? O
 segundo: a Ana **cria** um atendimento entre a médica e o Bruno (T). Pense no efeito: em vários
 sistemas, "o médico atende o paciente" é o que **libera** o acesso aos exames. Adulterar a agenda
 pode virar **acesso indevido** em outro lugar. (É exatamente o que o G2 descobre na Fase 5 dele.)
@@ -179,7 +185,8 @@ curl -s localhost:8080/api/atendimentos/medico/1 -H "Authorization: Bearer $TOKE
 curl -s localhost:8080/api/exames/pendentes -H "Authorization: Bearer $TOKEN_ANA"; echo
 ```
 
-Que dado de saúde de outras pessoas aparece (I)? Na fila, que tipo de exame está pendente, e de
+Esperado: duas listas JSON, `[{...}]` — a carteira de pacientes da médica e a fila de exames
+pendentes. Que dado de saúde de outras pessoas aparece (I)? Na fila, que tipo de exame está pendente, e de
 quem?
 
 **Publicar laudo** (o P0)
@@ -189,7 +196,8 @@ source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de n
 curl -s -X POST localhost:8080/api/exames/104/publicar -H "Authorization: Bearer $TOKEN_ANA"; echo
 ```
 
-E (o que o teste-semente prova), T (o status do laudo mudou sem conferência do laboratório).
+Esperado: `{"publicado":true,"id":104}`. E (o que o teste-semente prova), T (o status do laudo
+mudou sem conferência do laboratório).
 
 **Editar cadastro**
 
@@ -249,6 +257,21 @@ OBJETIVO: <...>                                              (OR)
 │      └── <parte b>               custo <...>               → REQ-... / outro pacote
 └── 3. <...>
 ```
+
+---
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| `TOKEN_REC FALHOU` em todo `source` depois do primeiro experimento | a Ana desativou a conta da recepção (é o experimento) | siga em frente; ao terminar, zere o banco como o passo pede |
+| `{"publicado":true...}` não aparece no último bloco, ou o 104 já estava publicado | o experimento já tinha sido feito e o banco não foi zerado | `bash roteiros/comum/zerar-banco.sh`, `source roteiros/comum/tokens.sh` e repita |
 
 ---
 

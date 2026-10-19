@@ -164,9 +164,14 @@ curl -s localhost:8080/api/exames/101 | head -c 300; echo     # sem token
 ```
 
 Para cada resposta: que informação interna ela entrega (nomes de classes Java, nomes de métodos,
-o SQL)? Que letra? Que outra falha esse detalhe ajuda a explorar? (Veja a busca com uma aspa:
-`curl -s -G localhost:8080/api/pacientes/busca --data-urlencode "q='" | head -c 600; echo` — a resposta
-mostra o comando SQL.) E repare no código de status **sem token**: é o certo? (Compare com a
+o SQL)? Que letra? Que outra falha esse detalhe ajuda a explorar? Veja também a busca com uma aspa:
+
+```bash
+curl -s -G localhost:8080/api/pacientes/busca --data-urlencode "q='" | head -c 600; echo
+```
+
+Esperado: um texto que começa com `{"timestamp":` e, mais adiante, mostra pedaços do comando SQL
+(procure `SELECT`). E repare no código de status **sem token**: é o certo? (Compare com a
 tabela de [`comum/02` §1.2](../comum/02-observar-o-sistema.md#12-códigos-de-status-http-que-você-vai-encontrar).)
 
 **Processo "Servir arquivo" (nginx) e depósito "pasta de laudos"**
@@ -193,7 +198,9 @@ existem** só olhando o tipo da resposta.
 - T: quem consegue trocar o `index.html`? Pense no caminho: repositório → pipeline → imagem →
   servidor. Em qual ponto um atacante (ou um integrante descuidado) mudaria o site?
 - I/T no navegador: sem `Content-Security-Policy`, o navegador executa qualquer script que a página
-  carregue (`curl -s -I localhost:4200/` — os cabeçalhos de proteção estão lá?).
+  carregue. Os cabeçalhos de proteção estão lá? Confira com
+  `curl -s -I localhost:4200/` (o mesmo comando da Fase 0, item 2 do Passo 6: ele mostra só os
+  cabeçalhos da página inicial; procure `Content-Security-Policy`).
 - R: se a página for trocada, existe registro de **quem** trocou? (Pista: o histórico do Git.)
 
 **Processo "Rotina de retenção" (planejado)** — analise o **desenho**:

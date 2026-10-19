@@ -143,7 +143,8 @@ for E in /api/usuarios /api/atendimentos /api/atendimentos/medico/1 /api/exames/
 done | tee entregaveis/evidencias/fase0-ana-funcoes-alheias.txt
 ```
 
-O `for` pede quatro endereços, um de cada papel. Anote os códigos. Depois veja o **conteúdo** de
+O `for` pede quatro endereços, um de cada papel. Esperado: as linhas `TOKEN_... ok` e quatro
+linhas `/api/... -> CÓDIGO`. Anote os códigos. Depois veja o **conteúdo** de
 um deles:
 
 ```bash
@@ -151,7 +152,8 @@ source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de n
 curl -s localhost:8080/api/usuarios -H "Authorization: Bearer $TOKEN_ANA" | python3 -m json.tool
 ```
 
-O que uma paciente fica sabendo? (E-mails de funcionários; quem é admin; quais contas estão
+Esperado: as linhas `TOKEN_... ok` e uma lista JSON formatada, com um bloco `{ ... }` por
+usuário (`"email"`, `"papel"`, `"ativo"`). O que uma paciente fica sabendo? (E-mails de funcionários; quem é admin; quais contas estão
 ativas.) Que dado de saúde aparece em `/api/exames/pendentes`?
 
 > **Não rode ainda** os endereços que **mudam** dados (publicar, desativar, agendar): você testa
@@ -216,8 +218,12 @@ Guarde as respostas: elas voltam na Fase 5.
    cadastro**. Mude o telefone e salve. O que a tela mostra depois? (Repare que a ficha nem exibe
    o telefone.)
 2. Confira no banco:
-   `docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidaplus123 vidaplus -e "SELECT id, telefone FROM paciente WHERE id = 2;"`.
-   O telefone mudou? (Releia o `PacienteController.editar` do Passo 2.)
+
+   ```bash
+   docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidaplus123 vidaplus -e "SELECT id, telefone FROM paciente WHERE id = 2;"
+   ```
+
+   Esperado: uma tabela com a linha do paciente `2` e o telefone gravado. O telefone mudou? (Releia o `PacienteController.editar` do Passo 2.)
 3. Pelo terminal, com o token da **Ana**, mande campos que **não existem** na tela:
 
    ```bash
@@ -226,7 +232,8 @@ Guarde as respostas: elas voltam na Fase 5.
      -H "Content-Type: application/json" -d '{"telefone":"<b>x</b>","papel":"ADMIN","religiao":"nenhuma"}'; echo
    ```
 
-   A resposta lista os campos recebidos. O servidor **recusou** algum? Quem é a Ana para editar o
+   Esperado: as linhas `TOKEN_... ok` e uma linha JSON com `"campos":[...]` e `"atualizado"`. A
+   resposta lista os campos recebidos. O servidor **recusou** algum? Quem é a Ana para editar o
    cadastro do Bruno? E ela consegue editar **o próprio** cadastro pela tela?
 
 ---
@@ -289,6 +296,21 @@ Ativos que um G3 atento encontra (confira os seus): o papel de cada usuário, as
 restritas** de cada papel, a lista de usuários, a agenda (quem se trata com qual médico), os
 campos do cadastro (inclusive os sem finalidade), o token, os segredos — e o que **falta**
 (consentimento, autosserviço).
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| A tela da Ana não mostra o menu de outros papéis, mas o roteiro diz que ela acessa as funções | o menu é **escondido** na tela, mas o servidor não confere | é exatamente o achado: use o terminal, como o passo mostra |
+| O telefone do Bruno não mudou no banco depois de "salvar" | o `editar` do legado responde "atualizado" sem gravar nada | é um achado: anote e releia o `PacienteController.editar` |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

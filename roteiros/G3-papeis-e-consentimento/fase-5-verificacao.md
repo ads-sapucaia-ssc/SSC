@@ -139,7 +139,8 @@ curl -s -o /dev/null -w 'token fabricado -> lista de usuarios: %{http_code}
   | tee entregaveis/evidencias/fase5-token-fabricado.txt
 ```
 
-A segunda linha mostra o conteúdo do token fabricado: `{"sub":"5","papel":"ADMIN"}`. Abra o script
+Esperado: `Chave lida do codigo atual...`, a linha `{"sub":"5","papel":"ADMIN"}` (o conteúdo do
+token fabricado) e `token fabricado -> lista de usuarios: CÓDIGO`. Abra o script
 (**Ctrl+P** → `fabricar-token.sh`) e leia os comentários: sem precisar saber Python, dá para ver
 que ele monta à mão as três partes do token (cabeçalho, conteúdo **com o papel que eu escolhi** e
 **assinatura**, calculada com a chave). Como a assinatura bate, o servidor acredita. Qual o
@@ -158,7 +159,8 @@ curl -s -o /dev/null -w 'token antigo da recepcao -> agenda: %{http_code}\n' loc
   | tee entregaveis/evidencias/fase5-token-antigo.txt
 ```
 
-No banco ela já não é recepção. E o token? Por quanto tempo isso vale? (O token expira?) O mesmo
+Esperado: as linhas `TOKEN_... ok` e `token antigo da recepcao -> agenda: CÓDIGO`. No banco ela já
+não é recepção. E o token? Por quanto tempo isso vale? (O token expira?) O mesmo
 vale para uma conta **desativada**. Teste: zere o banco, pegue um token novo da recepção, desative a
 conta dela com o token do admin e use o token antigo:
 
@@ -166,17 +168,34 @@ conta dela com o token do admin e use o token antigo:
 bash roteiros/comum/zerar-banco.sh
 source roteiros/comum/tokens.sh
 curl -s -X POST localhost:8080/api/usuarios/3/alternar-ativo -H "Authorization: Bearer $TOKEN_ADMIN"; echo
-curl -s -o /dev/null -w 'token da recepcao desativada -> agenda: %{http_code}\n' localhost:8080/api/atendimentos -H "Authorization: Bearer $TOKEN_REC"
+curl -s -o /dev/null -w 'token da recepcao desativada -> agenda: %{http_code}\n' localhost:8080/api/atendimentos -H "Authorization: Bearer $TOKEN_REC" \
+  | tee entregaveis/evidencias/fase5-conta-desativada.txt
 ```
+
+Esperado: `PRONTO...`, as linhas `TOKEN_... ok`, `{"id":3,"alterado":true}` e
+`token da recepcao desativada -> agenda: CÓDIGO`.
 
 **3. A carteira de outro médico.** O papel MEDICO pode ver `/api/atendimentos/medico/{id}` — mas
 de **qualquer** `{id}`? Hoje só há um médico, então pense: se houvesse dois, a regra de papel
 impediria um de ver a carteira do outro? Que tipo de regra faltaria?
 
-**4. Funções sem login.** `curl -s "localhost:8080/api/pacientes/busca?q="` — a lista de pacientes
-(com religião e renda: a F-15 de vocês) sai sem token nenhum. Está no plano?
+**4. Funções sem login.** A busca de pacientes, sem token nenhum:
 
-**Zere o banco** ao terminar (rode `bash roteiros/comum/zerar-banco.sh` e depois `source roteiros/comum/tokens.sh`). Guarde cada saída em `entregaveis/evidencias/fase5-...txt`.
+```bash
+curl -s "localhost:8080/api/pacientes/busca?q=" | tee entregaveis/evidencias/fase5-busca-sem-login.txt; echo
+```
+
+Esperado: uma lista JSON entre colchetes, `[{...},{...}]`. Que campos aparecem? Repare na
+religião e na renda — a F-15 de vocês. Está no plano?
+
+**Zere o banco** ao terminar:
+
+```bash
+bash roteiros/comum/zerar-banco.sh
+source roteiros/comum/tokens.sh
+```
+
+As saídas dos itens 1, 2 e 4 ficaram em `entregaveis/evidencias/fase5-*.txt`.
 
 **Para o dossiê:** os itens 1 e 2 mostram que o RBAC de vocês é **tão forte quanto o token**.
 Registrem como **interface documentada**: o controle supõe que a chave do token é secreta (F-10 —
@@ -205,7 +224,10 @@ no STRIDE (§3) e na árvore, e a linha no plano (§6.2).
 
    Ele roda as regras do projeto e conta os achados de cada uma (como ler:
    [`comum/07` §2](../comum/07-ferramentas-de-seguranca.md#2-semgrep--procura-padrões-perigosos-no-código)).
-   Alguma regra fala de dono de exame ou de papel?
+   Esperado: cinco linhas, cada uma com um número e o nome de uma regra
+   (`vidaplus-hardcoded-secret`, `vidaplus-jwt-no-expiration`, `vidaplus-react-dangerous-html`,
+   `vidaplus-sql-concat`, `vidaplus-weak-hash-md5`) — **as mesmas** de antes da correção de
+   vocês. Alguma regra fala de dono de exame ou de papel?
 
    Para o CodeQL: no GitHub, aba **Security** → **Code scanning** → filtro **Tool** = `CodeQL`
    (se a aba não mostrar alertas, diga isso no dossiê). Explique **por que não**: nenhum padrão de texto diz "este método deveria ser só do laboratório" — essa
@@ -228,6 +250,22 @@ no STRIDE (§3) e na árvore, e a linha no plano (§6.2).
   outro médico, funções sem login.
 
 E os parágrafos dos **scanners** e do **gate de testes**.
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| O token fabricado deu `403` (e não `200`) | a chave já saiu do código (vocês estão repetindo a fase depois da Fase 6) | é o resultado do "depois" da F-10; a mensagem do script diz que usou a chave **antiga** |
+| A recepção "desativada" ainda aparece como ativa | o banco foi zerado entre os dois comandos | rode o segundo bloco do item 2 inteiro, de uma vez |
+| Depois do item 2, outros testes dão resultados estranhos | o papel da recepção foi mudado no banco | zere o banco, como o fim do passo pede |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

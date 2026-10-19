@@ -322,7 +322,13 @@ só a equipe vê.
    | sem login → 101 | 500 | **401** |
 
 3. **A busca com aspa** (de outro pacote, mas a configuração é global):
-   `curl -s -G localhost:8080/api/pacientes/busca --data-urlencode "q='"`. O SQL ainda aparece?
+
+   ```bash
+   curl -s -G localhost:8080/api/pacientes/busca --data-urlencode "q='" | tee entregaveis/evidencias/fase4-busca-aspa-depois.txt; echo
+   ```
+
+   Esperado: uma linha curta, só com `timestamp`, `status` (`500`), `error` e `path` — sem
+   `trace` e sem SQL. O SQL ainda aparece?
 4. **Pela tela:** a Ana trocando `/exames/101` por `/exames/102` → "Exame não encontrado ou acesso
    negado."; o Bio abrindo a **Fila de Laudos** e publicando o 104.
 5. **Os testes:**

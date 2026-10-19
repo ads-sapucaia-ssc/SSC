@@ -322,8 +322,15 @@ de uso dentro do próprio `Papeis.java`.)
 
 **▶ Agora no G3:**
 
-1. Remonte e zere: `bash roteiros/comum/zerar-banco.sh`
-   (espere 30 s).
+1. Remonte o backend com o código novo e o banco original (a compilação acontece aqui: se houver
+   erro de digitação, o script termina com `ERRO ao ligar` e mostra o arquivo e a linha):
+
+   ```bash
+   bash roteiros/comum/zerar-banco.sh
+   ```
+
+   Esperado: `PRONTO: VidaPlus no ar...`. **Não pule este passo**: sem ele, a matriz do item 2
+   roda contra o código **antigo** e dá 200 em tudo.
 2. **A matriz, depois:**
 
    ```bash
@@ -441,6 +448,22 @@ do Grupo 5 — **sem** a implementação.
 9. **O `.feature @analise`** da F-04 (Fase 1), com pelo menos: "sem consentimento, o uso é
    negado"; "depois da revogação, o uso é negado"; "o consentimento de uma versão não vale para
    outra".
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| A matriz do "antes" (Passo 3) já mostra `403` em algumas células | a correção já está nesta branch | `git log --oneline -3`; o "antes" tem de ser gravado **antes** dos Passos 4 e 5 |
+| A matriz do "depois" ainda dá `200` em tudo | o VidaPlus não foi remontado com o código novo | rode o item 1 do Passo 6 (`zerar-banco.sh`) e a matriz de novo |
+| Problemas ao compilar ou nos resultados do Passo 6 | — | veja a tabela **Deu errado?** dentro do Passo 6 |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

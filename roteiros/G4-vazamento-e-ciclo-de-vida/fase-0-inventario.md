@@ -215,12 +215,28 @@ a Fase 4. E pense no canal: onde o token fica guardado no navegador, e quem mais
    mais lê essa mensagem (o provedor de e-mail, a operadora de SMS, quem olha a tela de bloqueio do
    celular, quem recebe um encaminhamento)? Com o link, o que essa pessoa consegue? Que **dado** já
    está no **texto**, mesmo sem clicar?
-2. **Site institucional (F-20).** O "site" é o que o nginx serve. Veja os cabeçalhos:
-   `curl -s -I localhost:4200/`. E pergunte: quem consegue **trocar** os arquivos da pasta
+2. **Site institucional (F-20).** O "site" é o que o nginx serve. Veja os cabeçalhos da página
+   inicial (o `-I` pede **só** os cabeçalhos):
+
+   ```bash
+   curl -s -I localhost:4200/ | tee entregaveis/evidencias/fase0-site-cabecalhos.txt
+   ```
+
+   Esperado: umas oito linhas, a primeira `HTTP/1.1 200 OK` e outras como `Server: nginx/...` e
+   `Content-Type: text/html`. E pergunte: quem consegue **trocar** os arquivos da pasta
    `public/` ou o `index.html`? (Pense no repositório e no pipeline.) Se alguém trocasse a página
    inicial por uma falsa pedindo a senha, como a clínica perceberia?
-3. Um teste curioso: `curl -s -o /dev/null -w '%{http_code} %{content_type}\n' localhost:4200/laudos/laudo-105.pdf`.
-   O laudo 105 não existe. O que o servidor respondeu? Compare com o tipo de conteúdo do
+3. Um teste curioso — pedir os laudos 104 (existe) e 105 (não existe), mostrando o código e o tipo
+   de conteúdo de cada resposta:
+
+   ```bash
+   for ID in 104 105; do
+     curl -s -o /dev/null -w "laudo-$ID.pdf -> %{http_code} %{content_type}\n" localhost:4200/laudos/laudo-$ID.pdf
+   done
+   ```
+
+   Esperado: duas linhas `laudo-NNN.pdf -> CÓDIGO TIPO`. O laudo 105 não existe. O que o servidor
+   respondeu? Compare com o tipo de conteúdo do
    `laudo-104.pdf`. Guarde para a Fase 2b.
 
 ---
