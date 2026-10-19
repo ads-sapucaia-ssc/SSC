@@ -129,7 +129,7 @@ backend. Para descobrir a versão dele, de dois jeitos:
   curl -s -I localhost:4200/ | grep -i "^server"
   ```
 
-  (Repare: o servidor **anuncia** a versão a qualquer visitante — o ZAP chama isso de "Server
+  Esperado: uma linha como `Server: nginx/1.27.5`. (Repare: o servidor **anuncia** a versão a qualquer visitante — o ZAP chama isso de "Server
   leaks version", regra 10036.)
 
 E para ver se essa imagem tem CVEs: na execução de "depois", clique no job **Gate - Container
@@ -254,6 +254,23 @@ Este passo é só a **análise**: não mexa no código ainda. A correção vem n
      um (num projeto real, um **cofre de segredos**); a troca foi manual (num projeto real, há um
      processo de **rotação**); e, no G4, a porta 3306 do banco continua publicada na máquina (`ports: "3306:3306"` no
    `docker-compose.yml`): com a senha nova ela está protegida, mas o canal existe — fica no plano.
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| `unzip: cannot find or open ~/Downloads/sbom.zip` | o arquivo do SBOM ainda não foi baixado, ou o navegador o salvou com outro nome | baixe de novo (**Actions** → execução → **Artifacts** → **sbom**) e confira o nome na pasta **Downloads**; se for outro (ex.: `sbom (1).zip`), use esse nome entre aspas no `unzip` |
+| No Passo 8.4 da aula guiada, o primeiro comando **entrou** no banco | as senhas ainda não foram trocadas (o `.env` não foi usado, ou o banco não foi zerado) | volte ao Passo 8.1 do [`comum/08`](../comum/08-segredos-fora-do-codigo.md) e rode o `zerar-banco.sh` |
+| `git merge main --no-edit` diz `CONFLICT` | o mesmo trecho do dossiê foi editado nas duas branches | veja [`comum/03` §4.2](../comum/03-git-e-github.md#42-se-aparecer-um-conflito) |
+| Algo da aula guiada (Passo 5) deu errado | — | use a tabela **Deu errado?** do próprio [`comum/08`](../comum/08-segredos-fora-do-codigo.md#deu-errado) |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

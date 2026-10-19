@@ -265,13 +265,13 @@ por estas cinco:
 estava escrita. Troque a linha:
 
 ```yaml
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot123"]
 ```
 
 por:
 
 ```yaml
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p\"$$MYSQL_ROOT_PASSWORD\""]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\""]
 ```
 
 (O `$$` é proposital: diz ao Compose "não troque isto agora; deixe o `$MYSQL_ROOT_PASSWORD` para

@@ -223,7 +223,8 @@ linha no STRIDE e na árvore (§3), linha no plano (§6.2) e, se for de privacid
    echo "== DEPOIS"; cat entregaveis/evidencias/fase4-semgrep-contagem-depois.txt
    ```
 
-   Quantos `vidaplus-sql-concat` havia antes e depois? Para ver **em quais arquivos** ficaram, abra
+   Esperado: as duas contagens, uma embaixo da outra (como a da Fase 4: `vidaplus-sql-concat` com
+   7 antes e 4 depois). Quantos `vidaplus-sql-concat` havia antes e depois? Para ver **em quais arquivos** ficaram, abra
    `entregaveis/evidencias/fase4-semgrep-depois.txt` no VS Code e procure (**Ctrl+F**)
    `sql-concat`. E a regra
    `vidaplus-weak-hash-md5`, que aponta o MD5 do seu pacote: continua lá? Por quê?

@@ -229,7 +229,7 @@ os testes novos precisam da tag do P0 para entrar no filtro:
            ports:
              - "3306:3306"
            options: >-
-             --health-cmd="mysqladmin ping -h localhost -uroot -proot123"
+             --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot123"
              --health-interval=10s --health-timeout=5s --health-retries=10
        steps:
          - uses: actions/checkout@v4

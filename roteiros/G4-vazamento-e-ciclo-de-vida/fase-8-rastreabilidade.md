@@ -161,10 +161,17 @@ A defesa dura 10–15 minutos; **qualquer integrante** pode ser perguntado sobre
 
    - **pela tela:** entre como Ana em `http://localhost:4200`, abra o exame 101 e troque, na barra de
      endereços, `/exames/101` por `/exames/102` → "Exame não encontrado ou acesso negado.";
-   - **o teste do P0 verde:**
+   - **o teste do P0 verde** (esperado, na última linha: `RESULTADO: todos os testes ... PASSARAM (verde)`):
 
      ```bash
      bash roteiros/comum/rodar-testes.sh "security & F-02"
+     ```
+
+   - **o canal "repositório" fechado na Fase 6** — a senha antiga do banco, que estava no
+     repositório, não entra mais (esperado: `ERROR 1045 (28000): Access denied`):
+
+     ```bash
+     docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidaplus123 vidaplus -e "SELECT 1;"
      ```
 
    - e, honestamente, **o canal que continua aberto** — a última parte da saída da tabela de canais
@@ -176,6 +183,21 @@ A defesa dura 10–15 minutos; **qualquer integrante** pode ser perguntado sobre
    - o paciente pede para apagar tudo. O que a clínica apaga, o que guarda, por quê e até quando?
    - qual a diferença entre eliminar e anonimizar? Quando usar cada um?
    - o que a notificação pode dizer, e o que nunca pode?
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Na demonstração, a Ana vê o exame 102 (`200`) | a branch da defesa não tem a correção, ou o VidaPlus não foi religado | `git checkout main`, `git pull` e `bash roteiros/comum/zerar-banco.sh` |
+| `zerar-banco.sh` diz `Falta o arquivo legacy-app/.env` | este computador ainda não tem o seu `.env` (Fase 6) | crie-o com o comando do [`comum/08` Passo 4b](../comum/08-segredos-fora-do-codigo.md#passo-4--crie-o-modelo-envexample-e-o-seu-env) |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

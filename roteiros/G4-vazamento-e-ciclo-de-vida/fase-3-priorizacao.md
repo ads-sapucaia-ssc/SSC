@@ -126,28 +126,36 @@ uma tabela **situação de falha | resposta de hoje | resposta que deveria ser**
 
 ```bash
 source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de novo se abriu outro terminal)
-curl -s -i localhost:8080/api/exames/999 -H "Authorization: Bearer $TOKEN_ANA" | head -12     # não existe
-curl -s -i localhost:8080/api/exames/999/pdf -H "Authorization: Bearer $TOKEN_ANA" | head -12 # não existe (PDF)
-curl -s -i localhost:8080/api/exames/abc -H "Authorization: Bearer $TOKEN_ANA" | head -12     # número inválido
-curl -s -i localhost:8080/api/exames/101 | head -12                                           # sem login
-curl -s -i localhost:8080/api/exames/101 -H "Authorization: Bearer token-falso" | head -12    # token falso
+{
+  echo "== nao existe";      curl -s -i localhost:8080/api/exames/999 -H "Authorization: Bearer $TOKEN_ANA" | head -12
+  echo "== nao existe (PDF)"; curl -s -i localhost:8080/api/exames/999/pdf -H "Authorization: Bearer $TOKEN_ANA" | head -12
+  echo "== numero invalido"; curl -s -i localhost:8080/api/exames/abc -H "Authorization: Bearer $TOKEN_ANA" | head -12
+  echo "== sem login";       curl -s -i localhost:8080/api/exames/101 | head -12
+  echo "== token falso";     curl -s -i localhost:8080/api/exames/101 -H "Authorization: Bearer token-falso" | head -12
+} | tee entregaveis/evidencias/fase3-falhas.txt
 ```
+
+As chaves `{ ... }` juntam os pedidos para o `tee` gravar tudo num arquivo só; cada `echo "== ..."`
+marca qual é o pedido. Esperado: as linhas `TOKEN_... ok` e, para cada `== ...`, a resposta com a
+linha `HTTP/1.1 CÓDIGO`, os cabeçalhos e o começo do corpo.
 
 E o banco fora do ar:
 
 ```bash
 source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de novo se abriu outro terminal)
 docker compose -f legacy-app/docker-compose.yml stop db
-curl -s -i localhost:8080/api/exames/101 -H "Authorization: Bearer $TOKEN_ANA" | head -12
+curl -s -i localhost:8080/api/exames/101 -H "Authorization: Bearer $TOKEN_ANA" | head -12 \
+  | tee entregaveis/evidencias/fase3-banco-fora-do-ar.txt
 docker compose -f legacy-app/docker-compose.yml start db
 ```
 
 (**Demora uns 30 segundos**: é o tempo que o backend espera pelo banco. Depois do `start`, espere
-uns 20 segundos.)
+uns 20 segundos.) Esperado: `Container legacy-app-db-1 Stopped`, a resposta (`HTTP/1.1 ...` e o
+corpo) e `Container legacy-app-db-1 Started`.
 
 Para cada linha da tabela, decidam: que **código** (400, 401, 403, 404, 500, 503)? Que **texto**?
-E a regra do oráculo: "não existe" e "não é seu" devem dar **a mesma** resposta? Guarde as saídas
-em `entregaveis/evidencias/fase3-falhas.txt`.
+E a regra do oráculo: "não existe" e "não é seu" devem dar **a mesma** resposta? As saídas ficaram
+em `entregaveis/evidencias/fase3-falhas.txt` e `fase3-banco-fora-do-ar.txt`.
 
 **E a rotina de retenção (planejada):** se ela falhar no meio, o paciente fica meio eliminado? (A
 resposta do Grupo 5: tudo numa **transação** — ou tudo, ou nada.)
@@ -165,6 +173,21 @@ resposta do Grupo 5: tudo numa **transação** — ou tudo, ou nada.)
 - nenhuma resposta (de sucesso **ou** de erro) contém detalhe interno ou indica se um recurso
   existe;
 - todo dado novo nasce com **prazo de retenção** definido.
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Depois do `stop db`, o `curl` ficou uns 30 segundos sem responder | o backend espera o banco antes de desistir | espere: é o comportamento que você está observando |
+| Depois do `start db`, os pedidos continuam dando erro | o banco ainda está subindo | espere uns 20 segundos; se persistir, `bash roteiros/comum/zerar-banco.sh` |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

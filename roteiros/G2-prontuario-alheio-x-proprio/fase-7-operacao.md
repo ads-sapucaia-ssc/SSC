@@ -146,6 +146,9 @@ docker compose -f legacy-app/docker-compose.yml logs backend --tail 200 > entreg
 docker compose -f legacy-app/docker-compose.yml logs frontend --tail 200 > entregaveis/evidencias/fase7-log-nginx.txt
 ```
 
+Esperado: nada aparece na tela — a saída foi para os arquivos. Abra-os no VS Code (**Ctrl+P** →
+`fase7-log`) para ler.
+
 ## Passo 2 — Descreva a operação de cada funcionalidade
 
 > 🔎 **Como o Grupo 5 fez:** para cada funcionalidade, **o que é registrado** (e o que **nunca** é),

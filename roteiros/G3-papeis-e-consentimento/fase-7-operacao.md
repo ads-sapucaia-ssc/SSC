@@ -140,6 +140,10 @@ bash roteiros/comum/zerar-banco.sh
 source roteiros/comum/tokens.sh
 ```
 
+Esperado: a primeira linha não mostra nada (a saída foi para o arquivo); depois, `PRONTO: VidaPlus
+no ar...` e as seis linhas `TOKEN_... ok`. Abra o arquivo no VS Code (**Ctrl+P** →
+`fase7-log-api.txt`) para ler.
+
 ## Passo 2 — Descreva a operação de cada funcionalidade
 
 > 🔎 **Como o Grupo 5 fez:** para cada funcionalidade, **o que é registrado** (e o que **nunca**

@@ -74,12 +74,15 @@ container, sem precisar instalar Java nem Maven, usando o banco do VidaPlus que 
    bash roteiros/comum/zerar-banco.sh
    ```
 
+   Esperado: `PRONTO: VidaPlus no ar...`.
+
 2. Rode os testes:
 
    ```bash
    bash roteiros/comum/rodar-testes.sh "security & F-02"
    ```
 
+   Esperado, na última linha: `RESULTADO: ...` — verde ou vermelho (como ler: §2.1, logo abaixo).
    O texto entre aspas é o **filtro**: "testes `@security` **e** da `F-02`". Troque pela
    funcionalidade do seu P0:
 

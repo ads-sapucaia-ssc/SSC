@@ -321,6 +321,10 @@ só a equipe vê.
    | Bio → 104 / 101 | 200 / 200 | **200 / 403** |
    | sem login → 101 | 500 | **401** |
 
+   No fim, a parte **"Arquivo direto no servidor do site (canal 2)"** continua **igual** ao
+   "antes": `laudo-102.pdf` e `laudo-104.pdf` com `200 application/pdf`, e `laudo-105.pdf` com
+   `200 text/html`. A correção foi na API; o arquivo nem passa por ela — esse canal está no plano.
+
 3. **A busca com aspa** (de outro pacote, mas a configuração é global):
 
    ```bash
@@ -441,6 +445,22 @@ Escrevam:
 9. **O `.feature @analise`** da F-06 (Fase 1), com pelo menos: "o prontuário dentro do prazo legal
    é mantido mesmo com pedido do titular", "o dado vencido é eliminado" e "o titular recebe a
    resposta explicando o que foi mantido e por quê".
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| O "antes" (Passo 3) já mostra `403` em algumas linhas | a correção já está nesta branch, ou o banco não foi zerado | `git log --oneline -3`; o "antes" tem de ser gravado **antes** dos Passos 4 a 6 |
+| O **Substituir tudo** do 6.1 fez menos (ou mais) de 6 substituições | foi usado em outro arquivo, ou o texto do primeiro campo está diferente | confira que o arquivo aberto é o `ExameController.java` e copie o texto exatamente como está no passo |
+| Problemas ao compilar ou nos resultados do Passo 7 | — | veja a tabela **Deu errado?** dentro do Passo 7 |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

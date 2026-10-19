@@ -159,7 +159,8 @@ git pull
 git branch -d dossie/fase-0
 ```
 
-O último comando apaga a branch local, que já foi juntada.
+O último comando apaga a branch local, que já foi juntada. Esperado: `Switched to branch 'main'`,
+as linhas do `pull` e `Deleted branch dossie/fase-0`.
 
 ---
 

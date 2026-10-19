@@ -150,7 +150,8 @@ for ID in 100 101 102 103 104 105; do
 done
 ```
 
-Que exames a Ana consegue? E os números que **não existem** (100, 105): a resposta é diferente de
+Esperado: as linhas `TOKEN_... ok` e seis linhas `exame NNN: ...`, com o começo da resposta e o
+código entre colchetes, como `[200]`. Que exames a Ana consegue? E os números que **não existem** (100, 105): a resposta é diferente de
 um que existe? (I — guarde para a Fase 2b.)
 
 **Fluxo "mensagem de erro"**
@@ -163,15 +164,18 @@ done
 curl -s localhost:8080/api/exames/101 | head -c 300; echo     # sem token
 ```
 
-Para cada resposta: que informação interna ela entrega (nomes de classes Java, nomes de métodos,
+Esperado: as linhas `TOKEN_... ok`; depois, para cada endereço, uma linha `== /api/...` e o
+começo da resposta (até 300 caracteres); por último, a resposta sem token. Para cada resposta:
+que informação interna ela entrega (nomes de classes Java, nomes de métodos,
 o SQL)? Que letra? Que outra falha esse detalhe ajuda a explorar? Veja também a busca com uma aspa:
 
 ```bash
 curl -s -G localhost:8080/api/pacientes/busca --data-urlencode "q='" | head -c 600; echo
 ```
 
-Esperado: um texto que começa com `{"timestamp":` e, mais adiante, mostra pedaços do comando SQL
-(procure `SELECT`). E repare no código de status **sem token**: é o certo? (Compare com a
+Esperado: um texto que começa com `{"timestamp":` e, mais adiante, traz
+`You have an error in your SQL syntax ... near '%' OR cpf LIKE ...` — um pedaço do comando SQL,
+e a informação de que o banco é MySQL. E repare no código de status **sem token**: é o certo? (Compare com a
 tabela de [`comum/02` §1.2](../comum/02-observar-o-sistema.md#12-códigos-de-status-http-que-você-vai-encontrar).)
 
 **Processo "Servir arquivo" (nginx) e depósito "pasta de laudos"**
@@ -182,7 +186,8 @@ for ID in 101 102 103 104 105; do
 done
 ```
 
-Sem login, quais baixam? E o 105, que não existe — o código é 200, mas o **tipo de conteúdo** é
+Esperado: cinco linhas `laudo-NNN.pdf -> CÓDIGO TIPO`. Sem login, quais baixam? E o 105, que não
+existe — o código é 200, mas o **tipo de conteúdo** é
 outro. Por quê? (Abra `frontend/nginx.conf` — **Ctrl+P** → `nginx.conf` — e leia a linha `try_files`.) Isso permite descobrir **quais laudos
 existem** só olhando o tipo da resposta.
 
@@ -249,6 +254,20 @@ OBJETIVO: <...>                                              (OR)
 │      └── <baixar cada um>                    custo <...>   → REQ-...
 └── 3. <...>
 ```
+
+---
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| O laudo 105 aparece com `200` e parece existir | o nginx devolve a página do site (`text/html`) para qualquer arquivo que não existe | é o achado: compare o **tipo** (`application/pdf` × `text/html`), não só o código |
 
 ---
 

@@ -111,6 +111,9 @@ curl -s -X POST localhost:8080/api/auth/login \
 | `-d '{...}'` | o **corpo** do pedido. Aspas **simples** por fora, para as aspas duplas do JSON passarem intactas |
 | `\` no fim da linha | "o comando continua na linha de baixo". Pode digitar tudo numa linha só, sem as barras |
 
+Esperado: uma linha JSON como `{"access_token":"eyJhbGciOi...","paciente_id":1,"nome":"Ana Silva",...}`.
+O `access_token` é o "crachá" que a tela guarda depois do login.
+
 A resposta traz `"access_token":"eyJ..."`.
 
 ### 2.4 Guardar o token numa variável e usá-lo
@@ -374,6 +377,7 @@ Os que aparecem em **qualquer** fase estão aqui.
 |---|---|---|
 | `curl: (7) Failed to connect to localhost port 8080` | o VidaPlus está desligado, ou acabou de ligar e a API ainda não responde | `bash roteiros/comum/zerar-banco.sh` e espere o `PRONTO`. Se você só usou `up -d`, espere uns 30 segundos |
 | Um pedido com `$TOKEN_...` responde `500` e o log diz `nao autenticado` | a variável do token está **vazia**: o terminal é outro (ou foi fechado) desde o `source` | confira com `echo "${TOKEN_ANA:0:10}"` — deve mostrar `eyJhbGciOi`. Se não mostrar nada: `source roteiros/comum/tokens.sh` |
+| `zerar-banco.sh` termina com `A API nao respondeu em 2 minutos` | o backend demorou a subir (computador ocupado) ou não subiu | rode `docker compose -f legacy-app/docker-compose.yml logs backend --tail 40`: se houver uma linha `ERROR`, ela diz o motivo; se não houver, rode o `zerar-banco.sh` de novo |
 | `TOKEN_... FALHOU` ao rodar o `tokens.sh` | o VidaPlus está desligado, ou aquela conta foi desativada por um teste anterior | `bash roteiros/comum/zerar-banco.sh` e `source roteiros/comum/tokens.sh` de novo |
 | O resultado é diferente do "Esperado" do roteiro (outro número, outra lista) | um teste anterior **mudou os dados** (publicou um laudo, desativou um usuário…) | zere o banco e repita: `bash roteiros/comum/zerar-banco.sh` e `source roteiros/comum/tokens.sh` |
 | `No such file or directory` ao rodar `bash roteiros/...` | o terminal não está na raiz do repositório | rode `ls`: deve mostrar `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não, **File → Open Folder…** na pasta do repositório e abra um terminal novo |

@@ -133,7 +133,7 @@ O `zerar-banco.sh` recompila esse código e volta o banco ao original.)
    done
    ```
 
-   O 102 e o 104 continuam saindo sem login? O 105 continua revelando que não existe? Registre como
+   Esperado: três linhas `laudo-NNN.pdf -> CÓDIGO TIPO`. O 102 e o 104 continuam saindo sem login? O 105 continua revelando que não existe? Registre como
    **aberto** (está no plano).
 2. **Outro dado de saúde, outro canal** — a nota clínica da Ana, sem token nenhum:
 
@@ -240,6 +240,22 @@ STRIDE e na árvore (§3), no plano (§6.2) e, se for de privacidade, no RIPD (�
 - e os achados do Passo 2.
 
 E os parágrafos dos **scanners** e do **gate de testes**.
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| `A API nao respondeu em 2 minutos` e, depois, `TOKEN_... FALHOU` | o backend demorou a subir (computador ocupado) ou não subiu | rode `docker compose -f legacy-app/docker-compose.yml logs backend --tail 40`; se não houver `ERROR`, rode o `zerar-banco.sh` de novo |
+| No item 3, a **primeira** linha já mostra `House -> 102: 200` | o atendimento Ana→Bruno já tinha sido criado numa tentativa anterior | `bash roteiros/comum/zerar-banco.sh`, `source roteiros/comum/tokens.sh` e repita o item 3 |
+| A busca com aspa ainda mostra `trace` e SQL | a correção do 6.2 (Fase 4) não está nesta branch | `git log --oneline -3` deve mostrar o merge da correção; depois, `zerar-banco.sh` |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

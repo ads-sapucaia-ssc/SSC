@@ -134,6 +134,12 @@ Agora rode **um bloco de cada vez** e, depois de cada um, olhe os Terminais 1 e 
    curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/api/exames/999/pdf -H "Authorization: Bearer $TOKEN_ANA"
    ```
 
+No Terminal 3, as respostas esperadas são `403`, `200`, `200 text/html` e `403`. Nos logs, o
+esperado é: no **Terminal 1 (API)**, **nenhuma** linha nova; no **Terminal 2 (nginx)**, uma linha
+no pedido 2 e outra no 3, parecidas com
+`172.18.0.1 - - [19/Oct/2026:16:20:27 +0000] "GET /laudos/laudo-104.pdf HTTP/1.1" 200 1040 "-" "curl/8.18.0"`
+(no 105, o número antes do `"-"` é o tamanho da página do site, não de um PDF).
+
 Para cada um, compare os Terminais 1 e 2. O nginx registra o download: **com que** informações? Ele
 sabe **quem** baixou? A API registrou o acesso negado? Se uma lista de laudos aparecesse amanhã num
 fórum, por qual log vocês descobririam **quais** arquivos saíram e **de onde**?
@@ -146,6 +152,9 @@ para guardá-los como evidência, no Terminal 3:
 docker compose -f legacy-app/docker-compose.yml logs backend --tail 200 > entregaveis/evidencias/fase7-log-api.txt
 docker compose -f legacy-app/docker-compose.yml logs frontend --tail 200 > entregaveis/evidencias/fase7-log-nginx.txt
 ```
+
+Esperado: nada aparece na tela — a saída foi para os arquivos. Abra-os no VS Code (**Ctrl+P** →
+`fase7-log`) para ler.
 
 ## Passo 2 — Descreva a operação de cada canal
 
@@ -210,6 +219,21 @@ o canal **mais provável** (Fase 2a: o mais barato da árvore) e escrevam para e
 4. **Agravante:** algum dos laudos vazados era de alguém cujo prazo de guarda já tinha acabado?
    Como a clínica explica, na comunicação, por que ainda tinha o dado?
 5. **Recomendação aos titulares.**
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Nenhuma linha aparece no Terminal 2 (nginx) depois dos pedidos 2 e 3 | o Terminal 2 não está acompanhando o log do `frontend` | clique no Terminal 2: a última linha deve ser o comando `logs frontend -f`, sem o prompt `$` depois; se tiver, rode-o de novo |
+| Os arquivos `fase7-log-*.txt` ficaram sem as linhas dos pedidos | o VidaPlus foi religado depois dos pedidos (o log começa do zero) | repita os pedidos do Passo 1 e grave os logs em seguida, sem zerar o banco no meio |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

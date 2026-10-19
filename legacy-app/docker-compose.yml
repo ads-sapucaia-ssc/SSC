@@ -16,7 +16,10 @@ services:
       - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
       - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
+      # 127.0.0.1 (e nao "localhost") forca o teste pela rede: na 1a subida, o MySQL roda um
+      # servidor temporario so pelo socket para carregar schema/seed; "localhost" o veria como
+      # pronto cedo demais e o backend subiria antes do banco de verdade.
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot123"]
       interval: 10s
       timeout: 5s
       retries: 10

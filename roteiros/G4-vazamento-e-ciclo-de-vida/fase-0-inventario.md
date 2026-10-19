@@ -135,7 +135,8 @@ curl -s -i localhost:8080/api/exames/102 -H "Authorization: Bearer $TOKEN_ANA" \
   | tee entregaveis/evidencias/fase0-canal-api.txt
 ```
 
-O exame 102 é do Bruno. O que a Ana recebeu?
+Esperado: as linhas `TOKEN_... ok`, a resposta com a linha `HTTP/1.1 ...`, os cabeçalhos e uma
+linha JSON que começa com `{"id":102`. O exame 102 é do Bruno. O que a Ana recebeu?
 
 **Canal 2 — o arquivo direto, sem login nenhum.**
 
@@ -145,24 +146,31 @@ for ID in 101 102 103 104; do
 done | tee entregaveis/evidencias/fase0-canal-arquivo.txt
 ```
 
-Abra `http://localhost:4200/laudos/laudo-104.pdf` numa **janela anônima** (sem login). O que está
+Esperado: quatro linhas `laudo-NNN.pdf -> CÓDIGO TIPO`. Abra
+`http://localhost:4200/laudos/laudo-104.pdf` numa **janela anônima** (sem login). O que está
 escrito? Ele foi publicado?
 
 **Canal 3 — a mensagem de erro.** Peça coisas que **dão errado** e leia a resposta inteira:
 
 ```bash
 source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de novo se abriu outro terminal)
-curl -s localhost:8080/api/exames/999/pdf -H "Authorization: Bearer $TOKEN_ANA" | head -c 600; echo
-curl -s localhost:8080/api/exames/101 | head -c 600; echo
-curl -s -G localhost:8080/api/pacientes/busca --data-urlencode "q='" | head -c 600; echo
+{
+  curl -s localhost:8080/api/exames/999/pdf -H "Authorization: Bearer $TOKEN_ANA" | head -c 600; echo
+  curl -s localhost:8080/api/exames/101 | head -c 600; echo
+  curl -s -G localhost:8080/api/pacientes/busca --data-urlencode "q='" | head -c 600; echo
+} | tee entregaveis/evidencias/fase0-canal-erro.txt
 ```
+
+As chaves `{ ... }` juntam os três pedidos para o `tee` gravar tudo num arquivo só. Esperado: as
+linhas `TOKEN_... ok` e três respostas que começam com `{"timestamp":` (cada uma cortada em 600
+caracteres pelo `head -c 600`).
 
 O primeiro pede o PDF de um exame que não existe; o segundo, um exame **sem login**; o terceiro
 manda uma aspa na busca. Em cada resposta, procure `exception`, `trace` e `message`. O que elas
-contam sobre o **funcionamento interno** do sistema? Repare no terceiro: a mensagem mostra **o
-comando SQL**. Que ajuda isso dá a um atacante?
+contam sobre o **funcionamento interno** do sistema? Repare no terceiro: a mensagem mostra **um pedaço do
+comando SQL** (`... OR cpf LIKE ...`) e diz que o banco é MySQL. Que ajuda isso dá a um atacante?
 
-Guarde as três saídas: `fase0-canal-erro.txt`.
+As três saídas ficaram em `entregaveis/evidencias/fase0-canal-erro.txt`.
 
 ---
 
@@ -179,7 +187,8 @@ docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidap
 docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidaplus123 vidaplus -e "SELECT id, paciente_id, tipo, publicado, criado_em FROM exame;"
 ```
 
-Para a F-06, pense no **ciclo de vida**:
+Esperado: três tabelas em texto — as colunas de `paciente`, as linhas dos pacientes (com `ativo`
+e `criado_em`) e as linhas dos exames. Para a F-06, pense no **ciclo de vida**:
 
 1. Que colunas dizem **quando** um dado nasceu? Existe alguma que diga **até quando** ele deve
    ficar?
@@ -222,7 +231,7 @@ a Fase 4. E pense no canal: onde o token fica guardado no navegador, e quem mais
    curl -s -I localhost:4200/ | tee entregaveis/evidencias/fase0-site-cabecalhos.txt
    ```
 
-   Esperado: umas oito linhas, a primeira `HTTP/1.1 200 OK` e outras como `Server: nginx/...` e
+   Esperado: umas nove linhas, a primeira `HTTP/1.1 200 OK` e outras como `Server: nginx/...` e
    `Content-Type: text/html`. E pergunte: quem consegue **trocar** os arquivos da pasta
    `public/` ou o `index.html`? (Pense no repositório e no pipeline.) Se alguém trocasse a página
    inicial por uma falsa pedindo a senha, como a clínica perceberia?
@@ -295,6 +304,21 @@ Ativos que um G4 atento encontra: o resultado do exame, o **arquivo** do laudo, 
 exame, o **conteúdo das mensagens de erro**, o **texto e o link** da notificação (planejados), o
 **conteúdo do site**, os dados dos pacientes **inativos**, os segredos — e o que **falta** (prazo
 de guarda, eliminação).
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| O PDF do laudo não abre na janela anônima (baixa um arquivo) | o navegador está configurado para baixar PDFs | abra o arquivo baixado na pasta **Downloads**: o conteúdo é o mesmo |
+| As respostas do canal 3 parecem "cortadas" no meio | o `head -c 600` mostra só os 600 primeiros caracteres, de propósito | para ver tudo, rode o `curl` sem o `| head -c 600` |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

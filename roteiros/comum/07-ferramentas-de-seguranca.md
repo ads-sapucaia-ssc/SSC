@@ -246,9 +246,18 @@ comando examina o **site** (porta 4200) e grava a saída como evidência. A prim
 imagem do ZAP (grande — alguns minutos); o exame leva uns 2 minutos:
 
 ```bash
+mkdir -p entregaveis/evidencias
 docker run --rm --network host ghcr.io/zaproxy/zaproxy:stable \
   zap-baseline.py -t http://localhost:4200 -I | tee entregaveis/evidencias/zap-site.txt
 ```
+
+Esperado: muitas linhas `PASS: ...`, algumas `WARN-NEW: ...` e, no fim, a linha de resumo
+`FAIL-NEW: 0  ...  WARN-NEW: 8  ...  PASS: 59` (os números podem variar um pouco).
+
+> **No Windows (Docker Desktop)**, o `--network host` pode não funcionar. Use
+> `docker run --rm ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://host.docker.internal:4200 -I`
+> (sem o `--network host`; `host.docker.internal` é o nome do seu computador visto de dentro do
+> container).
 
 | Parte | Significado |
 |---|---|
@@ -317,6 +326,9 @@ versões de quem tem "jjwt" no nome (troque `jjwt` pelo que procura):
 ```bash
 grep -o '"name":"[^"]*jjwt[^"]*","version":"[^"]*"' ~/Downloads/artefato-sbom/sbom.cdx.json | sort -u
 ```
+
+Esperado: três linhas, `"name":"jjwt-api","version":"0.12.6"`, `"name":"jjwt-impl",...` e
+`"name":"jjwt-jackson",...` — as três partes da biblioteca do token, na versão que o projeto usa.
 
 ---
 
