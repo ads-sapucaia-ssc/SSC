@@ -192,7 +192,7 @@ OBJETIVO: copiar nome, CPF e dados sensíveis de todos os pacientes             
 │      └── XSS na nota rouba o JWT de um médico custo médio (precisa gravar uma nota,
 │                                               e o legado não tem tela para isso)          → REQ-XSS-01
 ├── 5. Ler direto do banco                                                                  (AND)
-│      ├── alcançar a porta 3306, aberta para fora do container   custo baixo (mesma rede)
+│      ├── alcançar a porta do banco (3307), aberta na máquina    custo baixo (mesma rede)
 │      └── usar a senha gravada no docker-compose.yml             custo trivial             → F-10 (corrigido, §8)
 ├── 6. Busca legítima iterada (A, B, C...)      custo médio · com o REQ-AUTH-BUSCA-01,
 │                                               passa a exigir conta                        → REQ-PRIV-BUSCA-01
@@ -593,7 +593,7 @@ de outros pacotes.
   |---|---|---|---|
   | `legacy-app/backend/src/main/java/br/ifsul/vidaplus/security/JwtUtil.java` | chave que assina os tokens de login | quem tem o código cria token válido de qualquer usuário, inclusive admin | lida da variável de ambiente `JWT_SECRET`; sem ela (ou com menos de 32 caracteres), nenhum token é emitido nem aceito; **valor trocado** |
   | `legacy-app/backend/src/main/resources/application.properties` | senha do banco; uma cópia (não usada) da chave do JWT | acesso direto ao banco por quem tem o código | senha vira `${SPRING_DATASOURCE_PASSWORD}` (o Spring não sobe sem ela); a cópia da chave foi apagada |
-  | `legacy-app/docker-compose.yml` | senhas do banco (`root` e da aplicação, repetida na configuração do backend) | idem — e a porta do banco (3306) fica aberta na máquina | as três vêm do `legacy-app/.env` (fora do Git; modelo em `.env.example`), com `${...:?}`: sem o `.env`, nada sobe; **valores trocados** |
+  | `legacy-app/docker-compose.yml` | senhas do banco (`root` e da aplicação, repetida na configuração do backend) | idem — e a porta do banco (3307 na máquina) fica aberta | as três vêm do `legacy-app/.env` (fora do Git; modelo em `.env.example`), com `${...:?}`: sem o `.env`, nada sobe; **valores trocados** |
   | `legacy-app/backend/src/test/resources/application.properties` (e o banco de teste do pipeline) | senha do banco descartável do CI e uma chave de JWT só de teste | baixo: o banco só existe durante a execução, sem dado real | **risco aceito**, com esta justificativa |
 
   **Requisito.** *REQ-SEGREDO-01 — O sistema deve obter senhas e chaves do ambiente de execução, e
@@ -623,7 +623,7 @@ de outros pacotes.
   **O que continua em aberto:** o `.env` fica em texto no computador de cada integrante (num
   projeto real, um **cofre de segredos**, com acesso registrado); a troca foi manual (num projeto
   real, **rotação** periódica e um procedimento para trocar às pressas — que o plano de incidente
-  da §9 usa); a porta 3306 continua publicada na máquina (plano: só na rede interna do Docker).
+  da §9 usa); a porta do banco (3307) continua publicada na máquina (plano: só na rede interna do Docker).
 
 ---
 

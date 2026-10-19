@@ -184,7 +184,7 @@ descobre se está afetada?
    (se o grupo não tiver mexido nesses arquivos).
 2. Para cada achado: arquivo, linha, **o que é** o segredo.
 3. **Para o G4, o repositório é um canal de vazamento:** a senha do banco no `docker-compose.yml`
-   dá acesso a **todos** os laudos, sem passar por nenhum controle da API. E a porta 3306 está
+   dá acesso a **todos** os laudos, sem passar por nenhum controle da API. E a porta do banco (3307) está
    aberta na máquina. Escrevam esse risco como um **canal**.
 4. **Ciclo de vida do segredo:** o Gitleaks varre **o histórico**. Se ele acusar um arquivo que
    **não existe mais**, o que isso prova? É a mesma lição da F-06: **apagar do lugar visível não é
@@ -251,7 +251,7 @@ Este passo é só a **análise**: não mexa no código ainda. A correção vem n
    - na **tabela de gates** (Passo 1), a linha do Gitleaks ganha o "depois" da F-10;
    - **o que continua em aberto** (seja honesto): o `.env` fica em texto no computador de cada
      um (num projeto real, um **cofre de segredos**); a troca foi manual (num projeto real, há um
-     processo de **rotação**); e, no G4, a porta 3306 do banco continua publicada na máquina (`ports: "3306:3306"` no
+     processo de **rotação**); e, no G4, a porta do banco continua publicada na máquina (`ports: "3307:3306"` no
    `docker-compose.yml`): com a senha nova ela está protegida, mas o canal existe — fica no plano.
 
 ## Deu errado?

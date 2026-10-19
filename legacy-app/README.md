@@ -11,7 +11,7 @@ via `curl`. Os comandos abaixo continuam valendo para testar a API diretamente.
 docker compose up --build  
  # Frontend:  http://localhost:4200  
  # API:       http://localhost:8080  
- # MySQL:     localhost:3306 (vidaplus / vidaplus123)  ← credencial exposta de propósito  
+ # MySQL:     localhost:3307 (vidaplus / vidaplus123)  ← credencial exposta de propósito  
    
 **Usuários de teste**  
 | | | |  

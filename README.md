@@ -132,7 +132,7 @@ e autenticação, em [roteiros/comum/00](roteiros/comum/00-antes-de-comecar.md))
 bash roteiros/comum/zerar-banco.sh
 # Frontend:  http://localhost:4200
 # API:       http://localhost:8080
-# MySQL:     localhost:3306
+# MySQL:     localhost:3307
 ```
 
 O script liga o VidaPlus do zero (banco com os dados originais) e espera a API responder;

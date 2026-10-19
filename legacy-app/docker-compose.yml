@@ -11,7 +11,9 @@ services:
       MYSQL_USER: vidaplus
       MYSQL_PASSWORD: vidaplus123   # V-05
     ports:
-      - "3306:3306"
+      # 3307 na maquina: a 3306 costuma estar ocupada por um MySQL instalado no computador
+      # (ex.: os do laboratorio). Dentro da rede do Docker o backend continua usando db:3306.
+      - "3307:3306"
     volumes:
       - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
       - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro

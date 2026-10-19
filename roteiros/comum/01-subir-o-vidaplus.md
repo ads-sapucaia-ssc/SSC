@@ -24,7 +24,7 @@ O VidaPlus é o sistema de uma clínica. Ele tem **três partes**:
 |---|---|---|---|
 | **frontend** | as telas que você vê no navegador | React (JavaScript), servido pelo programa **nginx** | `http://localhost:4200` |
 | **backend** (API) | recebe os pedidos das telas, aplica as regras e consulta o banco | Java + Spring Boot | `http://localhost:8080` |
-| **db** | guarda os dados (usuários, pacientes, exames…) | MySQL | `localhost:3306` |
+| **db** | guarda os dados (usuários, pacientes, exames…) | MySQL | `localhost:3307` (na máquina; dentro do Docker, `db:3306`) |
 
 O caminho de um clique é sempre o mesmo:
 
@@ -225,7 +225,7 @@ procure linhas com `ERROR` e o nome de um arquivo `.java` (com o número da linh
 | O que aparece | O que significa | O que fazer |
 |---|---|---|
 | `permission denied while trying to connect to the Docker daemon socket` | seu usuário não pode usar o Docker | avise o professor (não use `sudo`) |
-| `port is already allocated` ou `address already in use` | outro programa já usa a porta 3306, 8080 ou 4200 — quase sempre um VidaPlus antigo ligado em outra pasta | `docker ps` mostra o que está rodando; para desligar **todos** os containers ligados, rode `docker stop $(docker ps -q)` e depois o `zerar-banco.sh` de novo |
+| `port is already allocated` ou `address already in use` | outro programa já usa a porta 3307, 8080 ou 4200 — quase sempre um VidaPlus antigo ligado em outra pasta | `docker ps` mostra o que está rodando; para desligar **todos** os containers ligados, rode `docker stop $(docker ps -q)` e depois o `zerar-banco.sh` de novo |
 | `no such file or directory: legacy-app/docker-compose.yml` | o terminal não está na raiz do repositório | rode `ls`: se não aparecer `legacy-app`, abra a pasta certa no VS Code (**File → Open Folder…**) |
 | `A API nao respondeu em 2 minutos` | o backend não subiu | veja o log: `docker compose -f legacy-app/docker-compose.yml logs backend --tail 40` e procure a primeira linha com `ERROR` |
 | A tela de login diz "Não foi possível entrar" | o backend ainda está subindo, ou caiu | espere 30 s; se continuar, veja o log (linha acima) |
