@@ -53,6 +53,13 @@ docker run --rm hello-world
 Este baixa e roda um container de teste. Resposta esperada: um texto que começa com
 **`Hello from Docker!`**.
 
+```bash
+python3 --version
+```
+
+Resposta esperada: algo como `Python 3.12.3`. Os roteiros usam o Python para **formatar** respostas
+da API (`python3 -m json.tool`) e em um script de demonstração; você não vai programar em Python.
+
 **Deu erro?**
 
 | Mensagem | O que significa | O que fazer |
@@ -233,3 +240,15 @@ Use isto só se quiser trabalhar no seu computador pessoal com Windows 10 ou 11.
    o token no cofre de senhas dele, e o login abre no navegador.
 5. Colar no Git Bash é **Shift+Insert** ou clique com o botão direito.
 6. O script [`rodar-testes.sh`](rodar-testes.sh) já sabe lidar com o Windows; rode-o pelo Git Bash.
+7. **Python** (`python.org/downloads`): na primeira tela do instalador, marque **"Add python.exe to
+   PATH"**. No Windows o comando costuma se chamar `python`, e não `python3`; para os comandos dos
+   roteiros funcionarem como estão escritos, rode **uma vez** no Git Bash:
+
+   ```bash
+   echo "alias python3='python'" >> ~/.bashrc
+   source ~/.bashrc
+   python3 --version
+   ```
+
+   Esperado: `Python 3.` e o resto do número. Se aparecer uma janela da Microsoft Store, o
+   Python não foi instalado com a opção "Add python.exe to PATH": reinstale marcando-a.

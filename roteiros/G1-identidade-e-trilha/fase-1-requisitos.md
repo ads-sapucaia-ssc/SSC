@@ -24,7 +24,7 @@ e **▶ o mesmo passo no G1**.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
@@ -51,10 +51,11 @@ e **▶ o mesmo passo no G1**.
    ```bash
    bash roteiros/comum/zerar-banco.sh
    source roteiros/comum/tokens.sh
+   mkdir -p entregaveis/evidencias
    ```
 
    O primeiro termina com `PRONTO: VidaPlus no ar...` (a primeira vez demora alguns minutos); o
-   segundo mostra seis linhas `TOKEN_... ok`. Os tokens valem **só neste terminal**: se abrir
+   segundo mostra seis linhas `TOKEN_... ok`. O terceiro cria a pasta das evidências, se ela ainda não existir. Os tokens valem **só neste terminal**: se abrir
    outro, rode o `source` de novo.
 
 ---
@@ -277,6 +278,22 @@ Regras e dicas:
 > ([`docs/12` §2, Forma 2](../../docs/12-exemplo-dossie-preenchido.md#forma-2--cenários-gherkin-feature-vinculados-à-tecnologia)).
 
 **▶ Agora no G1:** a mesma tabela. `sqli.feature` com `@security`; os outros com `@analise`.
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| `O VidaPlus nao esta rodando. Antes, rode: bash roteiros/comum/zerar-banco.sh` | o teste precisa do banco do VidaPlus ligado | rode o `zerar-banco.sh` e repita |
+| O teste do P0 deu **verde** já no "antes" | você está numa branch que já tem a correção (ou o grupo já mesclou a Fase 4) | `git branch --show-current` deve mostrar `dossie/fase-1`; a Fase 1 vem antes da correção |
+| Muitas linhas `WARNING: ... agent ...` antes do resultado | avisos normais do Java | ignore; procure `expected` e `RESULTADO` ([`comum/04` §2.1](../comum/04-testes-e-pipeline.md#21-lendo-o-resultado)) |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

@@ -21,7 +21,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
@@ -48,10 +48,11 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ```bash
    bash roteiros/comum/zerar-banco.sh
    source roteiros/comum/tokens.sh
+   mkdir -p entregaveis/evidencias
    ```
 
    O primeiro termina com `PRONTO: VidaPlus no ar...` (a primeira vez demora alguns minutos); o
-   segundo mostra seis linhas `TOKEN_... ok`. Os tokens valem **só neste terminal**: se abrir
+   segundo mostra seis linhas `TOKEN_... ok`. O terceiro cria a pasta das evidências, se ela ainda não existir. Os tokens valem **só neste terminal**: se abrir
    outro, rode o `source` de novo.
 
 ---
@@ -113,7 +114,8 @@ os riscos ao titular e as medidas.
    curl -s -X POST localhost:8080/api/auth/reset -H "Content-Type: application/json" -d '{"email":"vizinho@teste.com"}'; echo
    ```
 
-   Imagine que você conhece o e-mail do seu vizinho. O que você descobre sobre ele, **sem invadir
+   Esperado: duas linhas JSON, cada uma com um campo `"mensagem"`. Imagine que você conhece o
+   e-mail do seu vizinho. O que você descobre sobre ele, **sem invadir
    nada**? Numa **clínica**, "ter conta" significa o quê? Que categoria é essa?
 2. **Login (F-01):** compare as respostas de "senha errada" e de "e-mail inexistente":
 
@@ -124,7 +126,8 @@ os riscos ao titular e as medidas.
    curl -s -X POST localhost:8080/api/auth/login -H "Content-Type: application/json" -d '{"email":"naoexiste@teste.com","senha":"errada"}'; echo
    ```
 
-   São iguais? Se fossem diferentes, seria a mesma ameaça do item anterior.
+   Esperado: quatro linhas — para cada e-mail, uma `HTTP/1.1 ...` e um JSON. São iguais? Se
+   fossem diferentes, seria a mesma ameaça do item anterior.
 3. **Token (F-11):** decodifique de novo o conteúdo do token da Ana:
 
    ```bash
@@ -132,6 +135,7 @@ os riscos ao titular e as medidas.
    echo "$TOKEN_ANA" | cut -d. -f2 | base64 -d; echo
    ```
 
+   Esperado: as seis linhas `TOKEN_... ok` e, depois, um JSON curto com `"sub"` e `"papel"`.
    Ele é **legível por qualquer
    um** que o veja (não é cifrado, só assinado). O que ele revela? E onde ele fica guardado num
    **computador compartilhado** (como os do laboratório), depois que a pessoa fecha o navegador sem
@@ -225,6 +229,20 @@ categorias e anote as que se aplicam. Para cada ameaça:
 **▶ Agora no G1:** que dado **do seu pacote** é coletado, guardado ou devolvido **sem
 necessidade**? Pistas: o que a resposta do login devolve além do token (Fase 0, Passo 3)? O que vai
 dentro do token? O que o reset devolve na resposta?
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| As respostas de "senha errada" e "e-mail inexistente" parecem diferentes só na hora | a linha `Date:` muda a cada segundo | compare só a primeira linha (`HTTP/1.1 ...`) e o corpo JSON |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

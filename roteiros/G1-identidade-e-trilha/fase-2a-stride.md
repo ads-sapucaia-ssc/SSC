@@ -20,7 +20,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
@@ -47,10 +47,11 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ```bash
    bash roteiros/comum/zerar-banco.sh
    source roteiros/comum/tokens.sh
+   mkdir -p entregaveis/evidencias
    ```
 
    O primeiro termina com `PRONTO: VidaPlus no ar...` (a primeira vez demora alguns minutos); o
-   segundo mostra seis linhas `TOKEN_... ok`. Os tokens valem **só neste terminal**: se abrir
+   segundo mostra seis linhas `TOKEN_... ok`. O terceiro cria a pasta das evidências, se ela ainda não existir. Os tokens valem **só neste terminal**: se abrir
    outro, rode o `source` de novo.
 
 ---
@@ -189,7 +190,8 @@ anote o resultado e a letra):
      -d "{\"email\":\"admin@vidaplus.local' -- \",\"senha\":\"qualquer\"}"; echo
    ```
 
-   O que veio no campo `papel` da resposta? O sistema conferiu a senha?
+   Esperado: uma linha JSON que começa com `{"access_token":"eyJ`. O que veio no campo `papel` da
+   resposta? O sistema conferiu a senha?
 2. Tentativas repetidas:
 
    ```bash
@@ -200,7 +202,8 @@ anote o resultado e a letra):
    ```
 
    O `for ... do ... done` repete o comando 10 vezes (com as senhas `errada1`, `errada2`…) e mostra o
-   código de status de cada tentativa, numa linha só. Alguma foi bloqueada? E se
+   código de status de cada tentativa, numa linha só. Esperado: dez números de três dígitos,
+   separados por espaço. Alguma foi bloqueada? E se
    fossem 10 mil, com uma lista das senhas mais comuns?
 3. O `SLEEP`: um e-mail com `' OR SLEEP(1) -- ` pede ao banco que "durma" 1 segundo. O `time` na
    frente do comando mede quanto ele demorou:
@@ -210,7 +213,8 @@ anote o resultado e a letra):
      -d "{\"email\":\"x' OR SLEEP(1) -- \",\"senha\":\"x\"}"
    ```
 
-   Olhe a linha `real`. Por que demorou bem mais que 1 segundo? (Pista: quantos usuários há na
+   Esperado: três linhas, `real`, `user` e `sys`, cada uma com um tempo (`0m6.013s` = 6
+   segundos). Olhe a linha `real`. Por que demorou bem mais que 1 segundo? (Pista: quantos usuários há na
    tabela?) Que letra é essa?
 
 > **Atenção à letra D.** A força bruta ameaça a **autenticidade** (S): o atacante acaba acertando
@@ -228,7 +232,12 @@ anote o resultado e a letra):
 
    ```bash
    TOKEN_VELHO='cole-aqui-o-token'
+   echo "${TOKEN_VELHO:0:10}"
    ```
+
+   Troque `cole-aqui-o-token` pelo que você copiou, **mantendo as aspas simples**. Esperado: a
+   segunda linha mostra `eyJhbGciOi` (o começo de todo token). Se mostrar `cole-aqui-` ou nada,
+   a colagem não funcionou: repita o item 1.
 
 3. Na tela, clique em **Sair**.
 4. Teste o token "velho", gravando a saída como evidência:
@@ -238,10 +247,14 @@ anote o resultado e a letra):
      | tee entregaveis/evidencias/fase2a-token-depois-do-sair.txt
    ```
 
-   O que deveria acontecer depois do "Sair"? O que aconteceu (200 = o token ainda vale)?
+   Esperado: um número de três dígitos (`200` = o token ainda vale; `401`/`403` = foi recusado).
+   O que deveria acontecer depois do "Sair"? O que aconteceu?
 5. Em `JwtUtil.java`, a chave que assina o token está no código. Quem tem o código consegue
    **fabricar** um token com `"papel":"ADMIN"`? Que letra é essa, e em qual elemento? (Não precisa
-   fabricar: basta explicar. Se quiser ver, o professor demonstra em aula.)
+   fabricar: basta explicar. Se quiser ver, o script de demonstração faz isso só com o código —
+   `FORJADO=$(bash roteiros/comum/fabricar-token.sh 5 ADMIN)` e depois
+   `curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/api/usuarios -H "Authorization: Bearer $FORJADO"`;
+   esperado: `200`. Na Fase 6 vocês fecham essa porta.)
 
 **Recuperar senha (F-12)**
 
@@ -261,7 +274,7 @@ anote o resultado e a letra):
      -d "{\"email\":\"x' OR '1'='1\"}"; echo
    ```
 
-   A resposta diz "encontrado"? Para qual usuário (olhe o número antes do `-` no `reset_token`)?
+   Esperado: uma linha JSON com `"mensagem"`. A resposta diz "encontrado"? Para qual usuário (olhe o número antes do `-` no `reset_token`)?
    Abra `UsuarioDao.porEmail` e compare com `autenticar`: é o mesmo padrão de SQL?
 
 **Fluxos que voltam ao navegador (F-17)**
@@ -273,6 +286,7 @@ anote o resultado e a letra):
   curl -s -i -H "Origin: http://site-qualquer.example" "localhost:8080/api/pacientes/busca?q=Silva" | grep -i "access-control"
   ```
 
+  Esperado: duas linhas `Vary: Access-Control-...` e uma `Access-Control-Allow-Origin: ...`.
   `Access-Control-Allow-Origin: *` quer dizer, em palavras, que **qualquer site** pode pedir dados
   à API a partir do navegador de quem está logado. Que letra, em que fluxo?
 - A falta de `Content-Security-Policy` não é um ataque em si: é a **ausência de uma segunda
@@ -290,7 +304,8 @@ anote o resultado e a letra):
   docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidaplus123 vidaplus -e "SELECT id, email, ativo FROM usuario;"
   ```
 
-  De que pacote é essa falha? Ao terminar, **volte o banco ao estado original**:
+  Esperado: `{"alterado":true,"id":3}` e, na tabela, a linha do `recepcao@vidaplus.local` com
+  `ativo` = `0`. De que pacote é essa falha? Ao terminar, **volte o banco ao estado original**:
 
   ```bash
   bash roteiros/comum/zerar-banco.sh
@@ -343,6 +358,22 @@ OBJETIVO: <...>                                              (OR)
 │      └── <parte b>               custo <...>               → REQ-...
 └── 3. <...>
 ```
+
+---
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| O `time` do `SLEEP` mostrou menos de 1 segundo | o e-mail do ataque foi digitado diferente (faltou a aspa ou o `-- ` com espaço no fim) | copie o bloco inteiro de novo, sem editar |
+| `echo "${TOKEN_VELHO:0:10}"` mostra `cole-aqui-` ou nada | o token não foi colado entre as aspas | repita a cópia do `access_token` no DevTools e cole com **Ctrl+Shift+V** |
+| Depois do teste de desativar a recepção, `TOKEN_REC FALHOU` | a conta da recepção ficou desativada | rode o `zerar-banco.sh` e o `source` do `tokens.sh`, como o passo pede |
 
 ---
 

@@ -13,7 +13,7 @@ integrante revisa o Pull Request na máquina dele.
 > - o Passo 4 da Fase 6 do seu grupo (a **análise** dos segredos) está feito;
 > - a correção do P0 (Fase 4) já está na `main`;
 > - o VS Code está aberto na pasta do repositório, com o terminal **na raiz** (o comando `ls`
->   mostra `README.md  docs  entregaveis  legacy-app  roteiros  security`).
+>   mostra `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`).
 
 ---
 
@@ -167,6 +167,9 @@ quatro provas.
    ```bash
    echo "$TOKEN_ADMIN" > ~/token-admin-antigo.txt
    ```
+
+   Esperado: nada aparece na tela — o token foi para o arquivo. Para conferir, sem mostrá-lo
+   inteiro: `cut -c1-10 ~/token-admin-antigo.txt` deve mostrar `eyJhbGciOi`.
 
 ## Passo 3 — Confira que o Git vai ignorar o `.env`
 

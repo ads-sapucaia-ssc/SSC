@@ -29,7 +29,7 @@ atributo e quem demanda. A coluna **Base legal** fica para a Fase 1.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
@@ -56,10 +56,11 @@ atributo e quem demanda. A coluna **Base legal** fica para a Fase 1.
    ```bash
    bash roteiros/comum/zerar-banco.sh
    source roteiros/comum/tokens.sh
+   mkdir -p entregaveis/evidencias
    ```
 
    O primeiro termina com `PRONTO: VidaPlus no ar...` (a primeira vez demora alguns minutos); o
-   segundo mostra seis linhas `TOKEN_... ok`. Os tokens valem **só neste terminal**: se abrir
+   segundo mostra seis linhas `TOKEN_... ok`. O terceiro cria a pasta das evidências, se ela ainda não existir. Os tokens valem **só neste terminal**: se abrir
    outro, rode o `source` de novo.
 
 ---

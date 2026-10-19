@@ -155,6 +155,9 @@ source roteiros/comum/tokens.sh   # carrega TOKEN_ANA, TOKEN_HOUSE... (rode de n
 curl -s localhost:8080/api/exames/101 -H "Authorization: Bearer $TOKEN_ANA" | python3 -m json.tool
 ```
 
+Esperado: as seis linhas `TOKEN_... ok` e, depois, o exame 101 em JSON (`"tipo": "Hemograma"`,
+`"paciente_id": 1`).
+
 ### 2.5 Mandar caracteres especiais (aspas, espaços, `%`)
 
 Vários testes de segurança usam aspas, espaços ou `%` no parâmetro. Na URL, eles precisam ser
@@ -167,6 +170,8 @@ curl -s -G "localhost:8080/api/pacientes/busca" --data-urlencode "q=Ana Silva"
 - `-G` diz "mande os dados na URL, como GET";
 - `--data-urlencode "q=..."` codifica o valor.
 
+Esperado: `[{"cpf":"111.111.111-11","nome":"Ana Silva",...}]` — o espaço chegou certo.
+
 No corpo JSON, uma aspa simples dentro do e-mail atrapalha as aspas simples de fora. Nesse caso,
 use aspas **duplas** por fora e **escape** as duplas de dentro com `\"`:
 
@@ -174,6 +179,12 @@ use aspas **duplas** por fora e **escape** as duplas de dentro com `\"`:
 curl -s -X POST localhost:8080/api/auth/login -H "Content-Type: application/json" \
   -d "{\"email\":\"teste'aspas@x.com\",\"senha\":\"x\"}"
 ```
+
+Esperado: um **erro**, com um texto enorme cheio de `at org.apache...`. Não é problema no seu
+comando: a aspa chegou ao servidor e **quebrou o SQL do login** — o sistema monta o SQL colando o
+que você digita, e ainda devolve ao cliente o detalhe interno do erro. São duas falhas que os
+grupos estudam (injeção de SQL e erro que conta demais). Aqui, o importante é que o `curl`
+conseguiu mandar a aspa.
 
 ### 2.6 Guardar a saída como evidência
 
@@ -354,7 +365,26 @@ Agora use o sistema no navegador ou com curl, e veja o que aparece. Para parar d
 
 ---
 
-## 6. Checklist
+## 6. Deu errado? Problemas comuns a todas as fases
+
+Os roteiros de fase trazem, no fim, uma seção **"Deu errado?"** com os problemas daquela fase.
+Os que aparecem em **qualquer** fase estão aqui.
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| `curl: (7) Failed to connect to localhost port 8080` | o VidaPlus está desligado, ou acabou de ligar e a API ainda não responde | `bash roteiros/comum/zerar-banco.sh` e espere o `PRONTO`. Se você só usou `up -d`, espere uns 30 segundos |
+| Um pedido com `$TOKEN_...` responde `500` e o log diz `nao autenticado` | a variável do token está **vazia**: o terminal é outro (ou foi fechado) desde o `source` | confira com `echo "${TOKEN_ANA:0:10}"` — deve mostrar `eyJhbGciOi`. Se não mostrar nada: `source roteiros/comum/tokens.sh` |
+| `TOKEN_... FALHOU` ao rodar o `tokens.sh` | o VidaPlus está desligado, ou aquela conta foi desativada por um teste anterior | `bash roteiros/comum/zerar-banco.sh` e `source roteiros/comum/tokens.sh` de novo |
+| O resultado é diferente do "Esperado" do roteiro (outro número, outra lista) | um teste anterior **mudou os dados** (publicou um laudo, desativou um usuário…) | zere o banco e repita: `bash roteiros/comum/zerar-banco.sh` e `source roteiros/comum/tokens.sh` |
+| `No such file or directory` ao rodar `bash roteiros/...` | o terminal não está na raiz do repositório | rode `ls`: deve mostrar `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não, **File → Open Folder…** na pasta do repositório e abra um terminal novo |
+| `zerar-banco.sh` diz `Falta o arquivo legacy-app/.env` (só depois da Fase 6) | o grupo tirou os segredos do código, e este computador ainda não tem o seu `.env` | crie-o com o comando do [`08` Passo 4b](08-segredos-fora-do-codigo.md#passo-4--crie-o-modelo-envexample-e-o-seu-env) e rode o `zerar-banco.sh` de novo |
+| `tee: entregaveis/evidencias/...: No such file or directory` | a pasta das evidências ainda não existe | `mkdir -p entregaveis/evidencias` e repita o comando |
+| A resposta da API vem toda numa linha só, difícil de ler | é JSON sem formatação | acrescente `\| python3 -m json.tool` no fim do comando |
+| `python3: command not found` (Windows) | o Python não foi instalado ou o comando se chama `python` | veja o item 7 do apêndice de [`00`](00-antes-de-comecar.md#apêndice--windows-em-casa) |
+| `permission denied while trying to connect to the Docker daemon socket` | seu usuário não pode usar o Docker | avise o professor (não use `sudo`) |
+| O terminal "travou" depois de um comando `mysql` ou `logs -f` | o comando ficou esperando você (o `mysql>` espera SQL; o `logs -f` acompanha ao vivo) | `exit` no `mysql>`; **Ctrl+C** no `logs -f` |
+
+## 7. Checklist
 
 - [ ] Vi, no F12, o pedido, o token no cabeçalho `Authorization` e a resposta JSON.
 - [ ] Vi o que fica no Armazenamento local.

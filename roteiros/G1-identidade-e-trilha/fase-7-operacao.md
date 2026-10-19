@@ -24,7 +24,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
@@ -51,10 +51,11 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ```bash
    bash roteiros/comum/zerar-banco.sh
    source roteiros/comum/tokens.sh
+   mkdir -p entregaveis/evidencias
    ```
 
    O primeiro termina com `PRONTO: VidaPlus no ar...` (a primeira vez demora alguns minutos); o
-   segundo mostra seis linhas `TOKEN_... ok`. Os tokens valem **só neste terminal**: se abrir
+   segundo mostra seis linhas `TOKEN_... ok`. O terceiro cria a pasta das evidências, se ela ainda não existir. Os tokens valem **só neste terminal**: se abrir
    outro, rode o `source` de novo.
 
 ---
@@ -136,8 +137,15 @@ se apareceu alguma linha. Anote o resultado de cada bloco.
      -H "Authorization: Bearer token-falso"
    ```
 
+O que cada pedido responde no **Terminal 2** (para você saber que ele rodou): o 1 devolve um
+JSON com `access_token`; o 2, um texto longo com `"status":401`; o 3, dez vezes `401`; o 4, um
+JSON com `"reset_token"`; o 5, `500`.
+
 Para cada um, anote: apareceu alguma linha no Terminal 1? Ela diria **quem**, **quando** e **o
 que**? Se alguém invadisse a conta da Ana ontem, vocês conseguiriam descobrir hoje?
+
+Esperado no Terminal 1: nos pedidos 1 a 4, **nenhuma** linha nova; no 5, um `ERROR` longo com
+`java.lang.RuntimeException: nao autenticado`. Leia esse resultado com as perguntas acima.
 
 Ao terminar, clique no **Terminal 1** e aperte **Ctrl+C** para parar de acompanhar o log (o
 VidaPlus continua ligado). Para guardar o log como evidência:
@@ -145,6 +153,9 @@ VidaPlus continua ligado). Para guardar o log como evidência:
 ```bash
 docker compose -f legacy-app/docker-compose.yml logs backend --tail 100 > entregaveis/evidencias/fase7-log-backend.txt
 ```
+
+Esperado: nada aparece na tela (a saída foi para o arquivo). Abra-o no VS Code (**Ctrl+P** →
+`fase7-log-backend.txt`) e procure (**Ctrl+F**) `ERROR`.
 
 ## Passo 2 — Descreva a operação de cada funcionalidade
 
@@ -199,7 +210,7 @@ cada passo:
 | Passo | Perguntas para o G1 |
 |---|---|
 | 1 Detecção | como vocês perceberiam? Hoje, com o log que vocês viram no Passo 1, perceberiam? E depois da F-05? Como preservar a prova (`docker compose -f legacy-app/docker-compose.yml logs backend > ...txt`)? |
-| 2 Contenção | como derrubar **já** a sessão do invasor, se o token não expira? (Pista: o que acontece com todos os tokens se a chave de assinatura mudar?) Desativar a conta? Trocar senhas? |
+| 2 Contenção | como derrubar **já** a sessão do invasor, se o token não expira? (Pista: vocês já fizeram isso na Fase 6 — trocar a `JWT_SECRET` do `legacy-app/.env` e religar o backend; o que acontece com **todos** os tokens?) Desativar a conta? Trocar senhas? |
 | 3 Erradicação | qual a causa-raiz e qual PR a corrige? |
 | 4 Recuperação | como saber que voltou a ser seguro? (Testes verdes + repetir o ataque à mão.) |
 | 5 Notificação | ver Passo 5 |
@@ -221,6 +232,21 @@ cada passo:
 4. **Quantos titulares?** Sem trilha de auditoria, vocês sabem **o que** o invasor viu? Então qual
    número comunicar?
 5. **Recomendação aos titulares** (ex.: trocar a senha se a usavam em outros serviços — por quê?).
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Nenhuma linha aparece no Terminal 1 nem no pedido 5 | o Terminal 1 não está acompanhando (o comando `logs -f` foi interrompido) | clique no Terminal 1: a última linha deve ser o comando `logs ... -f`, sem o prompt `$` depois; se tiver o `$`, rode-o de novo |
+| O arquivo `fase7-log-backend.txt` ficou vazio | o VidaPlus foi religado depois dos pedidos (o log começa do zero a cada religada) | repita os pedidos do Passo 1 e grave o log em seguida, **sem** zerar o banco no meio |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

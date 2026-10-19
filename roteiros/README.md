@@ -98,8 +98,8 @@ Dentro da pasta de cada grupo há um roteiro por fase:
 
 ## 4. Convenções dos roteiros
 
-- **Todo comando é digitado na raiz do repositório** (a pasta onde o `ls` mostra `README.md  docs
-  entregaveis  legacy-app  roteiros  security`). O terminal do VS Code já abre nela.
+- **Todo comando é digitado na raiz do repositório** (a pasta onde o `ls` mostra `README.md  aulas
+  docs  entregaveis  legacy-app  roteiros  security`). O terminal do VS Code já abre nela.
 - **Todo comando aparece completo**, num bloco cinza. Copie o bloco inteiro (no Ubuntu, colar no
   terminal é **Ctrl+Shift+V**) e aperte **Enter**.
 - Três comandos aparecem o tempo todo:

@@ -7,7 +7,7 @@
 **Usado nas Fases:** 4 (inventário da falha), 5 (verificação) e 6 (pipeline).
 
 **Antes:** VidaPlus ligado ([`01`](01-subir-o-vidaplus.md)); terminal na **raiz** do repositório
-(o comando `ls` mostra `README.md  docs  entregaveis  legacy-app  roteiros  security`).
+(o comando `ls` mostra `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`).
 
 ---
 

@@ -20,7 +20,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
@@ -47,10 +47,11 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ```bash
    bash roteiros/comum/zerar-banco.sh
    source roteiros/comum/tokens.sh
+   mkdir -p entregaveis/evidencias
    ```
 
    O primeiro termina com `PRONTO: VidaPlus no ar...` (a primeira vez demora alguns minutos); o
-   segundo mostra seis linhas `TOKEN_... ok`. Os tokens valem **só neste terminal**: se abrir
+   segundo mostra seis linhas `TOKEN_... ok`. O terceiro cria a pasta das evidências, se ela ainda não existir. Os tokens valem **só neste terminal**: se abrir
    outro, rode o `source` de novo.
 
 ---
@@ -173,13 +174,15 @@ errado** — e provoque a falha para ver o que acontece **hoje**:
    curl -s -i localhost:8080/api/exames/101 -H "Authorization: Bearer token-falso" | head -5
    ```
 
+   Esperado: cinco linhas de cabeçalho; a primeira, `HTTP/1.1` e o código de status.
+
 3. **Sem token** — o mesmo pedido, sem o cabeçalho `Authorization`:
 
    ```bash
    curl -s -i localhost:8080/api/exames/101 | head -5
    ```
 
-   Qual o código? Deveria ser qual?
+   Esperado: de novo cinco linhas, a primeira com o código. Qual o código? Deveria ser qual?
 4. **Trava contra força bruta (planejada):** se a contagem de tentativas falhar, o sistema deve
    liberar ou bloquear? E por quanto tempo?
 5. **Trilha de auditoria (planejada):** se gravar o registro falhar, a ação (ex.: o login) deve
@@ -201,6 +204,21 @@ Guarde as saídas em `entregaveis/evidencias/fase3-...txt`.
 - o login legítimo continua funcionando (há um teste para isso: `login_valido_funciona`);
 - nenhuma senha, token ou código de recuperação aparece em log, resposta de erro ou evidência;
 - todo evento de autenticação relevante gera registro de auditoria (quando a F-05 existir).
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Depois do `stop db`, o `curl` ficou uns 30 segundos sem responder | o backend espera o banco antes de desistir | espere: é o comportamento que você está observando |
+| Depois do `start db`, o login continua dando erro | o banco ainda está subindo | espere uns 20 segundos; se persistir, `bash roteiros/comum/zerar-banco.sh` |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

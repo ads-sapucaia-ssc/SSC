@@ -28,7 +28,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G4**.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Branches desta fase:** a correção do código tem a sua própria branch (Passo 2 da Parte A); a
@@ -38,10 +38,11 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G4**.
    ```bash
    bash roteiros/comum/zerar-banco.sh
    source roteiros/comum/tokens.sh
+   mkdir -p entregaveis/evidencias
    ```
 
    O primeiro termina com `PRONTO: VidaPlus no ar...` (a primeira vez demora alguns minutos); o
-   segundo mostra seis linhas `TOKEN_... ok`. Os tokens valem **só neste terminal**: se abrir
+   segundo mostra seis linhas `TOKEN_... ok`. O terceiro cria a pasta das evidências, se ela ainda não existir. Os tokens valem **só neste terminal**: se abrir
    outro, rode o `source` de novo.
 
 ---
@@ -127,8 +128,11 @@ internos (`exception`, `trace`). Hoje, quase tudo dá 200 e várias respostas de
 ## Passo 4 — Ensine o `UsuarioDao` a responder "quem é este usuário"
 
 O token diz que a Ana é o **usuário 5**, mas a regra precisa saber que ela é a **paciente 1**
-(Fase 0, Passo 5). Abra `dao/UsuarioDao.java`. Logo **antes** do comentário
-`/** Lista todos os usuarios`, cole:
+(Fase 0, Passo 5). Abra `dao/UsuarioDao.java`. Logo **antes** do comentário de
+várias linhas que começa com `/**` e cuja linha seguinte diz
+`* Lista todos os usuarios (tela de gestao do ADMIN).` (procure com **Ctrl+F** →
+`Lista todos os usuarios`; o `/**` fica na linha de cima), numa linha em branco,
+cole:
 
 ```java
     /** Numero do paciente ligado a este usuario (ou null, se nao for paciente). */

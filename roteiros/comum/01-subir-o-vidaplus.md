@@ -11,7 +11,7 @@ entrar com cada usuário de teste e saber desligar e "zerar" o sistema.
 ls
 ```
 
-Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. **Todos os comandos
+Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. **Todos os comandos
 deste guia (e dos roteiros) são digitados nesta pasta.**
 
 ---
@@ -174,13 +174,16 @@ TOKEN_ADMIN ok
 docker compose -f legacy-app/docker-compose.yml stop
 ```
 
-Desliga os containers, mas **mantém** os dados. Para religar na próxima aula, mantendo os dados:
+Esperado: três pares de linhas `Container legacy-app-... Stopping` / `Stopped`. Desliga os
+containers, mas **mantém** os dados. Para religar na próxima aula, mantendo os dados:
 
 ```bash
 docker compose -f legacy-app/docker-compose.yml up -d
 ```
 
-(Ou, para religar **com o banco original**: `bash roteiros/comum/zerar-banco.sh`.)
+Esperado: linhas `Container legacy-app-... Started` (e `Healthy` no `db`). A API leva uns 20–30
+segundos a mais para responder: se um `curl` logo em seguida der `Connection refused`, espere e
+repita. (Ou, para religar **com o banco original**: `bash roteiros/comum/zerar-banco.sh`.)
 
 ---
 
@@ -194,6 +197,7 @@ bash roteiros/comum/zerar-banco.sh
 source roteiros/comum/tokens.sh
 ```
 
+Esperado: `PRONTO: VidaPlus no ar, com o banco original...` e seis linhas `TOKEN_... ok`.
 (O segundo comando é preciso porque, depois de zerar, os tokens antigos podem não servir mais —
 por exemplo, se o usuário foi desativado. Gerar de novo é sempre seguro.)
 

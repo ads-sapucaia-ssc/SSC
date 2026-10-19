@@ -121,11 +121,15 @@ org.opentest4j.AssertionFailedError: expected: <403> but was: <200>
 RESULTADO: algum teste FALHOU (vermelho). ...
 ```
 
+- antes disso aparecem várias linhas `WARNING: ... agent ... dynamically` (e, na primeira vez,
+  muitas linhas `Downloading` / `Downloaded`). São **normais**: avisos do Java sobre a biblioteca
+  de testes e o download das bibliotecas. Ignore-as e procure as linhas abaixo;
 - `Tests run: 1, Failures: 1` — rodou 1 teste e 1 falhou;
 - `expected: <403> but was: <200>` — **a frase mais importante**: o teste esperava **403** (acesso
   negado), mas o sistema respondeu **200** (entregou o exame). É a falha, provada.
 
-**Se passou**, o Maven não escreve quase nada (ele roda em modo silencioso) e o script termina com:
+**Se passou**, aparecem várias linhas `INFO` (o sistema subindo para o teste) e nenhuma linha
+`[ERROR]`; o script termina com:
 
 ```
 RESULTADO: todos os testes do filtro "security & F-02" PASSARAM (verde).

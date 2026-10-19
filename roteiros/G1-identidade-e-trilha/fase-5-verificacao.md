@@ -19,7 +19,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
@@ -46,10 +46,11 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ```bash
    bash roteiros/comum/zerar-banco.sh
    source roteiros/comum/tokens.sh
+   mkdir -p entregaveis/evidencias
    ```
 
    O primeiro termina com `PRONTO: VidaPlus no ar...` (a primeira vez demora alguns minutos); o
-   segundo mostra seis linhas `TOKEN_... ok`. Os tokens valem **só neste terminal**: se abrir
+   segundo mostra seis linhas `TOKEN_... ok`. O terceiro cria a pasta das evidências, se ela ainda não existir. Os tokens valem **só neste terminal**: se abrir
    outro, rode o `source` de novo.
 
 ---
@@ -153,7 +154,8 @@ Roteiro mínimo:
      -d "{\"email\":\"x' OR '1'='1\"}" | tee entregaveis/evidencias/fase5-injecao-reset.txt; echo
    ```
 
-   Antes, ele "encontrava" o usuário 1 (o ADMIN). E agora?
+   Esperado: uma linha JSON com `"mensagem"`. Antes, ele "encontrava" o usuário 1 (o ADMIN). E
+   agora?
 3. **Os ramos que não eram injeção.** Eles **continuam funcionando**? (Devem continuar: estão no
    plano.) Teste cada um e registre que o risco segue aberto.
 
@@ -174,9 +176,14 @@ Roteiro mínimo:
 
    ```bash
    TOKEN_VELHO='cole-aqui-o-token'
+   echo "${TOKEN_VELHO:0:10}"
    curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/api/exames/101 -H "Authorization: Bearer $TOKEN_VELHO" \
      | tee entregaveis/evidencias/fase5-token-depois-do-sair.txt
    ```
+
+   Troque `cole-aqui-o-token` pelo token copiado, mantendo as aspas. Esperado: a segunda linha
+   mostra `eyJhbGciOi` (se mostrar `cole-aqui-`, a colagem falhou) e a terceira, um código de
+   três dígitos.
 
    **Código de recuperação previsível** — peça duas vezes e compare os códigos:
 
@@ -184,6 +191,8 @@ Roteiro mínimo:
    curl -s -X POST localhost:8080/api/auth/reset -H "Content-Type: application/json" -d '{"email":"ana.paciente@email.com"}'; echo
    curl -s -X POST localhost:8080/api/auth/reset -H "Content-Type: application/json" -d '{"email":"ana.paciente@email.com"}'; echo
    ```
+
+   Esperado: duas linhas com `"reset_token":"5-...`. Compare os números depois do `5-`.
 
 4. **Uma ideia de vocês:** que outro caminho a árvore não tinha? Tente, e grave a saída com
    `| tee entregaveis/evidencias/fase5-<nome-do-teste>.txt` no fim do comando.
@@ -232,7 +241,10 @@ linha no STRIDE e na árvore (§3), linha no plano (§6.2) e, se for de privacid
      zap-baseline.py -t http://localhost:4200 -I | tee entregaveis/evidencias/fase5-zap-site.txt
    ```
 
-   Os cabeçalhos ausentes são evidência do **plano** da F-17 — o ZAP
+   A primeira vez baixa uma imagem grande (cerca de 1,2 GB) e demora alguns minutos; depois, cada
+   execução leva 1–2 minutos. Esperado: muitas linhas `PASS: ...`, algumas `WARN-NEW: ...` e, no
+   fim, uma linha de resumo como `FAIL-NEW: 0  ...  WARN-NEW: 8  ...  PASS: 59`. Procure nas linhas
+   `WARN-NEW` os cabeçalhos da F-17. Os cabeçalhos ausentes são evidência do **plano** da F-17 — o ZAP
    vai continuar acusando até alguém corrigir.
 
 ## Passo 4 — Monte a tabela da §7
@@ -251,6 +263,22 @@ arquivo). Inclua:
 
 Escreva também o parágrafo dos **scanners** (Passo 3) e uma frase sobre o **gate de testes**: ele
 segue vermelho por causa dos testes de outros pacotes.
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| As variações de injeção deram `200` | a correção da Fase 4 não está nesta branch, ou o VidaPlus não foi remontado | `git log --oneline -3` deve mostrar o merge do `fix/F-01-sqli-login`; depois, `zerar-banco.sh` |
+| O ZAP demora muito na primeira vez | ele baixa uma imagem de ~1,2 GB | espere; das próximas vezes leva 1–2 minutos |
+| No Windows, o ZAP diz que não alcança `localhost:4200` | no Docker Desktop, o `--network host` pode não funcionar | troque `--network host` por nada e `http://localhost:4200` por `http://host.docker.internal:4200` |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

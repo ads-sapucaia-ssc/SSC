@@ -30,7 +30,7 @@ atributo e quem demanda. A coluna **Base legal** fica para a Fase 1.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
@@ -57,10 +57,11 @@ atributo e quem demanda. A coluna **Base legal** fica para a Fase 1.
    ```bash
    bash roteiros/comum/zerar-banco.sh
    source roteiros/comum/tokens.sh
+   mkdir -p entregaveis/evidencias
    ```
 
    O primeiro termina com `PRONTO: VidaPlus no ar...` (a primeira vez demora alguns minutos); o
-   segundo mostra seis linhas `TOKEN_... ok`. Os tokens valem **só neste terminal**: se abrir
+   segundo mostra seis linhas `TOKEN_... ok`. O terceiro cria a pasta das evidências, se ela ainda não existir. Os tokens valem **só neste terminal**: se abrir
    outro, rode o `source` de novo.
 
 ---
@@ -161,7 +162,9 @@ Escreva as trilhas no rascunho. Elas viram os processos e depósitos do DFD na F
      | tee entregaveis/evidencias/fase0-login-senha-errada.txt
    ```
 
-   (O `mkdir -p` cria a pasta das evidências, se ela ainda não existir.) Anote a primeira linha (`HTTP/1.1 ...`) e o corpo. Compare com a tabela de códigos de status
+   (O `mkdir -p` cria a pasta das evidências, se ela ainda não existir.) Esperado: a primeira
+   linha começa com `HTTP/1.1` e um número de três dígitos, e a última traz um corpo JSON com a
+   palavra `erro`. Anote a primeira linha (`HTTP/1.1 ...`) e o corpo. Compare com a tabela de códigos de status
    ([`comum/02` §1.2](../comum/02-observar-o-sistema.md#12-códigos-de-status-http-que-você-vai-encontrar)):
    uma senha errada deveria devolver esse código?
 5. Agora com um e-mail que **não existe**:
@@ -173,8 +176,17 @@ Escreva as trilhas no rascunho. Elas viram os processos e depósitos do DFD na F
      | tee entregaveis/evidencias/fase0-login-email-inexistente.txt
    ```
 
-   A resposta é diferente da senha errada? (Se for igual, ótimo; se for diferente, é um achado:
-   revela quem tem conta.)
+   Esperado: de novo `HTTP/1.1 ...` e um corpo com `erro`. A resposta é diferente da senha
+   errada? (Se for igual, ótimo; se for diferente, é um achado: revela quem tem conta.) Para
+   comparar os dois arquivos linha a linha:
+
+   ```bash
+   diff entregaveis/evidencias/fase0-login-senha-errada.txt entregaveis/evidencias/fase0-login-email-inexistente.txt
+   ```
+
+   O `diff` mostra só as linhas **diferentes**. Se não aparecer nada, os dois arquivos são
+   iguais; se aparecer só a linha `Date:` (a hora da resposta), também. Se aparecer qualquer outra
+   linha, anote qual — é a diferença que um estranho enxergaria.
 
 ---
 
@@ -252,6 +264,9 @@ curl -s -X POST localhost:8080/api/auth/reset -H "Content-Type: application/json
 curl -s -X POST localhost:8080/api/auth/reset -H "Content-Type: application/json" -d '{"email":"naoexiste@teste.com"}'; echo
 ```
 
+Esperado: duas linhas JSON, cada uma com um campo `"mensagem"` — e a primeira também com um
+`"reset_token"`.
+
 1. Compare as duas respostas. O que a diferença revela a um estranho?
 2. Olhe o `reset_token` da primeira. Rode o comando de novo e compare os dois valores. Abra
    `AuthController.reset`: como o código é formado? Dá para **adivinhar** o código de outra pessoa?
@@ -260,6 +275,9 @@ curl -s -X POST localhost:8080/api/auth/reset -H "Content-Type: application/json
    ```bash
    docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidaplus123 vidaplus -e "SELECT id, email, reset_token FROM usuario;"
    ```
+
+   Esperado: as seis contas, com a coluna `reset_token` de cada uma. Compare o valor da Ana com
+   o que a API devolveu no item 1.
 
 **▶ Agora no G1 — cabeçalhos e CORS (F-17):**
 
@@ -314,7 +332,7 @@ O primeiro finge ser **outro site** pedindo dados à API; o segundo pede só os 
    docker compose -f legacy-app/docker-compose.yml exec db mysql -uvidaplus -pvidaplus123 vidaplus -e "SHOW TABLES;"
    ```
 
-   Existe tabela de auditoria?
+   Esperado: a lista `Tables_in_vidaplus` com seis nomes. Existe tabela de auditoria?
 5. Abra `entity/Auditoria.java` (**Ctrl+P** → `Auditoria.java`) e o fim do `db/schema.sql`
    (**Ctrl+P** → `schema.sql`, depois **Ctrl+End**): o que estava previsto?
 
@@ -363,6 +381,22 @@ crítico**. Inclua o ausente.
 Ativos que um G1 atento encontra (confira se os seus estão lá): o e-mail de login, a senha e o
 seu hash, o papel, o token de sessão, a chave que assina o token, o código de recuperação de
 senha, a senha do banco e o **registro de acessos** (ausente).
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| Na aba **Rede** (DevTools) não aparece o pedido de login | as ferramentas foram abertas **depois** do clique em Entrar | com o DevTools aberto na aba Rede, saia e entre de novo |
+| `base64: invalid input` ao decodificar o token | o pedaço do meio do token não tem o complemento `=` no fim | use o comando alternativo do Passo 5, item 2 (entre parênteses, logo depois do primeiro) |
+| O terminal parou depois do `logs -f` e não aceita comandos | o `-f` acompanha o log ao vivo, de propósito | faça os pedidos num **segundo** terminal (o **+** do painel); para sair do primeiro, **Ctrl+C** |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

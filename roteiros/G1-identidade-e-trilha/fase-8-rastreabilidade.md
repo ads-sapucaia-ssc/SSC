@@ -21,7 +21,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
@@ -48,10 +48,11 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ```bash
    bash roteiros/comum/zerar-banco.sh
    source roteiros/comum/tokens.sh
+   mkdir -p entregaveis/evidencias
    ```
 
    O primeiro termina com `PRONTO: VidaPlus no ar...` (a primeira vez demora alguns minutos); o
-   segundo mostra seis linhas `TOKEN_... ok`. Os tokens valem **só neste terminal**: se abrir
+   segundo mostra seis linhas `TOKEN_... ok`. O terceiro cria a pasta das evidências, se ela ainda não existir. Os tokens valem **só neste terminal**: se abrir
    outro, rode o `source` de novo.
 
 ---
@@ -174,10 +175,19 @@ sobre **qualquer parte** ([`docs/07`](../../docs/07-rubrica-avaliacao.md#defesa-
        -H "Content-Type: application/json" -d '{"email":"ana.paciente@email.com","senha":"Paciente123"}'
      ```
 
-   - **o teste do P0 verde**:
+   - **o teste do P0 verde** (esperado, na última linha: `RESULTADO: todos os testes ... PASSARAM (verde)`):
 
      ```bash
      bash roteiros/comum/rodar-testes.sh "security & F-01"
+     ```
+
+   - **os segredos fora do código** (Fase 6) — um token de ADMIN fabricado com a chave antiga,
+     tirada do histórico do Git, é recusado (esperado: a mensagem sobre a chave antiga e um código
+     que **não** é `200`):
+
+     ```bash
+     FORJADO=$(bash roteiros/comum/fabricar-token.sh 5 ADMIN)
+     curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/api/usuarios -H "Authorization: Bearer $FORJADO"
      ```
 
    - **a evidência no pipeline:** abra no navegador as duas URLs de execução que vocês guardaram
@@ -190,6 +200,21 @@ sobre **qualquer parte** ([`docs/07`](../../docs/07-rubrica-avaliacao.md#defesa-
    - o login agora é seguro? (Resposta honesta: contra **injeção**, sim; o que mais falta?)
    - por que a trilha de auditoria também é um risco à privacidade?
    - se a chave do token vazar hoje, o que vocês fazem, e o que acontece com quem está logado?
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| O ataque deu `200` na demonstração | a branch da defesa não tem a correção, ou o VidaPlus não foi religado | `git checkout main`, `git pull` e `bash roteiros/comum/zerar-banco.sh` |
+| `zerar-banco.sh` diz `Falta o arquivo legacy-app/.env` | este computador ainda não tem o seu `.env` (Fase 6) | crie-o com o comando do [`comum/08` Passo 4b](../comum/08-segredos-fora-do-codigo.md#passo-4--crie-o-modelo-envexample-e-o-seu-env) |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

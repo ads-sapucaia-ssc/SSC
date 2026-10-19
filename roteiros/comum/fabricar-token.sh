@@ -35,7 +35,8 @@ else
 fi
 
 # 3) monta as tres partes do token (cabecalho.conteudo.assinatura) e assina com a chave
-CHAVE="$CHAVE" USUARIO="$USUARIO" PAPEL="$PAPEL" python3 - <<'PY'
+PY=$(command -v python3 || command -v python)   # no Windows, o Python costuma se chamar "python"
+CHAVE="$CHAVE" USUARIO="$USUARIO" PAPEL="$PAPEL" "$PY" - <<'PY'
 import base64, hmac, hashlib, json, os
 b = lambda d: base64.urlsafe_b64encode(d).rstrip(b'=').decode()
 cabecalho = b(json.dumps({"alg": "HS256"}, separators=(',', ':')).encode())

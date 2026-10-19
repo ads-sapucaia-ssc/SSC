@@ -24,7 +24,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
@@ -161,6 +161,7 @@ afetada?
    **No seu computador**, rode e grave a saída:
 
    ```bash
+   mkdir -p entregaveis/evidencias
    docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.21.2 \
      detect --source /repo --config /repo/security/gitleaks/gitleaks.toml \
      --log-opts="--all -- legacy-app" --no-banner --redact -v \
@@ -233,6 +234,23 @@ Este passo é só a **análise**: não mexa no código ainda. A correção vem n
      um (num projeto real, um **cofre de segredos**); a troca foi manual (num projeto real, há um
      processo de **rotação**); e, no G1, o token continua sem expiração (F-11, no plano) — a troca da chave revoga
    **todos** os tokens de uma vez, inclusive os de quem não fez nada de errado.
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| `unzip: cannot find or open ~/Downloads/sbom.zip` | o arquivo do SBOM ainda não foi baixado, ou o navegador o salvou com outro nome | baixe de novo (**Actions** → execução → **Artifacts** → **sbom**) e confira o nome na pasta **Downloads**; se for outro (ex.: `sbom (1).zip`), use esse nome entre aspas no `unzip` |
+| O Gitleaks deu `no leaks found` já no Passo 4 | a correção da F-10 já está na `main` (vocês estão repetindo a fase) | é o resultado do "depois"; use as evidências que já existem |
+| `git merge main --no-edit` diz `CONFLICT` | o mesmo trecho do dossiê foi editado nas duas branches | veja [`comum/03` §4.2](../comum/03-git-e-github.md#42-se-aparecer-um-conflito) |
+| Algo da aula guiada (Passo 5) deu errado | — | use a tabela **Deu errado?** do próprio [`comum/08`](../comum/08-segredos-fora-do-codigo.md#deu-errado) |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 

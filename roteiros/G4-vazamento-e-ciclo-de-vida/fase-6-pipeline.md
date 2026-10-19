@@ -25,7 +25,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G4**.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Entre na branch da fase.** Quem **lidera** a fase cria a branch e a envia ao GitHub:
@@ -173,6 +173,7 @@ descobre se está afetada?
    **No seu computador**, rode e grave a saída:
 
    ```bash
+   mkdir -p entregaveis/evidencias
    docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.21.2 \
      detect --source /repo --config /repo/security/gitleaks/gitleaks.toml \
      --log-opts="--all -- legacy-app" --no-banner --redact -v \

@@ -29,7 +29,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ls
    ```
 
-   Deve aparecer `README.md  docs  entregaveis  legacy-app  roteiros  security`. Se não
+   Deve aparecer `README.md  aulas  docs  entregaveis  legacy-app  roteiros  security`. Se não
    aparecer, a pasta está errada: **File → Open Folder…** e escolha a pasta do repositório.
    **Todos os comandos deste roteiro são digitados nesta pasta.**
 2. **Branches desta fase:** a correção do código tem a sua própria branch (Passo 2 da Parte A); a
@@ -39,10 +39,11 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    ```bash
    bash roteiros/comum/zerar-banco.sh
    source roteiros/comum/tokens.sh
+   mkdir -p entregaveis/evidencias
    ```
 
    O primeiro termina com `PRONTO: VidaPlus no ar...` (a primeira vez demora alguns minutos); o
-   segundo mostra seis linhas `TOKEN_... ok`. Os tokens valem **só neste terminal**: se abrir
+   segundo mostra seis linhas `TOKEN_... ok`. O terceiro cria a pasta das evidências, se ela ainda não existir. Os tokens valem **só neste terminal**: se abrir
    outro, rode o `source` de novo.
 
 ---
@@ -164,7 +165,10 @@ Abra `legacy-app/backend/src/main/java/br/ifsul/vidaplus/dao/UsuarioDao.java` e 
 
 **O código de hoje** monta o SQL juntando pedaços com `+` e usa `Statement` (que executa o texto
 como está). **Substitua o método inteiro** — da linha `public Map<String, Object> autenticar(` até
-a `}` que fecha o método, antes do comentário `/** Lista todos os usuarios` — por este:
+a `}` que fecha o método, que é a última linha antes do comentário de
+várias linhas que começa com `/**` e cuja linha seguinte diz
+`* Lista todos os usuarios (tela de gestao do ADMIN).` (procure com **Ctrl+F** →
+`Lista todos os usuarios`; o `/**` fica na linha de cima) — por este:
 
 ```java
     public Map<String, Object> autenticar(String email, String senha) {
@@ -229,6 +233,37 @@ Roteiro:
    escrever;
 3. mantenha o resto (montar o `Map` com `id`, `email`, `papel`).
 
+Tente sozinho primeiro. Depois, **confira** (clique para abrir):
+
+<details>
+<summary>Confira a sua versão do <code>porEmail</code></summary>
+
+O começo do método deve ficar assim (o `catch` do fim não muda):
+
+```java
+    public Map<String, Object> porEmail(String email) {
+        String sql = "SELECT id, email, papel FROM usuario WHERE email = ? AND ativo = 1";
+        try (Connection c = dataSource.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Map<String, Object> u = new HashMap<>();
+                    u.put("id", rs.getLong("id"));
+                    u.put("email", rs.getString("email"));
+                    u.put("papel", rs.getString("papel"));
+                    return u;
+                }
+                return null;
+            }
+        } catch (Exception e) {
+```
+
+Três sinais de que está certo: o SQL **não** tem `+`; existe um `ps.setString(1, email)`; e, no
+Passo 7, o Semgrep **não** acusa mais nada no `UsuarioDao.java`.
+
+</details>
+
 **Não** mude o que o reset responde ("encontrado"/"não cadastrado") nem o código previsível: isso
 é a F-12, que fica no **plano** (Parte B). Um PR, um assunto.
 
@@ -292,7 +327,15 @@ Abra `controller/AuthController.java`.
      | tee entregaveis/evidencias/fase4-sqli-depois.txt
    ```
 
-   Esperado: **`HTTP/1.1 401`**, sem `access_token`.
+   Esperado: **`HTTP/1.1 401`**, sem `access_token`. O corpo da resposta vem com um texto longo
+   (`"trace":"org.springframework...`): é o **erro que conta demais** (F-16), que não é assunto
+   deste PR. Para conferir de forma objetiva que nenhum token saiu:
+
+   ```bash
+   grep -c access_token entregaveis/evidencias/fase4-sqli-depois.txt
+   ```
+
+   Esperado: `0`.
 3. **O uso legítimo** (não pode ter quebrado):
 
    ```bash
@@ -337,7 +380,10 @@ Abra `controller/AuthController.java`.
    ```
 
    Cada linha mostra um número e o nome de uma regra. Compare com o
-   `fase4-semgrep-contagem-antes.txt` do Passo 1.
+   `fase4-semgrep-contagem-antes.txt` do Passo 1. Esperado: `vidaplus-sql-concat` cai de **7**
+   para **4**, e as outras regras continuam com **1** cada. Os 4 que sobram estão todos no
+   `PacienteDao.java` (a busca e a nota — outro pacote): na saída de texto acima, nenhum deve
+   estar no `UsuarioDao.java`.
 
 **Deu errado?**
 
@@ -345,6 +391,8 @@ Abra `controller/AuthController.java`.
 |---|---|
 | `docker compose up --build` mostra `ERROR` e `cannot find symbol` | faltou um `import` ou há erro de digitação. A mensagem diz o arquivo e a linha |
 | O login legítimo deu 401 | a senha está sendo conferida errado. Confira se usou `rs.getString("senha_hash")` e se a coluna `u.senha_hash` está no `SELECT` |
+| O Semgrep ainda acusa `vidaplus-sql-concat` no `UsuarioDao.java` | o `autenticar` ou o `porEmail` ainda tem `+` no SQL. Compare com o Passo 4 e com a conferência do Passo 5 |
+| `grep -c access_token` deu `1` | o login com o ataque ainda devolve token: o `autenticar` novo não foi salvo, ou o VidaPlus não foi remontado (`zerar-banco.sh`) |
 | O teste continua vermelho | você esqueceu de remontar e zerar: `bash roteiros/comum/zerar-banco.sh` |
 
 ## Passo 8 — Grave, abra o PR e peça a revisão
@@ -446,6 +494,21 @@ do Grupo 5 — **sem** a implementação.
 8. **Limitações assumidas:** o que este desenho **não** garante? (Ex.: quem administra o banco
    consegue apagar a tabela inteira e recriar a cadeia?)
 9. **O `.feature @analise`** da F-05, se ainda não existir (Fase 1).
+
+## Deu errado?
+
+Os problemas que aparecem em **qualquer** fase (VidaPlus desligado, token vazio num terminal
+novo, comando fora da raiz, dados mudados por um teste anterior) estão na tabela de
+[`comum/02` §6](../comum/02-observar-o-sistema.md#6-deu-errado-problemas-comuns-a-todas-as-fases).
+
+Os desta fase:
+
+| O que aparece | Causa provável | O que fazer |
+|---|---|---|
+| O teste do "antes" (Passo 3) já deu **verde** | a correção já está nesta branch | `git log --oneline -3`: se aparecer um commit `fix(F-01)`, você já corrigiu; o "antes" tem de ser gravado **antes** do Passo 4 |
+| Problemas ao compilar ou nos resultados do Passo 7 | — | veja a tabela **Deu errado?** dentro do Passo 7 |
+
+---
 
 ## Último passo — Grave no Git e abra o Pull Request
 
