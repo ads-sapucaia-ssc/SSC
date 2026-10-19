@@ -266,7 +266,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: meta
-        run: echo "image=ghcr.io/${{ github.repository }}/vidaplus-backend" >> "$GITHUB_OUTPUT"
+        # O GHCR so aceita nome em minusculas (o repositorio-modelo se chama "SSC").
+        run: |
+          REPO="${{ github.repository }}"
+          echo "image=ghcr.io/${REPO,,}/vidaplus-backend" >> "$GITHUB_OUTPUT"
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
