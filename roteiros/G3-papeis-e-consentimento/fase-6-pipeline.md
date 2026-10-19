@@ -91,8 +91,7 @@ merge? Quem pode aprovar uma publicação em produção? É a F-03 aplicada ao p
    está em [`comum/06` §3.4](../comum/06-pipeline-do-zero.md#34-todos-os-jobs-do-vidaplus), e cada
    ferramenta em [`comum/07`](../comum/07-ferramentas-de-seguranca.md).
 4. Monte a tabela. Para o G3: o job de testes ficou verde para o seu cenário? O SAST mudou com a
-   correção (Fase 5: não deveria)? "Deveria ser bloqueante?" por gate, com motivo. (Opcional:
-   [`docs/13`](../../docs/13-gate-bloqueante-do-grupo.md).)
+   correção (Fase 5: não deveria)? "Deveria ser bloqueante?" por gate, com motivo.
 
 ## Passo 2 — Ache o SBOM
 

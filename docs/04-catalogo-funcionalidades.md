@@ -8,8 +8,9 @@ Cada funcionalidade tem um **estado no legado** e uma **ação esperada**:
 A **criticidade** guia a priorização (P0 bloqueia release) e a distribuição entre os grupos.
 
 > ⚠️ **Este catálogo é a superfície de ANÁLISE, não uma lista de tarefas de código.** Como
-> o foco é o processo (SSDLC + LGPD + privacidade), cada grupo **corrige apenas 1–2
-> controles ponta-a-ponta (prova de conceito)** e, para as demais funcionalidades do seu
+> o foco é o processo (SSDLC + LGPD + privacidade), cada grupo **corrige apenas o P0 do seu
+> pacote e os segredos no código (F-10), ponta-a-ponta e em aulas guiadas (prova de
+> conceito)** e, para as demais funcionalidades do seu
 > pacote, entrega **análise + plano de remediação** (ameaça, controle proposto, esforço,
 > prioridade) — **sem precisar implementar**. Todas as funcionalidades devem ser
 > **analisadas** (requisito, STRIDE/LINDDUN, base legal); poucas são **implementadas**.
@@ -47,7 +48,7 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 > ⚠️ **F-07 e F-08 não são independentes.** O status de "publicado" (F-07) é um **rótulo
 > de fluxo de trabalho** no banco — ele não controla o acesso ao arquivo (F-08). No
 > legado, um exame **ainda em rascunho** (`publicado = 0`, ex.: sorologia não liberada)
-> é baixável do mesmo jeito, sem nenhuma autenticação. Ao escrever o RGS de F-08, teste
+> é baixável do mesmo jeito, sem nenhuma autenticação. Ao escrever o cenário Gherkin de F-08, teste
 > justamente um exame **não publicado**: se ele também vazar, corrigir só um dos dois
 > (RBAC na publicação **ou** acesso ao arquivo) deixa a lacuna real — os dois requisitos
 > precisam ser corrigidos e verificados **juntos**.
@@ -62,7 +63,7 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 | F-14 | **Notas/observações clínicas** | Renderizadas com `dangerouslySetInnerHTML` (React) | 🛠️ | Stored XSS |
 | F-15 | **Cadastro de paciente** | Coleta religião, estado civil, etc. sem finalidade | ⚖️ | Minimização (LINDDUN-U/N) |
 | F-16 | **Tratamento de erros** | Stack trace devolvido ao cliente | 🛠️ | Information disclosure |
-| F-17 | **CORS / cabeçalhos de segurança** | `Allow-Origin: *` com credenciais; sem HSTS/CSP | 🛠️ | Misconfiguration |
+| F-17 | **CORS / cabeçalhos de segurança** | `Allow-Origin: *` (qualquer site chama a API); sem HSTS/CSP | 🛠️ | Misconfiguration |
 | F-18 | **Notificação (e-mail/SMS) com link** | Link direto ao laudo, sem autenticação | 🛠️⚖️ | Disclosure |
 
 ---
@@ -74,6 +75,35 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 | F-19 | **Perfil do usuário** | Sem validação de entrada | 🛠️ | Hardening |
 | F-20 | **Conteúdo institucional (site)** | Sem proteção anti-defacement | 🛠️ | Integridade |
 | F-21 | **Gestão de dependências (SCA/SBOM)** | Manter dependências atualizadas e sem CVE crítica (higiene contínua) | ⚙️ | Supply chain (OWASP A06/A03) |
+
+---
+
+## Códigos V-XX (comentários do código legado)
+
+O código do VidaPlus marca cada falha plantada com um código **V-XX** nos comentários (ex.:
+`// V-12`). Os roteiros às vezes citam esses códigos. O dossiê usa os **F-XX** acima; esta
+tabela liga um ao outro.
+
+| Código | Falha plantada | Funcionalidade |
+|---|---|---|
+| V-01 | SQL por concatenação (login e busca) | F-01, F-13 |
+| V-02 | hash de senha fraco (MD5, sem salt) | F-01 |
+| V-03 | IDOR — exame de outro paciente pelo id | F-02 |
+| V-04 | sem checagem de papel (RBAC) | F-03, F-07 |
+| V-05 | segredos no código (senha do banco, chave do token) | F-10 |
+| V-06 | sem trilha de auditoria | F-05 |
+| V-07 | token sem expiração; "logout" só no navegador | F-11 |
+| V-08 | recuperação de senha com token previsível e enumeração de e-mail | F-12 |
+| V-09 | PDF do laudo em pasta pública, nome previsível | F-08 |
+| V-10 | `dangerouslySetInnerHTML` (XSS armazenado) | F-14 |
+| V-11 | erro devolve o *stack trace* ao cliente | F-16 |
+| V-12 | CORS aberto; sem cabeçalhos de segurança | F-17 |
+| V-13 | HTTP puro, sem TLS | — (transversal; nenhum pacote) |
+| V-14 | dados coletados sem finalidade (religião, renda…) | F-15 |
+| V-15 | sem registro de consentimento | F-04 |
+| V-16 | "exclusão" só oculta (retenção infinita) | F-06 |
+| V-17 | PII (nome/CPF) onde deveria haver id opaco (logs, auditoria) | F-05 |
+| V-19 | nota clínica sem autenticação nem vínculo | F-14 |
 
 ---
 
@@ -131,7 +161,7 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 > **Candidatas a versão futura.** Esta lista é o backlog natural para quando o VidaPlus
 > ganhar uma nova rodada de funcionalidades planejadas (F-22 em diante) — cada lacuna
 > aqui já vem com a base legal e a onde foi identificada, prontas para virar entrada
-> formal do catálogo (com dono, RFS/RGS e teste) quando isso acontecer.
+> formal do catálogo (com dono, requisito *shall* + cenário Gherkin e teste) quando isso acontecer.
 
 ### Ameaças de privacidade (LINDDUN) candidatas a versão futura
 
@@ -141,8 +171,11 @@ Legenda de ação: 🛠️ corrigir · ⚖️ adequar (LGPD/privacidade) · ✨ 
 > o app é rico em falhas **STRIDE** (IDOR, RBAC, injeção de SQL, XSS…) e pobre nas ameaças que
 > **só o LINDDUN enxerga**: aquelas em que **não há invasão**, o sistema "funciona", e mesmo
 > assim a privacidade do titular é atingida. Uma versão futura pode **plantá-las** como
-> vulnerabilidades didáticas (novos V-XX no gabarito) **ou** um grupo pode citá-las na análise
-> do próprio pacote. **Não estão plantadas hoje.**
+> vulnerabilidades didáticas (novos códigos V-XX) **ou** um grupo pode citá-las na análise
+> do próprio pacote. **Não estão plantadas hoje** como falhas próprias. (O oráculo `D.3` já
+> aparece de outro jeito: no legado, `GET /api/exames/999`, que não existe, responde **200 com
+> corpo vazio**, e um exame existente responde 200 com os dados — a diferença também revela
+> quais IDs existem. A tabela descreve a forma que surge **depois** de corrigir o IDOR.)
 
 | Ameaça de privacidade (nó LINDDUN) | Como apareceria no VidaPlus | Por que o STRIDE não a vê | Fonte (exemplo LINDDUN) |
 |---|---|---|---|

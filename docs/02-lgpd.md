@@ -41,7 +41,9 @@ Este documento mapeia os artigos que mais impactam o VidaPlus e **onde** cada um
 
 ## 3. Direitos do titular (art. 18) → viram funcionalidades
 
-Estes direitos **não existem** no VidaPlus legado e precisam ser **criados** pelos grupos:
+Estes direitos **não existem** no VidaPlus legado e precisam ser **criados**. *No VidaPlus
+(recorte do projeto):* viram as funcionalidades de criação ✨ (F-04, F-06, F-09), que os grupos
+**especificam**, sem implementar.
 
 | Direito (art. 18) | Funcionalidade a construir | Criticidade |
 |-------------------|----------------------------|:-----------:|
@@ -56,8 +58,8 @@ Estes direitos **não existem** no VidaPlus legado e precisam ser **criados** pe
 
 ## 4. Consentimento (arts. 8 e 9) → novo módulo
 
-O legado coleta dados **sem registrar consentimento**. Os grupos devem criar o módulo de
-**Gestão de Consentimento**:
+O legado coleta dados **sem registrar consentimento**. Falta um módulo de **Gestão de
+Consentimento** (F-04 — no projeto, especificado pelo grupo que o recebe):
 
 - Consentimento **específico, destacado e informado** (finalidade explícita).
 - **Versionado** (a que termo/versão o titular consentiu e quando).
@@ -92,9 +94,13 @@ o plano de resposta a incidentes.
 |------------|--------------------------------|
 | Secret scanning | Segredos/credenciais fora do código (art. 46) |
 | SAST | Injeção, exposição de dados, cripto fraca (art. 46) |
-| DAST | IDOR/vazamento de laudo (art. 46; direito de acesso restrito) |
-| Testes de auditoria | Trilha imutável (art. 37 accountability; art. 48) |
-| Testes de consentimento/erasure | Direitos do titular (art. 18) exercitáveis |
+| DAST | Cabeçalhos de segurança ausentes, erro que vaza detalhes internos (art. 46) |
+| Testes de segurança (`@security`) | IDOR/vazamento de laudo, papel indevido, injeção no login (art. 46; acesso restrito ao dado de saúde, art. 11) |
+
+> **Num projeto completo**, entrariam também **testes de auditoria** (trilha imutável — art. 37
+> e art. 48) e **testes de consentimento/eliminação** (direitos do art. 18 exercitáveis). *No
+> VidaPlus (recorte do projeto):* essas funcionalidades são só especificadas, então seus
+> cenários ficam `@analise` e não rodam no pipeline.
 
 ---
 
@@ -122,7 +128,7 @@ requisitos do VidaPlus a **NIST SP 800-53** (famílias) e **ISO/IEC 27001:2022 A
 | Gestão de segredos (F-10) | Spoofing/Tampering | art. 46 | IA-5, SC-12 | A.8.24, A.5.17 |
 
 > Fio completo estendido: **REQ → ameaça (STRIDE/LINDDUN) → LGPD/ASVS → NIST 800-53 → ISO
-> 27001**. Basta acrescentar essas colunas de origem na matriz de rastreabilidade (Fase 6)
+> 27001**. Basta acrescentar essas colunas de origem na matriz de rastreabilidade (Fase 8)
 > quando quiser demonstrar conformidade a mais de um framework. *Correlatos: **CIS Controls
 > v8** (18 controles priorizados) para times menores; **NIST SSDF** para ligar ao ciclo.*
 

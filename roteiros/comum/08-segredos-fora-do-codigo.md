@@ -677,7 +677,7 @@ O Gitleaks lê os **commits**, então primeiro grave a correção num commit (ai
      Nenhum valor fica gravado no repositório. (No log, onde estaria o valor aparece `***`: o
      GitHub esconde.)
 3. **O autograding:** na aba **Actions**, a execução mais recente de **Autograding (Classroom)** →
-   o teste **"V-05 JWT via variavel de ambiente"** agora pontua.
+   o teste **"F-10 / V-05 JWT via variavel de ambiente"** agora pontua.
 
 ---
 

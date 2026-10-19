@@ -120,7 +120,7 @@ IDOR no download de laudo
    ├─ LINDDUN: Divulgação + Vinculação (Linking, ID sequencial do exame)
    └─ LGPD:    art. 46 (segurança) + art. 11 (dado sensível)
         → Requisito REQ-AC-IDOR-01 → controle (checagem de dono do recurso no servidor)
-        → teste TC-IDOR-01 (DAST no CI) → evidência (HTTP 403, sem metadados)
+        → cenário idor.feature (@security, no job de testes do CI) → evidência (HTTP 403, sem metadados)
 ```
 
 ---

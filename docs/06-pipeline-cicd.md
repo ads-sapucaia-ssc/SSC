@@ -3,14 +3,16 @@
 O arquivo [`.github/workflows/ssdlc-pipeline.yml`](../.github/workflows/ssdlc-pipeline.yml)
 implementa o pipeline. A ideia pedagógica: **tornar a segurança visível e versionada**. O
 pipeline nasce com quase todos os gates **vermelhos** (o legado é inseguro) e a **prova de
-conceito** do grupo faz o(s) gate(s) da classe corrigida transitar **🔴 → 🟢**.
+conceito** do grupo faz o **cenário do seu P0** (no job de testes) e, com o F-10, o **Gitleaks**
+transitarem **🔴 → 🟢**.
 
 > ⚠️ **O pipeline é gerador de EVIDÊNCIA e FEEDBACK — não é a nota.** Como o foco é o
 > processo (SSDLC + LGPD + privacidade), a avaliação vem dos **artefatos** e da **defesa**
 > (ver [07-rubrica-avaliacao.md](07-rubrica-avaliacao.md)). Um gate verde **sustenta** a
 > evidência de um controle; ele não substitui o requisito, o threat model, o RIPD e a
-> rastreabilidade por trás. Nem todos os gates precisam ficar verdes — só os das PoCs
-> escolhidas; os demais sustentam o **plano de remediação**.
+> rastreabilidade por trás. Os gates cobrem o repositório **inteiro** e seguem vermelhos pelas
+> falhas que ficaram só analisadas — isso é esperado; esses vermelhos sustentam o **plano de
+> remediação**.
 
 ---
 
@@ -20,18 +22,19 @@ conceito** do grupo faz o(s) gate(s) da classe corrigida transitar **🔴 → �
 |------|-----------|:----------:|------------------|
 | Build backend | Maven | 4 | compila/roda + testes |
 | Build frontend | React (Vite) | 4 | compila |
-| **Secret Scanning** | Gitleaks | 4/6 | V-05 (segredos no código) |
-| **SAST** | Semgrep + CodeQL | 4/5 | V-01, V-02, V-07, V-10 |
+| **Secret Scanning** | Gitleaks | 4/6 | segredos no código (F-10) |
+| **SAST** | Semgrep + CodeQL | 4/5 | SQL concatenado (F-01, F-13), MD5 (F-01), token sem expiração (F-11), `dangerouslySetInnerHTML` (F-14) |
 | **SCA** | Dependency-Check + Trivy (fs) | 5/6 | higiene de supply chain (CVE em dependências) |
 | **Container Scanning** | Trivy (image) | 5/6 | CVE na imagem base/SO do backend/frontend |
 | **SBOM** | Syft (CycloneDX) | 6 | inventário de componentes |
-| **DAST autenticado** | OWASP ZAP (com JWT) | 5 | V-03 IDOR, V-11, V-12, V-10 (dinâmico, autenticado) |
-| **Testes de segurança** | JUnit (`-Dgroups=security`) | 5 | V-03 IDOR, V-04 RBAC, V-01 SQLi no login |
+| **DAST autenticado** | OWASP ZAP baseline (com JWT) | 5 | cabeçalhos de segurança ausentes — CSP, HSTS, X-Content-Type-Options (F-17) — e erro que vaza detalhes (F-16) — varredura **passiva**: não acha IDOR |
+| **Testes de segurança** | JUnit + Cucumber (`-Dgroups=security`) | 5 | IDOR (F-02), papel indevido (F-03), SQLi no login (F-01) — os testes-semente |
 | Placar | summary job | 8 | consolida o estado dos gates |
 
-> IDOR (V-03) e RBAC (V-04) são falhas **lógicas** — não aparecem em scanner genérico.
-> São cobertas por **testes de segurança** escritos pelos grupos (ex.: paciente A pede
-> `GET /api/exames/{id_de_B}` e o teste exige **403 sem metadados**).
+> IDOR (F-02) e RBAC (F-03) são falhas **lógicas** — não aparecem em scanner genérico.
+> São cobertas pelos **testes-semente** que já vêm no repositório (cenários `@security`; ex.:
+> a paciente Ana pede `GET /api/exames/102`, que é do Bruno, e o teste exige **403 sem
+> metadados**).
 
 > **Por que não há IaC scanning (Checkov):** aplique o controle **proporcional ao contexto** —
 > o VidaPlus roda **localmente** via Docker Compose, sem Terraform/Kubernetes a analisar.
@@ -96,30 +99,32 @@ secret-scan:
 
 > **Neste projeto, os gates ficam informativos** e o grupo **não** precisa torná-los
 > bloqueantes. O que se espera é **entender** a diferença e **explicar** no dossiê (§8) por que,
-> num projeto real, o gate da classe corrigida deveria virar bloqueante. *(Material opcional
-> para quem quiser fazer na prática: [docs/13](13-gate-bloqueante-do-grupo.md).)*
+> num projeto real, o gate da classe corrigida deveria virar bloqueante.
 
 ---
 
 ## 3. Fluxo recomendado de PR
 
 1. Grupo cria branch `fix/F-02-idor`.
-2. Implementa a correção + teste de segurança.
+2. Implementa a correção (o teste-semente do P0 já existe; o grupo o roda antes e depois).
 3. Abre PR; o pipeline roda todos os gates.
 4. **Revisão por pares intra-grupo** (regra dos "4 olhos"): **outro membro do grupo — não
    o autor do PR** — revisa com o [checklist de secure code review](07-rubrica-avaliacao.md#checklist-de-secure-code-review-para-os-prs-da-poc)
    e **aprova**.
-5. Merge só com o gate da classe corrigida **verde** **e** a revisão **aprovada**.
+5. Merge com a revisão **aprovada**; a evidência é o **cenário do P0 verde** no log do job de
+   testes.
 6. Atualiza a **matriz de rastreabilidade** (requisito → teste → evidência → status).
 
 > **Quem revisa:** a revisão é **intra-grupo** e **bloqueante** — autor ≠ revisor. Isso
 > mantém os grupos independentes (nenhum PR espera por outra equipe).
 >
-> **Torne "verde + aprovação" uma regra:** os passos 4–5 devem ser **impostos** por
-> *branch protection* na `main` — exigir os **status checks verdes** dos gates das PoCs **e
-> 1 aprovação** antes do merge. É a prática **PS.1 do NIST SSDF** (proteger o código-fonte
-> contra adulteração/bypass). Nesta turma, o **professor** configura essa proteção em cada
-> repositório ([08-setup-grupos.md §5.2](08-setup-grupos.md)); o grupo explica no dossiê.
+> **Num projeto real, "verde + aprovação" vira regra:** os passos 4–5 são **impostos** por
+> *branch protection* na `main` — exigir os **status checks verdes** dos gates **e 1
+> aprovação** antes do merge. É a prática **PS.1 do NIST SSDF** (proteger o código-fonte
+> contra adulteração/bypass). *No VidaPlus (recorte do projeto):* o **professor** configura a
+> exigência de PR + 1 aprovação; os gates ficam **informativos**, porque cobrem as falhas de
+> todos os pacotes ([08-setup-grupos.md §3.1](08-setup-grupos.md#31-proteção-da-main-ruleset)).
+> O grupo explica no dossiê.
 
 ---
 
@@ -137,10 +142,9 @@ Cada execução do pipeline gera evidências reutilizáveis na defesa (Fase 8):
 
 ## 5. Entrega segura (já pré-fiada): assinatura, verificação e promoção
 
-Fecha a Parte 9 (Deploy + Supply Chain) e é **entregável da Fase 6**. **O pipeline já faz
-tudo isto** — você **não configura ferramenta** (usa **OIDC + `GITHUB_TOKEN`**, sem
-segredos). Seu trabalho é **entender, tornar bloqueante quando fizer sentido e explicar no
-dossiê** com a evidência do run.
+É **entregável da Fase 6**. **O pipeline já faz tudo isto** — você **não configura
+ferramenta** (usa **OIDC + `GITHUB_TOKEN`**, sem segredos). Seu trabalho é **entender e
+explicar no dossiê** com a evidência do run.
 
 ### O fluxo de CD (roda na `main`)
 
@@ -151,8 +155,8 @@ release-sign  →  deploy-staging  →  deploy-prod
 1. **`release-sign`** — *build once*: builda e **publica** a imagem no **GHCR**, **assina**
    com **cosign** (keyless/OIDC, registrado no **Rekor**) e **atesta o SBOM** da imagem
    (anexa a lista de componentes, também assinada).
-2. **`deploy-staging`** — "sobe" a app num **staging** efêmero e faz um *smoke* (o **DAST
-   autenticado** exercita essa instância).
+2. **`deploy-staging`** — "sobe" a app num **staging** efêmero e faz um *smoke* (confere que
+   ela responde). O DAST roda em job próprio, sobre outra instância efêmera.
 3. **`deploy-prod`** — **admission gate**: `cosign verify` + `verify-attestation` **recusam
    imagem não assinada/atestada**, e só executa **após aprovação manual** do ambiente
    `production`. É o "*build once, deploy many*" **com portão**.
@@ -181,7 +185,7 @@ não-assinado. **SLSA** L0→L3 mede a confiança da **proveniência** do build.
   **Packages**; `cosign verify`/`verify-attestation` passando; a **pausa de aprovação** do
   `production`).
 - **Nenhuma configuração:** o Environment `production` com revisor e a proteção da `main` são
-  feitos pelo professor ([08-setup-grupos.md §5.2 e §5.3](08-setup-grupos.md)).
+  feitos pelo professor ([08-setup-grupos.md §3](08-setup-grupos.md#3-o-que-o-professor-configura-no-repositório)).
 
 > ⚠️ A verificação amarra a identidade ao **seu** repositório
 > (`--certificate-identity-regexp "https://github.com/<owner>/<repo>/.*"`) — **nunca** `.*`,

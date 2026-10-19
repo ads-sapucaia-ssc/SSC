@@ -4,8 +4,9 @@ Cada grupo recebe um pacote desenhado para ser **equivalente em esforço**. Todo
 
 - **1 funcionalidade P0 de correção** (🛠️) — código que **já existe** e está vulnerável,
   com **teste-semente** no pipeline: é o 🔴→🟢 objetivo do grupo;
-- **1 funcionalidade de criação** (✨) — projetar e construir do zero, com **escopo mínimo
-  definido** (ver "Escopo mínimo da PoC ✨", ao final);
+- **1 funcionalidade de criação** (✨) — **especificada** (requisito, ameaças, design, plano),
+  sem implementar nesta turma; o recorte que a especificação cobre está em "Escopo mínimo da
+  criação", ao final;
 - **2–3 funcionalidades de apoio** que fecham o tema.
 
 Todos trabalham sobre o **mesmo** VidaPlus, o que permite comparar soluções. Cada pacote
@@ -14,14 +15,15 @@ requisito → LINDDUN/STRIDE → design → correção (PR) → teste → evidê
 
 > **Pacotes independentes — mesmo quando compartilham uma funcionalidade.** Algumas
 > funcionalidades aparecem em **dois pacotes**, de propósito, para equilibrar o esforço
-> (há 3 P0 de correção e 4 de criação para 5 grupos). Quando isso ocorre, cada grupo tem um
+> (há 3 P0 de correção e 4 de criação para 5 pacotes — nesta turma, 4 grupos; o pacote 5 é o
+> exemplo resolvido do [docs/12](12-exemplo-dossie-preenchido.md)). Quando isso ocorre, cada grupo tem um
 > **recorte diferente e explícito**, e faz a análise e a PoC **no próprio
 > repositório**: não há dependência nem espera entre grupos. Comparar as duas soluções na
 > defesa é parte do valor.
 >
 > Onde uma funcionalidade **pressupõe** logicamente outra de outro grupo (ex.: o consentimento
 > roda "atrás" do RBAC), isso entra na análise como **interface/suposição documentada**, não
-> como bloqueio: a PoC é fechada de forma isolada (stub/mock ou log mínimo próprio).
+> como bloqueio: o grupo especifica a sua parte supondo essa interface.
 
 ---
 
@@ -118,27 +120,31 @@ dependência entre equipes.
 ## Dois níveis de "pronto" (o foco é análise; a implementação é prova de conceito)
 
 Como a disciplina avalia o **processo**, cada funcionalidade do pacote é **analisada**, mas
-só **1–2 controles** são **implementados** como prova de conceito — obrigatoriamente
-**o P0 de correção** e, quando o grupo optar por dois, a **funcionalidade de criação**.
+só o **P0 de correção** é **implementado** como prova de conceito (aula guiada da Fase 4) —
+além do **F-10**, corrigido por todos em aula guiada na Fase 6. A funcionalidade de criação
+fica **especificada**.
 
 ### A) Funcionalidade ANALISADA — obrigatório para **todas** do pacote
-1. **Requisito** (RFS + RGS) com **base legal** (LGPD) e **ameaça** (STRIDE e/ou LINDDUN).
+1. **Requisito** nas duas formas — declaração *shall* (dossiê) + cenário Gherkin `@analise`
+   (`.feature`) — com **base legal** (LGPD) e **ameaça** (STRIDE e/ou LINDDUN).
 2. **Controle proposto** com comportamento sob falha (fail-secure).
 3. **Entrada na matriz de rastreabilidade** e, se de privacidade, no **RIPD**.
 4. **Plano de remediação**: o quê, como, esforço estimado, prioridade.
 
-### B) Funcionalidade IMPLEMENTADA (prova de conceito) — **1–2 por grupo**
+### B) Funcionalidade IMPLEMENTADA (prova de conceito) — o **P0** (e o F-10)
 Além de A, fecha o fio completo:
 5. **Correção** num PR revisado e mergeado.
-6. **Teste** que a exercita + evidência (log do CI/print/relatório).
-7. Status **"Verificado"** na matriz; o **gate** da classe de falha vai de 🔴 → 🟢.
+6. O **cenário `@security`** (teste-semente) vai de 🔴 → 🟢 + evidência (log do CI/print). Para o
+   F-10, a prova é a verificação do roteiro e o Gitleaks 🔴 → 🟢.
+7. Status **"Verificado"** na matriz.
 
-### Escopo mínimo da PoC ✨ (criação) — para equiparar o esforço
+### Escopo mínimo da criação — o que a especificação cobre
 
-Construir do zero custa mais que corrigir. Por isso o **mínimo aceitável é pequeno e
-fechado** — não se espera o módulo completo:
+A criação é **só especificada** (requisito, ameaças, design, plano), não implementada. Para o
+esforço ficar equivalente entre os grupos, a especificação cobre um **recorte pequeno e
+fechado** — não o módulo completo:
 
-| Criação | Escopo mínimo da PoC |
+| Criação | Recorte a especificar |
 |---------|----------------------|
 | **F-04** Consentimento | **1 finalidade**, **1 versão** e **revogação**, aplicada em **1 fluxo** |
 | **F-05** Trilha de auditoria | **1 ação sensível** instrumentada + **verificação de integridade** (append-only) daquele log |
@@ -150,9 +156,8 @@ fechado** — não se espera o módulo completo:
 > **planejar** a adequação do restante como faria num projeto real.
 
 > **E os gates dos outros pacotes?** Cada grupo trabalha no **seu próprio repositório**. Os
-> gates são **informativos** (o professor configura a proteção da `main`). O pipeline **já conclui verde**
-> desde o 1º push (gates informativos); o placar vermelho das funcionalidades de **outros
-> pacotes** — ou das suas que ficaram só **analisadas** — é **esperado** e **não** derruba o
-> build nem a nota (nota = dossiê + defesa; pipeline = evidência). Nenhum grupo precisa
-> corrigir teste de outro pacote. Como ler o resultado do seu teste no job de testes de
-> segurança: [08-setup-grupos.md](08-setup-grupos.md) §5.
+> gates são **informativos** (o professor configura a proteção da `main`): o placar vermelho
+> das funcionalidades de **outros pacotes** — ou das suas que ficaram só **analisadas** — é
+> **esperado** e **não** derruba a nota (nota = dossiê + defesa; pipeline = evidência). Nenhum
+> grupo precisa corrigir teste de outro pacote. Como achar o **seu** cenário no log do job de
+> testes: [`roteiros/comum/04` §3.2](../roteiros/comum/04-testes-e-pipeline.md#32-achar-o-seu-teste-no-log).

@@ -1,15 +1,21 @@
 name: Autograding (Classroom)
 
-# Autograding do GitHub Classroom para o VidaPlus.
-# Combina checagem ESTATICA (padrao vulneravel removido) com COMPORTAMENTAL
-# (testes @security passam de fato, contra um MySQL de servico).
+# Autograding do VidaPlus: nota parcial AUTOMATICA de apoio, alinhada ao que os grupos
+# implementam de fato (o recorte do projeto):
+#   1. F-10 (aula guiada, todos os grupos): a chave do token saiu do codigo (checagem estatica);
+#   2. o P0 do grupo: o cenario Gherkin @security do pacote passa (teste de comportamento, contra
+#      um MySQL de servico). E o mesmo comando do roteiros/comum/rodar-testes.sh.
 #
-# IMPORTANTE: e FEEDBACK / nota parcial de APOIO, nao a nota final. O foco da
-# disciplina e o processo (SSDLC + LGPD + privacidade); a nota real vem dos
-# artefatos e da defesa (ver docs/07-rubrica-avaliacao.md). Serve para o grupo
-# ter sinal objetivo de que sua prova de conceito fechou o fio.
-# Este workflow e o grader ATIVO no Classroom; .github/classroom/autograding.json
-# fica como fallback estatico documentado.
+# IMPORTANTE: e FEEDBACK, nao a nota final. A nota real vem dos artefatos (dossie) e da defesa
+# (ver docs/07-rubrica-avaliacao.md). As demais funcionalidades do pacote sao so ANALISADAS
+# (@analise) e nao entram aqui.
+#
+# O filtro do P0 (no "command" do passo "P0 do grupo") diz qual cenario e o P0 do grupo. O
+# professor ajusta em cada repositorio:
+#   G1 "security & F-01" | G2 "security & F-02" | G3 "security & F-03" | G4 "security & F-02"
+# Com "security" (valor do modelo), rodam os testes @security de todos os pacotes.
+# O filtro e a chave do token ficam DENTRO do command: o grader roda o comando num ambiente
+# reduzido, que nao recebe as variaveis do job (env: / GITHUB_ENV).
 
 on:
   push:
@@ -49,91 +55,40 @@ jobs:
           mysql -h127.0.0.1 -uroot -proot123 < legacy-app/db/schema.sql
           mysql -h127.0.0.1 -uroot -proot123 vidaplus < legacy-app/db/seed.sql
 
-      # ---------------- Estatico (proxy de remediacao) ----------------
-      - name: "V-02 hash forte configurado"
-        id: v02
+      # ---------------- F-10 (aula guiada, todos os grupos) ----------------
+      - name: "F-10 / V-05 chave do token fora do codigo"
+        id: f10
         uses: classroom-resources/autograding-command-grader@v1
         with:
-          test-name: "V-02 PasswordEncoder Argon2id/bcrypt (fora de comentario)"
-          # MD5 pode continuar existindo SO para conferir hash legado durante a migracao.
-          command: >-
-            grep -rhE 'Argon2PasswordEncoder\.defaults|new (Argon2|BCrypt)PasswordEncoder' legacy-app/backend/src/main
-            | grep -qvE '^[[:space:]]*(\*|//)'
-          max-score: 10
-
-      - name: "V-01 sem concatenacao SQL"
-        id: v01
-        uses: classroom-resources/autograding-command-grader@v1
-        with:
-          test-name: "V-01 sem SQL concatenado com entrada do usuario"
-          # acusa trecho SQL ("... WHERE x = '" + var); SQL constante quebrado em linhas nao conta
-          command: >-
-            ! grep -rqE '"[^"]*\b(WHERE|AND|OR|SET|LIKE|VALUES)\b[^"]*"[[:space:]]*\+[[:space:]]*[A-Za-z_]' legacy-app/backend/src/main
-          max-score: 10
-
-      - name: "V-05 sem segredo hardcoded"
-        id: v05
-        uses: classroom-resources/autograding-command-grader@v1
-        with:
-          test-name: "V-05 JWT via variavel de ambiente (properties e JwtUtil)"
+          test-name: "F-10 / V-05 JWT via variavel de ambiente (properties e JwtUtil)"
+          # A mesma verificacao do roteiros/comum/08 (Passo 3 e Passo 9).
           command: >-
             ! grep -qE 'jwt.secret=[^$]' legacy-app/backend/src/main/resources/application.properties
             && ! grep -qE 'SECRET *= *"' legacy-app/backend/src/main/java/br/ifsul/vidaplus/security/JwtUtil.java
-          max-score: 10
-
-      - name: "V-10 sem dangerouslySetInnerHTML"
-        id: v10
-        uses: classroom-resources/autograding-command-grader@v1
-        with:
-          test-name: "V-10 sem dangerouslySetInnerHTML"
-          command: "! grep -rq 'dangerouslySetInnerHTML' legacy-app/frontend/src"
-          max-score: 10
-
-      - name: "V-12 CORS sem allowedOrigins(*)"
-        id: v12
-        uses: classroom-resources/autograding-command-grader@v1
-        with:
-          test-name: "V-12 CORS restrito"
-          command: "! grep -rqF 'allowedOrigins(\"*\")' legacy-app/backend/src/main"
-          max-score: 10
-
-      - name: "V-07 JWT com expiracao"
-        id: v07
-        uses: classroom-resources/autograding-command-grader@v1
-        with:
-          test-name: "V-07 JWT com expiracao"
-          # jjwt 0.12 usa .expiration(...); setExpiration(...) e a API antiga (aceita)
-          command: >-
-            grep -rhE '\.expiration\(|setExpiration\(' legacy-app/backend/src/main
-            | grep -qvE '^[[:space:]]*(\*|//)'
-          max-score: 10
-
-      # ---------------- Comportamental (prova a correcao) ----------------
-      # F-10: depois da correcao, a chave do token vem do ambiente (JWT_SECRET). Cada execucao
-      # gera uma chave nova e descartavel: nenhuma chave fica gravada no repositorio.
-      - name: Chave do token so para este teste
-        run: |
-          K=$(openssl rand -hex 32); echo "::add-mask::$K"; echo "JWT_SECRET=$K" >> "$GITHUB_ENV"
-      - name: "Testes de seguranca (IDOR/RBAC/auth)"
-        id: sectests
-        uses: classroom-resources/autograding-command-grader@v1
-        with:
-          test-name: "Testes @security passam (IDOR/RBAC/SQLi)"
-          setup-command: ""
-          command: "cd legacy-app/backend && mvn -B -q test -Dgroups=security"
-          timeout: 15
           max-score: 40
+
+      # ---------------- P0 do grupo (prova a correcao) ----------------
+      - name: "P0 do grupo - cenario @security"
+        id: p0
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "P0 do grupo: cenario Gherkin @security passa"
+          setup-command: ""
+          # JWT_SECRET: depois da F-10 a chave do token vem do ambiente; cada execucao sorteia uma
+          # nova e descartavel (nenhuma chave fica gravada no repositorio).
+          # Um filtro que nao acha nenhum cenario (ex.: retagueado para @analise) REPROVA: o
+          # Cucumber acusa "did not discover any tests".
+          command: >-
+            cd legacy-app/backend && export JWT_SECRET=$(openssl rand -hex 32)
+            && mvn -B -q test "-Dgroups=security"
+          timeout: 15
+          max-score: 60
 
       # ---------------- Relatorio consolidado ----------------
       - name: "Autograding Reporter"
         uses: classroom-resources/autograding-grading-reporter@v1
         env:
-          V02_RESULTS: "${{ steps.v02.outputs.result }}"
-          V01_RESULTS: "${{ steps.v01.outputs.result }}"
-          V05_RESULTS: "${{ steps.v05.outputs.result }}"
-          V10_RESULTS: "${{ steps.v10.outputs.result }}"
-          V12_RESULTS: "${{ steps.v12.outputs.result }}"
-          V07_RESULTS: "${{ steps.v07.outputs.result }}"
-          SECTESTS_RESULTS: "${{ steps.sectests.outputs.result }}"
+          F10_RESULTS: "${{ steps.f10.outputs.result }}"
+          P0_RESULTS: "${{ steps.p0.outputs.result }}"
         with:
-          runners: v02,v01,v05,v10,v12,v07,sectests
+          runners: f10,p0

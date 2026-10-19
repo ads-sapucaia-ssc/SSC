@@ -470,7 +470,7 @@ do Grupo 5 — **sem** a implementação.
 > **limitações** assumidas (o que a rotina não alcança) e o `.feature @analise`. Veja o Controle 2
 > em [`docs/12` §6.1](../../docs/12-exemplo-dossie-preenchido.md#61-prova-de-conceito-12-controles-implementados).
 
-**▶ Agora no G1** — escopo mínimo do [`docs/05`](../../docs/05-pacotes-trabalho-estudantes.md#escopo-mínimo-da-poc--criação--para-equiparar-o-esforço):
+**▶ Agora no G1** — escopo mínimo do [`docs/05`](../../docs/05-pacotes-trabalho-estudantes.md#escopo-mínimo-da-criação--o-que-a-especificação-cobre):
 **1 ação sensível** registrada + **verificação de integridade** do registro. Escreva:
 
 1. **A ação sensível escolhida** e por quê. Candidatas: login (sucesso e falha); desativação de

@@ -421,7 +421,7 @@ Nesta turma, a criação é **especificada**, não implementada.
 > **O recorte de vocês é outro:** **quando** e **o quê** — o Grupo 5 é referência de nível e de
 > técnica, não de conteúdo.
 
-**▶ Agora no G4** — escopo mínimo ([`docs/05`](../../docs/05-pacotes-trabalho-estudantes.md#escopo-mínimo-da-poc--criação--para-equiparar-o-esforço)):
+**▶ Agora no G4** — escopo mínimo ([`docs/05`](../../docs/05-pacotes-trabalho-estudantes.md#escopo-mínimo-da-criação--o-que-a-especificação-cobre)):
 **1 entidade**, regra de **retenção → eliminação/anonimização**, **respeitando a retenção legal**.
 Escrevam:
 

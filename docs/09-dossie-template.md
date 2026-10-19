@@ -1,43 +1,27 @@
 # 09 · Dossiê de Segurança e Privacidade
 
-O **dossiê** é o **entregável avaliado** do grupo (junto com a defesa). Ele consolida, num
-único documento, o "fio completo" de cada ativo — **requisito → ameaça (STRIDE/LINDDUN) →
-controle → teste → evidência** — além do RIPD, da matriz de rastreabilidade e do plano de
-remediação.
+O **dossiê** é o **entregável avaliado** do grupo (junto com a defesa). Ele consolida o "fio
+completo" de cada funcionalidade do pacote — **requisito → ameaça (STRIDE/LINDDUN) → controle →
+teste → evidência** — além do RIPD, da matriz de rastreabilidade e do plano de remediação.
 
-> **O arquivo já vem no repositório:** [`entregaveis/DOSSIE.md`](../entregaveis/DOSSIE.md).
-> **Não é preciso criá-lo** — abra e **preencha ao longo das fases**. As linhas _em itálico_ do
-> modelo são exemplos: apague-as e ponha o conteúdo do grupo.
-
----
+> **O arquivo já vem no repositório:** [`entregaveis/DOSSIE.md`](../entregaveis/DOSSIE.md). Cada
+> seção mapeia **uma fase** do [plano](01-plano-disciplina-ssdlc.md) e um critério da
+> [rubrica](07-rubrica-avaliacao.md); preencha a seção da fase **enquanto a fase acontece**. As
+> linhas _em itálico_ do modelo são exemplos: apague-as e ponha o conteúdo do grupo.
 
 ## Dois níveis de "pronto"
 
-- **Analisada** — para **todas** as funcionalidades do pacote: requisito (RFS+RGS) + base legal
-  + ameaça (STRIDE/LINDDUN) + controle proposto + linha na matriz + plano de remediação.
-- **Implementada** (prova de conceito) — **1–2** por grupo: além da análise, correção em PR +
-  teste + evidência + status "Verificado" + gate 🔴→🟢.
+- **Analisada** — **todas** as funcionalidades do pacote: requisito nas duas formas (*shall* no
+  dossiê + cenário Gherkin `@analise`) + base legal + ameaça (STRIDE/LINDDUN) + controle proposto +
+  linha na matriz + plano de remediação.
+- **Implementada** — o **P0** do grupo (aula guiada da Fase 4) e o **F-10** (segredos, aula guiada
+  da Fase 6): além da análise, correção em PR + cenário `@security` (ou a verificação do F-10) que
+  passa de vermelho para verde + evidência + status "Verificado" na matriz.
 
-## Como o dossiê se conecta às fases
+## Como fazer e como deve ficar
 
-Cada seção do `DOSSIE.md` mapeia **uma fase** do
-[plano](01-plano-disciplina-ssdlc.md) e um critério da [rubrica](07-rubrica-avaliacao.md) — o
-cabeçalho de cada seção do arquivo indica a fase correspondente. Preencha
-**incrementalmente**: a cada fase, a sua seção.
-
-> A **estrutura completa** (todas as seções, tabelas e exemplos de qualidade) está no próprio
-> [`entregaveis/DOSSIE.md`](../entregaveis/DOSSIE.md) — este documento é só a **visão geral**.
-
-## Exemplo completo
-
-Para ver **um dossiê inteiro preenchido** — com o nível de detalhe esperado em cada fase, os
-`.feature`, os PRs e a evidência do CI —, leia
-[12-exemplo-dossie-preenchido.md](12-exemplo-dossie-preenchido.md). Ele trata do **pacote 5**,
-que não foi atribuído a nenhum grupo nesta turma: serve de **modelo de qualidade**, não de
-resposta para o seu pacote.
-
-## Roteiros por fase
-
-Para **fazer** o dossiê do seu grupo, siga a pasta [`roteiros/`](../roteiros/README.md): um
-roteiro por fase, para as funcionalidades do **seu** pacote, mostrando a cada passo como o grupo do
-exemplo fez e como fazer o mesmo no seu.
+- **Como fazer:** os [`roteiros/`](../roteiros/README.md) — um por fase, para as funcionalidades do
+  **seu** pacote.
+- **Como deve ficar:** o [exemplo completo](12-exemplo-dossie-preenchido.md), do **pacote 5** (não
+  atribuído a nenhum grupo nesta turma). É **modelo de qualidade**, não resposta para o seu
+  pacote.

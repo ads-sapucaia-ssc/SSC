@@ -407,7 +407,7 @@ do Grupo 5 — **sem** a implementação.
 > colunas que existem, **tratamento atributo por atributo** (tabela), **limitações** assumidas e o
 > `.feature @analise`. Veja o Controle 2 em [`docs/12` §6.1](../../docs/12-exemplo-dossie-preenchido.md#61-prova-de-conceito-12-controles-implementados).
 
-**▶ Agora no G2** — escopo mínimo ([`docs/05`](../../docs/05-pacotes-trabalho-estudantes.md#escopo-mínimo-da-poc--criação--para-equiparar-o-esforço)):
+**▶ Agora no G2** — escopo mínimo ([`docs/05`](../../docs/05-pacotes-trabalho-estudantes.md#escopo-mínimo-da-criação--o-que-a-especificação-cobre)):
 dados de **1 titular**, formato **estruturado** (JSON ou CSV), **autenticado**. Escreva:
 
 1. **Quem pede e como o sistema sabe que é ele.** Regra de ouro (é a lição do P0): o titular vem

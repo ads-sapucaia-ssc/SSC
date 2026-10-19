@@ -6,8 +6,9 @@ acontecem na mesma aula.** O foco é **SSDLC + LGPD + privacidade** — o VidaPl
 conhecimento**; a aula teórica correspondente é dada **quando o grupo precisa aplicá-la**
 (*just-in-time*), e termina com um **artefato versionado**.
 
-> **A remediação é prova de conceito.** O grupo corrige **1–2 controles ponta-a-ponta**
-> (para gerar evidência de que fecha o fio completo) e **analisa/planeja** o restante. Não
+> **A remediação é prova de conceito.** O grupo corrige, em aulas guiadas, o **P0 do seu
+> pacote** e os **segredos no código** (F-10) ponta-a-ponta (para gerar evidência de que fecha
+> o fio completo) e **analisa/planeja** o restante. Não
 > é maratona de código — é engenharia de segurança e privacidade.
 
 Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙️ Pipeline (evidência).
@@ -19,24 +20,24 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 | Sem. | Fase | Teoria | Prática | Artefato entregue |
 |:---:|------|:---:|:---:|-------------------|
 | 1 | 0 · Kickoff + inventário | 1h | 2h | Inventário + classificação por sensibilidade |
-| 2 | 1 · Requisitos de segurança (RFS+RGS, ASVS) | 1,5h | 1,5h | Catálogo inicial de requisitos 🟠 |
+| 2 | 1 · Requisitos de segurança (*shall* + Gherkin, ASVS) | 1,5h | 1,5h | Catálogo inicial de requisitos 🟠 |
 | 3 | 1 · Conformidade legal (LGPD: bases, art. 11/18) | 1,5h | 1,5h | Base legal por requisito 🟢 |
 | 4 | 2 · DFD + STRIDE | 1h | 2h | DFD + STRIDE-per-element 🟠 |
 | 5 | 2 · LINDDUN + PbD + RIPD | 1h | 2h | LINDDUN + esboço de RIPD/DPIA 🔵 |
 | 6 | 3 · Projeto seguro + DoD | 1h | 2h | Especificação + priorização + DoD |
 | 7 | 4 · Remediação (design do controle) | 1h | 2h | Design do P0 do pacote + plano |
-| 8–9 | 4 · Remediação (implementação PoC) | 0,5h/sem | 2,5h/sem | 1–2 controles ponta-a-ponta |
+| 8–9 | 4 · Remediação (implementação PoC) | 0,5h/sem | 2,5h/sem | P0 corrigido ponta-a-ponta (aula guiada) |
 | 10 | 4 · Remediação (fechamento) + plano do restante | 0,5h | 2,5h | Plano de remediação das demais falhas |
 | 11 | 5 · Testes de segurança | 1h | 2h | Testes que exercitam o(s) controle(s) |
 | 12 | 5 · SAST/DAST/SCA (evidência) | 1h | 2h | Evidências do pipeline ⚙️ |
 | 13 | 6 · DevSecOps | 1h | 2h | Pipeline como gerador de evidência ⚙️ |
-| 14 | 7 · Operação + resposta a incidente | 1,5h | 1,5h | Auditoria + plano de resposta/ANPD 🟢 |
+| 14 | 7 · Operação + resposta a incidente | 1,5h | 1,5h | Operação + plano de resposta/ANPD 🟢 |
 | 15 | 8 · Rastreabilidade + métricas | 0,5h | 2,5h | Matriz de rastreabilidade + métricas |
 | 16 | Defesas | — | 3h | Defesa final |
 
 > **Regra das 3h:** ~1/3 teoria, ~2/3 prática. Para caber, **LGPD e LINDDUN têm leitura/
 > vídeo prévio** ([02-lgpd.md](02-lgpd.md), [03-privacy-by-design-linddun.md](03-privacy-by-design-linddun.md))
-> e o **ambiente já vem pronto** (pipeline + devcontainer) — não se gasta aula montando
+> e o **ambiente já vem pronto** (Docker Compose, pipeline e os scripts dos roteiros) — não se gasta aula montando
 > o ferramental.
 
 ---
@@ -55,7 +56,8 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 ## Fase 1 — Requisitos & conformidade legal · Semanas 2–3
 - **Teoria:** requisitos de segurança (SMART/testável); **LGPD** 🟢 (princípios, bases
   legais, art. 11 saúde, art. 18 direitos); **ASVS** 🟠 como catálogo.
-- **Prática:** derivar RFS + RGS dos fluxos críticos; cruzar as quatro fontes.
+- **Prática:** derivar os requisitos dos fluxos críticos, cada um nas duas formas (declaração
+  *shall* + cenário Gherkin); cruzar as quatro fontes.
 - **Artefato:** catálogo inicial de requisitos + **base legal** por requisito.
 
 ## Fase 2 — Privacidade & threat modeling · Semanas 4–5
@@ -73,20 +75,20 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
   risco (**CVSS/DREAD + EPSS/KEV** → P0/P1/P2). *EPSS* dá a probabilidade de exploração e
   *KEV* (catálogo CISA) marca o que já é explorado no mundo real — um item no KEV **sobe
   um nível** de prioridade, mesmo com CVSS médio.
-- **Artefatos:** catálogo consolidado (RFS+RGS) + priorização + **DoD**.
+- **Artefatos:** catálogo consolidado (*shall* + Gherkin) + priorização + **DoD**.
 
 ## Fase 4 — Remediação (PROVA DE CONCEITO) · Semanas 7–10
 - **Teoria:** OWASP Top 10 e secure coding **da classe do controle escolhido** (só o
   necessário para a PoC).
 - **Prática:** cada grupo corrige, **ponta-a-ponta** (código → teste → evidência) num PR, o
-  **P0 de correção já atribuído ao seu pacote** ([05](05-pacotes-trabalho-estudantes.md)) —
-  e, se optar por fazer os dois, também a **funcionalidade de criação** (✨) do pacote. Não
-  há escolha de *qual* funcionalidade corrigir: isso já está balanceado entre os grupos.
+  **P0 de correção já atribuído ao seu pacote** ([05](05-pacotes-trabalho-estudantes.md)); a
+  **funcionalidade de criação** (✨) fica **especificada**, sem implementar. Não há escolha de
+  *qual* funcionalidade corrigir: isso já está balanceado entre os grupos.
   Para as demais falhas do seu pacote, produz um **plano de remediação** (o quê, como,
   esforço, prioridade) — **sem precisar codar**. A correção do P0 é feita em **aula de
   laboratório guiada**, com o professor: são poucas linhas de código por grupo.
-- **Artefatos:** 1–2 controles corrigidos + testes + evidência; **plano de remediação** do
-  restante; módulo LGPD atribuído ao grupo (quando aplicável — consentimento/exportação/
+- **Artefatos:** P0 corrigido + cenário `@security` + evidência; **plano de remediação** do
+  restante; **especificação** do módulo LGPD de criação do grupo (consentimento/exportação/
   eliminação/auditoria) 🟢🔵.
 
 ## Fase 5 — Verificação · Semanas 11–12
@@ -108,9 +110,9 @@ Legenda: 🟢 LGPD · 🔵 Privacy by Design/LINDDUN · 🟠 OWASP/ASVS · ⚙�
 - **Teoria:** logging/monitoração; **resposta a incidentes**; dever de **comunicação à
   ANPD** e ao titular (LGPD art. 48) 🟢.
 - **Prática:** descrever a operação das funcionalidades do pacote (o que monitorar, que eventos
-  registrar, sem PII — e, para quem tem o F-05, validar a trilha: append-only, íntegra); escrever o
+  registrar, sem PII — e, para quem tem o F-05, especificar a trilha: append-only, íntegra); escrever o
   *runbook* de um incidente das funcionalidades do pacote (o vazamento de laudo da aula é o modelo).
-- **Artefatos:** trilha de auditoria + **plano de resposta a incidente**.
+- **Artefatos:** o que monitorar e registrar (sem PII) + **plano de resposta a incidente**.
 
 ## Fase 8 — Retro, métricas & auditoria · Semana 15
 - **Teoria:** métricas de processo; risco residual; melhoria contínua.
@@ -164,6 +166,6 @@ projeto **percorrem exatamente esses passos** (por isso o plano é "aproximado d
 | 4 · Avaliação de risco | 3 (priorização) |
 | 5 · Selecionar técnica de elicitação | 1 |
 | 6 · Elicitar os requisitos | 1 |
-| 7 · Categorizar os requisitos (RFS × RGS) | 1, 3 |
+| 7 · Categorizar os requisitos (RFS × RGS; no projeto, *shall* + Gherkin) | 1, 3 |
 | 8 · Priorizar por risco (P0/P1/P2) | 3 |
 | 9 · Inspecionar e validar | 8 (V&V) + defesa |

@@ -94,8 +94,7 @@ assinatura e pela aprovação.
    ferramenta em [`comum/07`](../comum/07-ferramentas-de-seguranca.md).
 4. Monte a tabela. Para o G4, em especial: **DAST** — os alertas de erro e de cabeçalhos mudaram
    com a correção (Fase 5)? Um gate de DAST bloqueante, com a regra 90022 como falha, teria
-   impedido o *stack trace* de voltar? "Deveria ser bloqueante?" por gate, com motivo. (Opcional:
-   [`docs/13`](../../docs/13-gate-bloqueante-do-grupo.md).)
+   impedido o *stack trace* de voltar? "Deveria ser bloqueante?" por gate, com motivo.
 
 ## Passo 2 — Ache o SBOM
 

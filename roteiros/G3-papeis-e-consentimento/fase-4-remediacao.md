@@ -428,7 +428,7 @@ do Grupo 5 — **sem** a implementação.
 > colunas que existem, **tratamento atributo por atributo** (tabela), **limitações** assumidas e o
 > `.feature @analise`. Veja o Controle 2 em [`docs/12` §6.1](../../docs/12-exemplo-dossie-preenchido.md#61-prova-de-conceito-12-controles-implementados).
 
-**▶ Agora no G3** — escopo mínimo ([`docs/05`](../../docs/05-pacotes-trabalho-estudantes.md#escopo-mínimo-da-poc--criação--para-equiparar-o-esforço)):
+**▶ Agora no G3** — escopo mínimo ([`docs/05`](../../docs/05-pacotes-trabalho-estudantes.md#escopo-mínimo-da-criação--o-que-a-especificação-cobre)):
 **1 finalidade**, **1 versão** do termo e **revogação**, aplicada em **1 fluxo**. Escrevam:
 
 1. **A finalidade** (opcional — não o atendimento) e **por que ela depende de consentimento**

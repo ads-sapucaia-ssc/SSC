@@ -96,7 +96,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G1**.
    - **SAST (Semgrep):** o número de achados mudou com a sua correção? Que regra do **seu pacote**
      continua acusando (pense no MD5 e no token sem expiração)?
    - **"Deveria ser bloqueante?"**: responda **por gate**, com um motivo. Ex.: um gate só com os
-     testes do seu pacote poderia bloquear hoje? (Material opcional: [`docs/13`](../../docs/13-gate-bloqueante-do-grupo.md).)
+     testes do seu pacote poderia bloquear hoje?
 
 ## Passo 2 — Ache o SBOM e uma biblioteca do seu pacote
 

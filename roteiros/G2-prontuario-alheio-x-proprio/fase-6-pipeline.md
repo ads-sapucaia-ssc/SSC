@@ -93,7 +93,7 @@ Cada passo mostra **🔎 como o Grupo 5 fez** e **▶ o mesmo passo no G2**.
      IDOR.) O que isso diz sobre usar **só** scanners como gate?
    - **DAST:** algum alerta fala da pasta `/laudos/`?
    - **"Deveria ser bloqueante?"** por gate, com motivo. Um gate só com os testes do seu pacote
-     poderia bloquear hoje? (Opcional: [`docs/13`](../../docs/13-gate-bloqueante-do-grupo.md).)
+     poderia bloquear hoje?
 
 ## Passo 2 — Ache o SBOM
 
